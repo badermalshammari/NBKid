@@ -1,17 +1,19 @@
 package com.example.androidtemplate.network
 
+import android.content.Context
 import com.example.androidtemplate.utils.TokenManager
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitHelper {
-    private const val baseUrl = "http://10.0.2.2:8080/api/"
+    private const val port = "8081"
+    private const val baseUrl = "http://10.0.2.2:$port/api/"
 
-    fun getInstance(tokenManager: TokenManager): Retrofit {
+    fun getInstance(context: Context): Retrofit {
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(TokenInterceptor {
-                tokenManager.getToken()
+                TokenManager.getToken(context)
             })
             .build()
 
