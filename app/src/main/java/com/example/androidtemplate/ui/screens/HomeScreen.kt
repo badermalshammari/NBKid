@@ -12,12 +12,12 @@ import androidx.compose.ui.unit.*
 import androidx.navigation.NavController
 import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.LoadingIndicator
-import com.example.androidtemplate.viewmodels.AuthViewModel
+import com.example.androidtemplate.viewmodels.NBKidsViewModel
 
 @Composable
-fun HomeScreen(viewModel: AuthViewModel, navController: NavController) {
-    val user = viewModel.user.value
-    val isLoading = viewModel.isLoading.value
+fun HomeScreen(viewModel: NBKidsViewModel, navController: NavController) {
+    val user = viewModel.user
+    val isLoading = viewModel.isLoading
 
     if (isLoading) {
         LoadingIndicator()

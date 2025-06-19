@@ -14,20 +14,20 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.LoadingIndicator
-import com.example.androidtemplate.viewmodels.AuthViewModel
+import com.example.androidtemplate.viewmodels.NBKidsViewModel
 
 @Composable
-fun LoginScreen(viewModel: AuthViewModel, navController: NavController) {
-    var email by remember { mutableStateOf("") }
+fun LoginScreen(viewModel: NBKidsViewModel, navController: NavController) {
+    var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val isLoading by viewModel.isLoading
-    val user by viewModel.user
-    val token by viewModel.token
-    val errorMessage by viewModel.errorMessage
+    val isLoading = viewModel.isLoading
+    val errorMessage = viewModel.errorMessage
+    val user = viewModel.user
+    val token = viewModel.token?.token
 
-    LaunchedEffect(token?.token, user, isLoading) {
-        if (!token?.token.isNullOrBlank() && user != null && !isLoading) {
+    LaunchedEffect(token, user, isLoading) {
+        if (!token.isNullOrBlank() && user != null && !isLoading) {
             val route = Screen.Home.route
             navController.navigate(route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
@@ -39,7 +39,6 @@ fun LoginScreen(viewModel: AuthViewModel, navController: NavController) {
         LoadingIndicator()
         return
     }
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFF262E38)
@@ -61,8 +60,8 @@ fun LoginScreen(viewModel: AuthViewModel, navController: NavController) {
             Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = username,
+                onValueChange = { username = it },
                 placeholder = { Text("Username", color = Color.Gray) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -100,7 +99,8 @@ fun LoginScreen(viewModel: AuthViewModel, navController: NavController) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { viewModel.login(email, password) },
+                onClick = {
+                    viewModel.login(username, password) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),

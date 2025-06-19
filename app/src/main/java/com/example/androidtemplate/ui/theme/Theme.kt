@@ -49,8 +49,7 @@ fun AndroidTemplateTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
-
-    MaterialTheme(
+        MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content

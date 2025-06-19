@@ -1,10 +1,13 @@
 package com.example.androidtemplate.navigation
 
 sealed class Screen(val route: String){
-    // Authentication
-    data object Login : Screen("login")
-    data object Register : Screen("register")
+    // Auth Screens
+    object Login : Screen("login")
+    object Register : Screen("register")
+    object SignupSuccess : Screen("signupsuccess")
+    object SignupFailureScreen : Screen("signupfailurescreen")
+    object PolicyScreen : Screen("policy")
 
-
-    data object Home : Screen("home")
+    // User Screens
+    object Home : Screen("home")
 }
