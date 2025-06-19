@@ -24,7 +24,7 @@ fun LoginScreen(viewModel: NBKidsViewModel, navController: NavController) {
     val isLoading = viewModel.isLoading
     val errorMessage = viewModel.errorMessage
     val user = viewModel.user
-    val token = viewModel.token?.token
+    val token = viewModel.token
 
     LaunchedEffect(token, user, isLoading) {
         if (!token.isNullOrBlank() && user != null && !isLoading) {

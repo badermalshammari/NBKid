@@ -12,7 +12,7 @@ interface ApiService {
         suspend fun register(@Body request: RegisterRequest): Response<AuthResponse>
 
     @POST("auth/login")
-    suspend fun login(@Body user: User): Response<TokenResponse>
+    suspend fun login(@Body user: User): Response<AuthResponse>
 
 
     @GET("auth/me")
