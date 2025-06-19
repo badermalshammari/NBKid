@@ -36,7 +36,7 @@ fun HomeScreen(viewModel: AuthViewModel, navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Welcome ${user?.email ?: "User"}",
+                text = "Welcome ${user?.username ?: "User"}",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     color = Color.White,
                     fontWeight = FontWeight.Bold

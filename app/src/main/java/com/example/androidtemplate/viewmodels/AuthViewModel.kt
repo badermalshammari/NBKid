@@ -68,12 +68,12 @@ class AuthViewModel(
         }
     }
 
-    fun login(email: String, password: String) {
+    fun login(username: String, password: String) {
         viewModelScope.launch {
             setLoading(true)
-            Log.d(TAG, "Attempting login for: $email")
+            Log.d(TAG, "Attempting login for: $username")
             try {
-                val response = apiService.login(User(email, password))
+                val response = apiService.login(User(username = username, password = password))
                 if (!response.isSuccessful) {
                     val msg = "Login failed: ${response.message()}"
                     Log.w(TAG, msg)

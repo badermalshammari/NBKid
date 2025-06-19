@@ -12,7 +12,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.androidtemplate.data.dtos.Role
 import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.LoadingIndicator
 import com.example.androidtemplate.viewmodels.AuthViewModel
@@ -29,7 +28,7 @@ fun LoginScreen(viewModel: AuthViewModel, navController: NavController) {
 
     LaunchedEffect(token?.token, user, isLoading) {
         if (!token?.token.isNullOrBlank() && user != null && !isLoading) {
-            val route = if (user?.role == Role.ADMIN) Screen.AdminDashboard.route else Screen.Home.route
+            val route = Screen.Home.route
             navController.navigate(route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
             }
@@ -64,7 +63,7 @@ fun LoginScreen(viewModel: AuthViewModel, navController: NavController) {
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                placeholder = { Text("Email", color = Color.Gray) },
+                placeholder = { Text("Username", color = Color.Gray) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),

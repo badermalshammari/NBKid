@@ -14,7 +14,7 @@ interface AuthApiService {
     @POST("auth/login")
     suspend fun login(@Body user: User): Response<TokenResponse>
 
-    @GET("users/me")
+    @GET("auth/me")
     suspend fun getCurrentUser(): Response<User>
 
 }
