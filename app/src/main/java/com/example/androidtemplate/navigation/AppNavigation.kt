@@ -6,11 +6,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.androidtemplate.data.requests.RegisterRequest
 import com.example.androidtemplate.navigation.Screen.PolicyScreen
+import com.example.androidtemplate.navigation.Screen.SelectKidScreen
 import com.example.androidtemplate.navigation.Screen.SignupFailureScreen
 import com.example.androidtemplate.ui.screens.HomeScreen
 import com.example.androidtemplate.ui.screens.LoginScreen
 import com.example.androidtemplate.ui.screens.PolicyScreen
 import com.example.androidtemplate.ui.screens.RegisterScreen
+import com.example.androidtemplate.ui.screens.SelectKidScreen
 import com.example.androidtemplate.ui.screens.SignupFailureScreen
 import com.example.androidtemplate.ui.screens.SignupSuccessScreen
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
@@ -35,6 +37,9 @@ fun AppNavigation(navController: NavHostController, nbkidsViewModel: NBKidsViewM
         }
         composable(PolicyScreen.route){
             PolicyScreen(navController = navController)
+        }
+        composable(SelectKidScreen.route){
+            SelectKidScreen(viewModel = nbkidsViewModel, navController = navController)
         }
     }
 }
