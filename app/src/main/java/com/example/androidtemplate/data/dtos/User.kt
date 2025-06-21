@@ -5,4 +5,5 @@ data class User(
     var password: String,
     val id: Long? = null,
     val token: String? = null,
+
 )

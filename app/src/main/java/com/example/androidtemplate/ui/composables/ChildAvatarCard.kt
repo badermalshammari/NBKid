@@ -1,12 +1,18 @@
 package com.example.androidtemplate.ui.composables
 
 
+
+import android.graphics.drawable.shapes.Shape
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,6 +23,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.androidtemplate.data.dtos.Child
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.androidtemplate.R
+import com.example.androidtemplate.data.dtos.Child
+import com.example.androidtemplate.navigation.Screen
+import com.example.androidtemplate.ui.composables.FloatUp
+import com.example.androidtemplate.ui.composables.LoadingIndicator
+import com.example.androidtemplate.viewmodels.NBKidsViewModel
+import com.example.cheque_android.ui.composables.TypingText
 
 @Composable
 fun ChildAvatarCard(
