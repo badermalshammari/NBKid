@@ -22,10 +22,8 @@ import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.FloatUp
 import com.example.androidtemplate.ui.composables.LoadingIndicator
-import com.example.androidtemplate.utils.Logout
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.ui.composables.TypingText
-
 
 @Composable
 fun HomeScreen(viewModel: NBKidsViewModel, navController: NavController) {
@@ -74,12 +72,11 @@ fun HomeScreen(viewModel: NBKidsViewModel, navController: NavController) {
                     verticalArrangement = Arrangement.Center
                 ) {
                     Spacer(modifier = Modifier.height(100.dp))
-
-                        Image(
-                            painter = painterResource(id = R.drawable.defualt_avatar),
-                            contentDescription = null,
-                            modifier = Modifier.size(180.dp)
-                        )
+                    Image(
+                        painter = painterResource(id = R.drawable.defualt_avatar),
+                        contentDescription = null,
+                        modifier = Modifier.size(180.dp)
+                    )
 
                     Spacer(modifier = Modifier.height(20.dp))
 
@@ -116,8 +113,7 @@ fun HomeScreen(viewModel: NBKidsViewModel, navController: NavController) {
                                         listOf(Color(0xFF1E3C72), Color(0xFF2A6DA9))
                                     )
                                 )
-
-                                .clickable { navController.navigate(Screen.CardScreen.route) },
+                                .clickable { navController.navigate(Screen.ParentCardsScreen.route) },
                             contentAlignment = Alignment.Center
                         ) {
                             Text("PARENT", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Medium)

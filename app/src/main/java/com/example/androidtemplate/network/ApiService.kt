@@ -16,9 +16,12 @@ interface ApiService {
 
 
     @GET("auth/me")
-    suspend fun getCurrentUser(): Response<User>
+    suspend fun getCurrentUser(): Response<Parent>
 
     @GET("children")
     suspend fun getChildren(): Response<List<Child>>
+
+    @GET("cards/parent/{parentId}")
+    suspend fun getParentCards(@Path("parentId") parentId: Long): List<BankCardDto>
 
 }
