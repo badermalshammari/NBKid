@@ -100,7 +100,6 @@ fun SelectKidScreen(viewModel: NBKidsViewModel, navController: NavController) {
                         onClick = {
                             val selectedChild = children.getOrNull(selectedIndex)
                             println("Logging in as $selectedChild")
-                            // TODO: store child in ViewModel or navigate as needed
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                         contentPadding = PaddingValues(),
