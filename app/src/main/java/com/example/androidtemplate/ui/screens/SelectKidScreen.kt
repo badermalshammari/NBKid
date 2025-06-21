@@ -2,47 +2,39 @@ package com.example.androidtemplate.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
-import com.example.androidtemplate.data.dtos.Child
 import com.example.androidtemplate.ui.composables.ChildAvatarCard
-
 import com.example.androidtemplate.ui.composables.FloatUp
 import com.example.androidtemplate.ui.composables.LoadingIndicator
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 
 @Composable
 fun SelectKidScreen(viewModel: NBKidsViewModel, navController: NavController) {
-    val user = viewModel.user
-    val isLoading = viewModel.isLoading
     val listState = rememberLazyListState()
-
     var selectedIndex by remember { mutableStateOf(0) }
+    val children = viewModel.children
+    val isLoading = viewModel.isLoading
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchChildren()
+    }
 
     if (isLoading) {
         LoadingIndicator()
@@ -63,7 +55,6 @@ fun SelectKidScreen(viewModel: NBKidsViewModel, navController: NavController) {
             )
 
             FloatUp(modifier = Modifier.fillMaxSize()) {
-
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -75,37 +66,27 @@ fun SelectKidScreen(viewModel: NBKidsViewModel, navController: NavController) {
                         "LOGIN AS",
                         color = Color.White,
                         fontSize = 30.sp,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.headlineSmall
                     )
 
                     Spacer(modifier = Modifier.height(100.dp))
 
-
-                    //KIDSSSSS ---------------------------
-
-
-                    val children = listOf(
-                        Child(1, "Bader", R.drawable.zain),
-                        Child(2, "Mariam", R.drawable.zainah),
-                        Child(3, "Ali", R.drawable.zain),
-                        Child(4, "Fatima", R.drawable.zainah)
-                    )
-
                     LazyRow(
                         state = listState,
-                        flingBehavior = rememberSnapFlingBehavior(lazyListState = listState),
+                        flingBehavior = rememberSnapFlingBehavior(listState),
                         horizontalArrangement = Arrangement.spacedBy(24.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         itemsIndexed(children) { index, child ->
                             val isSelected = index == selectedIndex
-
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.width(120.dp)
                             ) {
                                 ChildAvatarCard(
-                                    child = child,
+                                    child = child.copy(
+                                        avatarResId = getAvatarDrawable(child.avatar)
+                                    ),
                                     isSelected = isSelected,
                                     onClick = { selectedIndex = index }
                                 )
@@ -113,17 +94,12 @@ fun SelectKidScreen(viewModel: NBKidsViewModel, navController: NavController) {
                         }
                     }
 
-
-                    //KIDSSSSS ---------------------------
-
-
                     Spacer(modifier = Modifier.height(100.dp))
 
                     Button(
                         onClick = {
-                            selectedIndex.let {
-                                println("Logging in as ${children[selectedIndex]}")
-                            }
+                            val selectedChild = children.getOrNull(selectedIndex)
+                            println("Logging in as $selectedChild")
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                         contentPadding = PaddingValues(),
@@ -142,12 +118,19 @@ fun SelectKidScreen(viewModel: NBKidsViewModel, navController: NavController) {
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Login", color = Color.White, fontWeight = FontWeight.Bold)
+                            Text("Login", color = Color.White, fontSize = 18.sp)
                         }
                     }
-
                 }
             }
         }
+    }
+}
+
+// Maps avatar filename from backend to drawable
+fun getAvatarDrawable(avatar: String?): Int {
+    return when (avatar?.lowercase()) {
+        "zainah.png" -> R.drawable.zainah
+        else -> R.drawable.zain
     }
 }

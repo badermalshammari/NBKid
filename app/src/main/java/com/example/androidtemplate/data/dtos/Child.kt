@@ -1,7 +1,17 @@
 package com.example.androidtemplate.data.dtos
 
+
+import com.example.androidtemplate.R
+
+
 data class Child(
-    val id: Long,
+    val childId: Long,
     val name: String,
-    val avatarResId: Int
+    val civilId: String,
+    val birthday: String,
+    val gender: String,
+    val avatar: String,
+    val stats: String,
+    val avatarResId: Int = R.drawable.zain
+
 )

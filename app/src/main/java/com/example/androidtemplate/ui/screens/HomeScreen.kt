@@ -24,7 +24,8 @@ import com.example.androidtemplate.ui.composables.FloatUp
 import com.example.androidtemplate.ui.composables.LoadingIndicator
 import com.example.androidtemplate.utils.Logout
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
-import com.example.cheque_android.ui.composables.TypingText
+import com.example.androidtemplate.ui.composables.TypingText
+
 
 @Composable
 fun HomeScreen(viewModel: NBKidsViewModel, navController: NavController) {
@@ -73,6 +74,7 @@ fun HomeScreen(viewModel: NBKidsViewModel, navController: NavController) {
                     verticalArrangement = Arrangement.Center
                 ) {
                     Spacer(modifier = Modifier.height(100.dp))
+
                         Image(
                             painter = painterResource(id = R.drawable.defualt_avatar),
                             contentDescription = null,
@@ -114,6 +116,7 @@ fun HomeScreen(viewModel: NBKidsViewModel, navController: NavController) {
                                         listOf(Color(0xFF1E3C72), Color(0xFF2A6DA9))
                                     )
                                 )
+
                                 .clickable { navController.navigate(Screen.CardScreen.route) },
                             contentAlignment = Alignment.Center
                         ) {

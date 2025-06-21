@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.androidtemplate.navigation.Screen.PolicyScreen
 import com.example.androidtemplate.navigation.Screen.SelectKidScreen
+
 import com.example.androidtemplate.ui.screens.CardScreen
 import com.example.androidtemplate.ui.screens.HomeScreen
 import com.example.androidtemplate.ui.screens.LoginScreen
@@ -40,6 +41,7 @@ fun AppNavigation(navController: NavHostController, nbkidsViewModel: NBKidsViewM
         composable(SelectKidScreen.route){
             SelectKidScreen(viewModel = nbkidsViewModel, navController = navController)
         }
+
         composable(Screen.CardScreen.route){
             CardScreen(viewModel = nbkidsViewModel, navController = navController)
         }

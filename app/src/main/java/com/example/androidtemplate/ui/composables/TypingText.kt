@@ -1,4 +1,4 @@
-package com.example.cheque_android.ui.composables
+package com.example.androidtemplate.ui.composables
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
