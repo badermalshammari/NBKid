@@ -114,7 +114,7 @@ fun HomeScreen(viewModel: NBKidsViewModel, navController: NavController) {
                                         listOf(Color(0xFF1E3C72), Color(0xFF2A6DA9))
                                     )
                                 )
-                                .clickable { navController.navigate(Screen.SignupFailureScreen.route) },
+                                .clickable { navController.navigate(Screen.CardScreen.route) },
                             contentAlignment = Alignment.Center
                         ) {
                             Text("PARENT", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Medium)
