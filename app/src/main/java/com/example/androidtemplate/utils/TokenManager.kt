@@ -4,24 +4,24 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 
-class TokenManager(private val prefs: SharedPreferences) {
+object TokenManager {
+    private const val PREF_NAME = "auth_prefs"
+    private const val TOKEN_KEY = "jwt"
 
-    fun saveToken(token: String) {
-        prefs.edit { putString("jwt", token) }
+    private fun getPrefs(context: Context): SharedPreferences {
+        return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     }
 
-    fun getToken(): String? {
-        return prefs.getString("jwt", null)
+    fun saveToken(context: Context, token: String) {
+        getPrefs(context).edit { putString(TOKEN_KEY, token) }
     }
 
-    fun clearToken() {
-        prefs.edit { remove("jwt") }
+    fun getToken(context: Context): String? {
+        return getPrefs(context).getString(TOKEN_KEY, null)
     }
 
-    companion object {
-        fun create(context: Context): TokenManager {
-            val prefs = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
-            return TokenManager(prefs)
-        }
+    fun clearToken(context: Context) {
+        getPrefs(context).edit { remove(TOKEN_KEY) }
     }
+
 }

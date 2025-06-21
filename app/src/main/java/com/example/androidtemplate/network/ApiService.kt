@@ -6,15 +6,16 @@ import com.example.androidtemplate.data.responses.*
 import retrofit2.Response
 import retrofit2.http.*
 
-interface AuthApiService {
+interface ApiService {
 
-    @POST("auth/register")
-    suspend fun register(@Body request: RegisterRequest): Response<TokenResponse>
+        @POST("auth/register")
+        suspend fun register(@Body request: RegisterRequest): Response<AuthResponse>
 
     @POST("auth/login")
-    suspend fun login(@Body user: User): Response<TokenResponse>
+    suspend fun login(@Body user: User): Response<AuthResponse>
 
-    @GET("users/me")
+
+    @GET("auth/me")
     suspend fun getCurrentUser(): Response<User>
 
 }
