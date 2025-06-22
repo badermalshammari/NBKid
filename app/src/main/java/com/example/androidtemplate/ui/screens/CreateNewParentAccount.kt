@@ -1,6 +1,5 @@
 package com.example.androidtemplate.ui.screens
 
-import android.R.attr.text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,13 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides.Companion.Top
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -33,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Top
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -42,16 +42,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.androidtemplate.R
 import com.example.androidtemplate.ui.composables.CreateAccountCard
-import com.example.androidtemplate.ui.composables.GenderCard
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateNewAccountScreen() {
-    var childname by remember { mutableStateOf("") }
-    var civilid by remember { mutableStateOf("") }
-    var birthDay by remember { mutableStateOf("") }
-
+fun CreateNewParentAccountScreen() {
+    var parentname by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -62,103 +61,87 @@ fun CreateNewAccountScreen() {
             )
         },
         content = { padding ->
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-
-            text = "Create New Account",
-            style = MaterialTheme.typography.headlineSmall,//MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
-
-        // Input fields
-        OutlinedTextField(
-
-            value = childname,
-            onValueChange = {childname = it },
-            label = { Text("Kid Name") },
-            placeholder = { Text("   PASSWORD", color = Color.Gray, fontSize = 13.sp) },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = civilid,
-            onValueChange = {civilid = it},
-            label = { Text("Civil Id") },
-            placeholder = { Text("   PASSWORD", color = Color.Gray, fontSize = 13.sp) },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = birthDay,
-            onValueChange = { birthDay =it},
-            label = { Text("Birthday") },
-            placeholder = { Text("   PASSWORD", color = Color.Gray, fontSize = 13.sp) },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Gender selection
-        Row(
-
-
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .wrapContentWidth(Alignment.CenterHorizontally)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-
-        ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp)
+                    .padding(padding), // Apply scaffold inner padding
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    GenderCard(
-                        name = "Zainah",
-                        imageRes = R.drawable.zainah,
-                        selected = true
-                    )
-                    GenderCard(
-                        name = "Zain",
-                        imageRes = R.drawable.zain,
-                        selected = false
+                // Remove the original "Create New Account" text if you added it in TopAppBar
+
+                // Input fields
+                OutlinedTextField(
+                    value = parentname,
+                    onValueChange = {parentname = it},
+                    label = { Text("Name") },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = username,
+                    onValueChange = {username = it},
+                    label = { Text("Username") },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = {password = it},
+                    label = { Text("Password") },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = { confirmPassword = it },
+                    label = { Text("Confirm Password") },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    isError = confirmPassword.isNotEmpty() && password != confirmPassword
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+
+                OutlinedTextField(
+                    value = phoneNumber,
+                    onValueChange = {phoneNumber = it},
+                    label = { Text("Phone Number") },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                if (confirmPassword.isNotEmpty() && password != confirmPassword) {
+                    Text(
+                        text = "Passwords do not match",
+                        color = Color(0xFFD32F2F),
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(top = 4.dp, start = 4.dp)
                     )
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Card Design Preview
+                Text(
+                    text = "Card Design",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.align(Alignment.Start)
+                )
+
+                CardDesignPreviewForParent()
+                Spacer(modifier = Modifier.height(8.dp))
+                AddMyCardButtonForParent(onClick = {})
             }
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Card Design Preview
-        Text(
-            text = "Card Design",
-            style = MaterialTheme.typography.headlineSmall,//MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.SemiBold),
-            modifier = Modifier.align(Alignment.Start)
-        )
-
-        CardDesignPreview()
-        Spacer(modifier = Modifier.height(8.dp))
-        AddMyCardButton(onClick = {})
-    }
         }
     )
 }
 @Composable
-fun CardDesignPreview() {
+fun CardDesignPreviewForParent() {
 
     val listState = rememberLazyListState()
     val currentIndex by remember {
@@ -168,10 +151,10 @@ fun CardDesignPreview() {
     }
 
     val cardImages = listOf(
-        R.drawable.kidcard_1,
-        R.drawable.kidcard_2,
-        R.drawable.kidcard_3,
-        R.drawable.kidcard_4
+        R.drawable.parentcard_1,
+        R.drawable.parentcard_2,
+        R.drawable.parentcard_3,
+        R.drawable.parentcard_4
     )
 
     Column(
@@ -214,7 +197,7 @@ fun CardDesignPreview() {
     }
 }
 @Composable
-fun AddMyCardButton(onClick: () -> Unit) {
+fun AddMyCardButtonForParent(onClick: () -> Unit) {
 
     Box(
         modifier = Modifier
@@ -224,7 +207,7 @@ fun AddMyCardButton(onClick: () -> Unit) {
             .clip(RoundedCornerShape(20.dp))
             .background(
                 brush = Brush.horizontalGradient(
-                    colors = listOf(Color(0xFFC778DD), Color(0xFFFC6096))
+                    colors = listOf(Color(0xFF3F51B5), Color(0xFF03A9F4))
                 )
             )
             .clickable { onClick() },
@@ -240,8 +223,8 @@ fun AddMyCardButton(onClick: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewDashboardScreen() {
+fun PreviewCreateNewParentAccountScreen() {
     MaterialTheme {
-        CreateNewAccountScreen()
+        CreateNewParentAccountScreen()
     }
 }
