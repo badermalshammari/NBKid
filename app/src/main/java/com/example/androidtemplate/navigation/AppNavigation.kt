@@ -56,5 +56,8 @@ fun AppNavigation(
                 navController = navController
             )
         }
+        composable(ChildDashboardScreen.route) {
+            ChildDashboardScreen(nbkidsViewModel = nbkidsViewModel)
+        }
     }
 }

@@ -156,6 +156,7 @@ fun CardDesignPreview() {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
+
             cardImages.forEachIndexed { index, resId ->
                 item {
                     CreateAccountCard(backgroundRes = resId)
