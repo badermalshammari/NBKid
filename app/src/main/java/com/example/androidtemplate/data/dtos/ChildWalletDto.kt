@@ -1,6 +1,5 @@
 package com.example.androidtemplate.data.dtos
 
-import java.time.LocalDate
 
 data class WalletResponseDto(
     val walletId: Long,
