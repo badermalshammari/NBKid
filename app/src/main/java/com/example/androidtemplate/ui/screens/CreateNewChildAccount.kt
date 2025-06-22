@@ -151,7 +151,7 @@ fun CardDesignPreview() {
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             items(3) {
-//                Calling Card Desgin
+
             }
         }
 

@@ -5,11 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.BarChart
-import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,9 +16,9 @@ import androidx.navigation.NavController
 import com.example.androidtemplate.ui.composables.ActionRow
 import com.example.androidtemplate.ui.composables.CreditCardComposable
 import com.example.androidtemplate.ui.composables.SettingsToggle
+import com.example.androidtemplate.utils.Logout
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,13 +43,8 @@ fun ParentCardsScreen(
             TopAppBar(
                 title = { Text("YOUR CARDS") },
                 navigationIcon = {
-                    IconButton(onClick = { /* navigate to dashboard */ }) {
-                        Icon(Icons.Default.Dashboard, contentDescription = null)
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /* show notifications */ }) {
-                        Icon(Icons.Default.Notifications, contentDescription = null)
+                    IconButton(onClick = { Logout(mainViewModel, navController) }) {
+                        Icon(Icons.Default.Logout, contentDescription = null)
                     }
                 }
             )

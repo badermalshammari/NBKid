@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
+import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.ChildAvatarCard
 import com.example.androidtemplate.ui.composables.FloatUp
 import com.example.androidtemplate.ui.composables.LoadingIndicator
@@ -100,6 +101,11 @@ fun SelectKidScreen(viewModel: NBKidsViewModel, navController: NavController) {
                         onClick = {
                             val selectedChild = children.getOrNull(selectedIndex)
                             println("Logging in as $selectedChild")
+                            if (selectedChild != null) {
+                                viewModel.selectedChild = selectedChild  // ✅ Save selected child
+                                println("Selected child: $selectedChild")
+                                navController.navigate(Screen.ChildDashboardScreen.route)  // ✅ Go to next screen
+                            }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                         contentPadding = PaddingValues(),

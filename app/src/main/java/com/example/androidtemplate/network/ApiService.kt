@@ -24,4 +24,7 @@ interface ApiService {
     @GET("cards/parent/{parentId}")
     suspend fun getParentCards(@Path("parentId") parentId: Long): List<BankCardDto>
 
+    @GET("/api/wallet/child/{childId}")
+    suspend fun getWalletByChildId(@Path("childId") childId: Long): WalletResponseDto
+
 }
