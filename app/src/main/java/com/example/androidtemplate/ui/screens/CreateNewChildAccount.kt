@@ -31,8 +31,10 @@ import androidx .compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.androidtemplate.R
+import com.example.androidtemplate.ui.composables.CreateAccountCard
 import com.example.androidtemplate.ui.composables.GenderCard
 
 
@@ -124,17 +126,22 @@ fun CreateNewAccountScreen() {
         AddMyCardButton(onClick = {})
     }
 }
-
 @Composable
 fun CardDesignPreview() {
 
     val listState = rememberLazyListState()
     val currentIndex by remember {
         derivedStateOf {
-            // Get the index of the first visible item
             listState.firstVisibleItemIndex
         }
     }
+
+    val cardImages = listOf(
+        R.drawable.kidcard_1,
+        R.drawable.kidcard_2,
+        R.drawable.kidcard_3,
+        R.drawable.kidcard_4
+    )
 
     Column(
         modifier = Modifier
@@ -144,24 +151,26 @@ fun CardDesignPreview() {
             .background(Color(0xFFD8ECFF)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Card Image Placeholder
         LazyRow(
             state = listState,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
-            items(3) {
 
+            cardImages.forEachIndexed { index, resId ->
+                item {
+                    CreateAccountCard(backgroundRes = resId)
+                }
             }
         }
 
-        // Page indicators
         Row(
+            modifier = Modifier.padding(8.dp),
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(8.dp)
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            listOf(true, false, false).forEach { isSelected ->
+            cardImages.forEachIndexed { index, _ ->
+                val isSelected = index == currentIndex
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 4.dp)
@@ -173,8 +182,6 @@ fun CardDesignPreview() {
         }
     }
 }
-
-
 @Composable
 fun AddMyCardButton(onClick: () -> Unit) {
 
@@ -197,5 +204,13 @@ fun AddMyCardButton(onClick: () -> Unit) {
             color = Color.White,
             style = MaterialTheme.typography.bodyMedium
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewDashboardScreen() {
+    MaterialTheme {
+        CreateNewAccountScreen()
     }
 }
