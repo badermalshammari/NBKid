@@ -25,7 +25,8 @@ import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.FloatDown
 import com.example.androidtemplate.ui.composables.FloatUp
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
-import com.example.cheque_android.ui.composables.TypingText
+import com.example.androidtemplate.ui.composables.TypingText
+
 
 @Composable
 fun RegisterScreen(viewModel: NBKidsViewModel, navController: NavController) {
