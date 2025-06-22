@@ -5,9 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.androidtemplate.data.dtos.BankCardDto
 import com.example.androidtemplate.data.dtos.Child
-import com.example.androidtemplate.data.dtos.Parent
 import com.example.androidtemplate.data.dtos.User
 import com.example.androidtemplate.data.requests.RegisterRequest
 import com.example.androidtemplate.network.ApiService
@@ -22,26 +20,36 @@ class NBKidsViewModel(
 
     private val TAG = "NBKidsViewModel"
 
+    // =======================
     // UI State
+    // =======================
     var isLoading by mutableStateOf(false)
         private set
+
     var errorMessage: String? by mutableStateOf(null)
         internal set
+
     var isAccountLoaded by mutableStateOf(false)
         private set
 
+    // =======================
     // Auth State
+    // =======================
     var token: String? by mutableStateOf(null)
         private set
-    var user: Parent? by mutableStateOf(null)
+
+    var user: User? by mutableStateOf(null)
         private set
 
     var nbkidsAccounts: List<User> by mutableStateOf(emptyList())
         private set
 
+    // =======================
     // Children State
+    // =======================
     var children: List<Child> by mutableStateOf(emptyList())
         private set
+
     var selectedChild: Child? by mutableStateOf(null)
 
     private var hasInitialized = false
@@ -51,6 +59,9 @@ class NBKidsViewModel(
         loadStoredToken()
     }
 
+    // =======================
+    // Token Management
+    // =======================
     private fun loadStoredToken() {
         val savedToken = TokenManager.getToken(context)
         token = savedToken
@@ -76,6 +87,9 @@ class NBKidsViewModel(
         errorMessage = null
     }
 
+    // =======================
+    // Auth Functions
+    // =======================
     fun login(username: String, password: String) {
         viewModelScope.launch {
             isLoading = true
@@ -97,9 +111,12 @@ class NBKidsViewModel(
                 TokenManager.saveToken(context, rawToken)
                 token = rawToken
 
-                user = authResponse?.parent
-
-                Log.d(TAG, "Logged in as parentId = ${user?.parentId}")
+                val parent = authResponse?.parent
+                user = User(
+                    username = parent?.username ?: "",
+                    password = password,
+                    token = rawToken
+                )
 
                 getMyAccount()
             } catch (e: Exception) {
@@ -140,7 +157,11 @@ class NBKidsViewModel(
                 TokenManager.saveToken(context, tokenValue)
                 token = tokenValue
 
-                user = registerResponse?.parent
+                user = User(
+                    username = registerResponse?.parent?.username ?: "",
+                    password = password,
+                    token = tokenValue
+                )
 
                 onSuccess()
             } catch (e: Exception) {
@@ -149,12 +170,15 @@ class NBKidsViewModel(
         }
     }
 
+    // =======================
+    // User Info
+    // =======================
     fun fetchCurrentUser() {
         viewModelScope.launch {
             try {
                 val response = apiService.getCurrentUser()
                 if (response.isSuccessful) {
-                    user = response.body() // Assumes backend returns Parent
+                    user = response.body()
                 } else {
                     errorMessage = "Failed to fetch user"
                 }
@@ -180,6 +204,9 @@ class NBKidsViewModel(
         }
     }
 
+    // =======================
+    // Children Management
+    // =======================
     fun fetchChildren() {
         viewModelScope.launch {
             isLoading = true
@@ -196,9 +223,5 @@ class NBKidsViewModel(
                 isLoading = false
             }
         }
-    }
-
-    suspend fun getParentCards(parentId: Long): List<BankCardDto> {
-        return apiService.getParentCards(parentId)
     }
 }

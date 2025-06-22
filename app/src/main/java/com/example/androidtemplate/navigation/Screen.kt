@@ -11,4 +11,5 @@ sealed class Screen(val route: String){
 
     // User Screens
     object Home : Screen("home")
-    object ParentCardsScreen : Screen("ParentCardsScreen")}
+    object CardScreen: Screen("cardscreen")
+}
