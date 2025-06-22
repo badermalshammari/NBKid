@@ -3,6 +3,7 @@ package com.example.androidtemplate.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,23 +16,34 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-//import com.example.androidtemplate.ui.components.BottomNavigationBar
-import com.example.androidtemplate.ui.components.StoreItemCard
-import com.example.androidtemplate.ui.components.TaskCard
+import com.example.androidtemplate.ui.composables.StoreItemCard
+import com.example.androidtemplate.ui.composables.TaskCard
 import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
+import com.example.androidtemplate.viewmodels.TaskViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
+import androidx.compose.foundation.lazy.items
 
 @Composable
 fun ChildDashboardScreen(nbkidsViewModel: NBKidsViewModel) {
     val context = LocalContext.current
     val walletViewModel = remember { WalletViewModel(context) }
+    val taskViewModel = remember { TaskViewModel(context) }
 
     val child = nbkidsViewModel.selectedChild
 
     LaunchedEffect(child) {
         child?.childId?.let { walletViewModel.fetchWallet(it) }
     }
+    LaunchedEffect(child) {
+        child?.childId?.let {
+            walletViewModel.fetchWallet(it)
+            taskViewModel.fetchTasks(it)
+        }
+    }
+    val tasks = taskViewModel.tasks
+    val tasksLoading = taskViewModel.isLoading
+    val tasksError = taskViewModel.errorMessage
 
     val wallet = walletViewModel.wallet
     val isLoading = walletViewModel.isLoading
@@ -156,12 +168,30 @@ fun ChildDashboardScreen(nbkidsViewModel: NBKidsViewModel) {
         // To Do Tasks
         Text("To Do Tasks", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            TaskCard(title = "Clean Your Room", points = 50, gems = 1000)
-            TaskCard(title = "Wash Dishes", points = 40, gems = 800)
+
+        when {
+            tasksLoading -> {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            tasksError != null -> {
+                Text("Error loading tasks: $tasksError", color = Color.Red)
+            }
+            tasks.isEmpty() -> {
+                Text("No tasks assigned.", color = Color.Gray)
+            }
+            else -> {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    items(tasks) { task ->
+                        TaskCard(
+                            title = task.title,
+                            points = task.points ?: 0,
+                            gems = task.gems
+                        )
+                    }
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))

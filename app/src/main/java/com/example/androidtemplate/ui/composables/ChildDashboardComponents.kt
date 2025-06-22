@@ -1,7 +1,6 @@
-package com.example.androidtemplate.ui.components
+package com.example.androidtemplate.ui.composables
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -12,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,8 +32,8 @@ fun TaskCard(title: String, points: Int, gems: Int) {
             Text("Task Name", fontSize = 12.sp, color = Color.Gray)
             Text(title, fontSize = 16.sp, color = Color(0xFF003366))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("🪙 $points", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
-                Text("💎 $gems", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                Text("🪙 $points", fontWeight = FontWeight.Bold)
+                Text("💎 $gems", fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -60,7 +60,7 @@ fun StoreItemCard(name: String, gems: Int) {
                 modifier = Modifier.size(24.dp)
             )
             Text(name, fontSize = 14.sp, textAlign = TextAlign.Center)
-            Text("💎 $gems", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+            Text("💎 $gems", fontWeight = FontWeight.Bold)
         }
     }
 }
