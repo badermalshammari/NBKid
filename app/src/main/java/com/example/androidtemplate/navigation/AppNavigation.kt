@@ -16,7 +16,8 @@ import com.example.androidtemplate.viewmodels.NBKidsViewModel
 @Composable
 fun AppNavigation(
     navController: NavHostController,
-    nbkidsViewModel: NBKidsViewModel
+    nbkidsViewModel: NBKidsViewModel,
+    cardScreenViewModel: CardScreenViewModel
 ) {
     NavHost(navController = navController, startDestination = Login.route) {
 
@@ -90,6 +91,13 @@ fun AppNavigation(
         composable(LeaderboardScreen.route) {
             LeaderboardScreen(
                 nbkidsViewModel = nbkidsViewModel,
+                navController = navController
+            )
+        }
+        composable(CreateNewChildAccount.route) {
+            CreateNewChildAccount(
+                mainViewModel = nbkidsViewModel,
+                cardViewModel = cardScreenViewModel,
                 navController = navController
             )
         }

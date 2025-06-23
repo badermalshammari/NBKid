@@ -11,5 +11,6 @@ data class BankCardDto(
     val expiryYear: Int,
     val cvv: String,
     val balance: BigDecimal,
-    val cardDesign: String?
+    val isParentCard: Boolean,
+    val cardDesign: String
 )

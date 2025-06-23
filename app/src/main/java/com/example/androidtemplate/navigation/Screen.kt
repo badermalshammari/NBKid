@@ -17,5 +17,7 @@ sealed class Screen(val route: String){
     object TaskScreen : Screen("TaskScreen")
     object TaskDetail : Screen("TaskDetail")
     object LeaderboardScreen : Screen("LeaderboardScreen")
+    object CreateNewChildAccount : Screen("CreateNewChildAccount")
+    object EnterCardScreen: Screen("EnterCardScreen")
 
 }

@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.androidtemplate.navigation.AppNavigation
 import com.example.androidtemplate.ui.theme.AndroidTemplateTheme
+import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 
 class MainActivity : ComponentActivity() {
@@ -24,10 +25,14 @@ class MainActivity : ComponentActivity() {
             AndroidTemplateTheme {
                 val navController = rememberNavController()
                 val viewModel = NBKidsViewModel(this)
+                val cardScreenViewModel = CardScreenViewModel(this)
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        AppNavigation(navController = navController, nbkidsViewModel = viewModel)
+                        AppNavigation(
+                            navController = navController, nbkidsViewModel = viewModel,
+                            cardScreenViewModel = cardScreenViewModel
+                        )
                     }
                 }
             }

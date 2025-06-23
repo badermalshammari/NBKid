@@ -173,7 +173,7 @@ fun CardDesignPreviewForParent() {
 
             cardImages.forEachIndexed { index, resId ->
                 item {
-                    CreateAccountCard(backgroundRes = resId)
+
                 }
             }
         }
