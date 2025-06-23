@@ -1,18 +1,27 @@
 package com.example.androidtemplate.ui.composables
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CreditCard
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,35 +29,53 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun GenderCard(name: String, @DrawableRes imageRes: Int, selected: Boolean) {
+fun GenderCard(
+    name: String,
+    imageRes: Int,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
+            .width(120.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(if (selected) Color(0xFFD8ECFF) else Color(0xFFF5F5F5))
-            .padding(16.dp)
+            .background(Color(0xFFF7F9FC))
+            .clickable { onClick() }
+            .padding(12.dp)
     ) {
-        Box {
+        Box(
+            contentAlignment = Alignment.BottomEnd,
+            modifier = Modifier.size(80.dp)
+        ) {
             Image(
                 painter = painterResource(id = imageRes),
                 contentDescription = name,
                 modifier = Modifier
                     .size(80.dp)
+                    .clip(RoundedCornerShape(16.dp))
             )
-            RadioButton(
-                selected = selected,
-                onClick = {},
+
+            Box(
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .offset(x = (-4).dp, y = 4.dp),
-                colors = RadioButtonDefaults.colors(selectedColor = Color(0xFF005BBB))
+                    .padding(4.dp)
+                    .size(16.dp)
+                    .clip(CircleShape)
+                    .background(if (selected) Color(0xFF0AABCA) else Color.White)
+                    .border(1.5.dp, Color.Gray, CircleShape)
             )
         }
+
         Spacer(modifier = Modifier.height(8.dp))
-        Text(name, fontWeight = FontWeight.Medium)
+
+        Text(
+            text = name,
+            style = MaterialTheme.typography.labelLarge.copy(
+                color = Color(0xFF0A0A0A)
+            )
+        )
     }
 }

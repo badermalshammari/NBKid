@@ -1,9 +1,15 @@
 package com.example.androidtemplate.viewmodels
 
 import android.content.Context
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtemplate.data.dtos.BankCardDto
+import com.example.androidtemplate.data.dtos.CreateChildRequest
+import com.example.androidtemplate.data.dtos.WalletResponseDto
 import com.example.androidtemplate.network.RetrofitHelper
 import com.example.androidtemplate.network.ApiService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +27,20 @@ class CardScreenViewModel(context: Context) : ViewModel() {
     private val _selectedCard = MutableStateFlow<BankCardDto?>(null)
     val selectedCard: StateFlow<BankCardDto?> = _selectedCard
 
+    private val _selectedWallet = MutableStateFlow<WalletResponseDto?>(null)
+    val selectedWallet: StateFlow<WalletResponseDto?> = _selectedWallet
+
+
+    var isLoading by mutableStateOf(false)
+        private set
+    var errorMessage: String? by mutableStateOf(null)
+        internal set
+
+
     private val _displayZuzu = MutableStateFlow(true)
     val displayZuzu: StateFlow<Boolean> = _displayZuzu
+
+
 
     fun fetchCards(parentId: Long) {
         viewModelScope.launch {
@@ -35,6 +53,28 @@ class CardScreenViewModel(context: Context) : ViewModel() {
             }
         }
     }
+    fun createChild(
+        request: CreateChildRequest,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            isLoading = true
+            try {
+                val response = apiService.createChild(request)
+                if (response.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError("Error: ${response.code()} ${response.message()}")
+                }
+            } catch (e: Exception) {
+                onError(e.localizedMessage ?: "Unknown error")
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
 
     fun selectCard(card: BankCardDto) {
         _selectedCard.value = card

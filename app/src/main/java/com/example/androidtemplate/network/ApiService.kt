@@ -2,6 +2,7 @@ package com.example.androidtemplate.network
 
 import com.example.androidtemplate.data.dtos.*
 import com.example.androidtemplate.data.requests.*
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -30,5 +31,9 @@ interface ApiService {
 
     @GET("/api/leaderboard")
     suspend fun getLeaderboard(@Query("top") top: Int = 3): List<LeaderboardEntryDto>
+
+    @POST("children/create")
+    suspend fun createChild(@Body request: CreateChildRequest): Response<ResponseBody>
+
 
 }

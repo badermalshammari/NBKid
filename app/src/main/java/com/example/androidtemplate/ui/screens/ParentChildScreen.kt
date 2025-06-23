@@ -68,7 +68,8 @@ fun ParentChildScreen(
         expiryYear = 2028,
         cvv = "123",
         balance = BigDecimal("199.990"),
-        cardDesign = null
+        cardDesign = "parentcard_1",
+        isParentCard = true
     )
 
     val gems = 2500
