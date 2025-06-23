@@ -48,80 +48,6 @@ import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
 import java.math.BigDecimal
 
-//@Composable
-//fun ParentChildScreen(
-//    nbViewModel: NBKidsViewModel,
-//    cardViewModel: CardScreenViewModel = CardScreenViewModel(LocalContext.current),
-//    walletViewModel: WalletViewModel = WalletViewModel(LocalContext.current),
-//    onAddBalanceClick: () -> Unit = {},
-//    onSettingsClick: () -> Unit = {},
-//    onTransferClick: () -> Unit = {},
-//    onLeaderboardClick: () -> Unit = {},
-//    onAddTaskClick: () -> Unit = {},
-//    onGiftsClick: () -> Unit = {}
-//) {
-//    val parent = nbViewModel.user
-//    val selectedCard = cardViewModel.selectedCard.collectAsState()
-//    val selectedChild = nbViewModel.selectedChild
-//    val wallet = walletViewModel.wallet
-//    val isWalletLoading = walletViewModel.isLoading
-//    val isAccountLoaded = nbViewModel.isAccountLoaded
-//
-//    // Fetch parent cards
-//    LaunchedEffect(parent?.parentId) {
-//        parent?.parentId?.let { cardViewModel.fetchCards(it) }
-//    }
-//
-//    // Fetch child wallet
-//    LaunchedEffect(selectedChild?.childId) {
-//        selectedChild?.childId?.let { walletViewModel.fetchWallet(it) }
-//    }
-//
-//    if (!isAccountLoaded || selectedCard == null || (selectedChild != null && wallet == null && isWalletLoading)) {
-//        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//            CircularProgressIndicator()
-//        }
-//    } else {
-//        val card = selectedCard!!
-//        val balance = card.value?.balance
-//        val gems = wallet?.gems ?: 0
-//        val points = wallet?.pointsBalance ?: 0
-//
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(Color.White)
-//                .padding(horizontal = 16.dp, vertical = 24.dp)
-//        ) {
-//
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            CreditCardComposable(card = card.value!!)
-//
-//            Spacer(modifier = Modifier.height(24.dp))
-//
-//            FinancialDetailSection(balance = balance.toString(), gems = gems, points = points)
-//
-//            Spacer(modifier = Modifier.height(24.dp))
-//
-//            ActionGrid(
-//                buttons = listOf(
-//                    ActionButtonData("Add Balance", Icons.Default.Add, onAddBalanceClick),
-//                    ActionButtonData("Settings", Icons.Default.Settings, onSettingsClick),
-//                    ActionButtonData("Transfer", Icons.Default.Send, onTransferClick),
-//                    ActionButtonData("Leaderboard", Icons.Default.Leaderboard, onLeaderboardClick),
-//                    ActionButtonData("Add Task", Icons.Default.PlaylistAdd, onAddTaskClick),
-//                    ActionButtonData("Gifts", Icons.Default.CardGiftcard, onGiftsClick)
-//                )
-//            )
-//
-//            Spacer(modifier = Modifier.height(24.dp))
-//
-//            Text("Latest Transactions", fontWeight = FontWeight.Bold)
-//            // TODO: Transaction list here
-//        }
-//    }
-//}
 
 @Composable
 fun ParentChildScreen(
@@ -196,8 +122,8 @@ fun ParentChildScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewParentChildScreen() {
-    ParentChildScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewParentChildScreen() {
+//    ParentChildScreen()
+//}

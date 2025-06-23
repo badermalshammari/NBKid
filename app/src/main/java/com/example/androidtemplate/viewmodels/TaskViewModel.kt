@@ -18,6 +18,8 @@ class TaskViewModel(context: Context) : ViewModel() {
     var isLoading by mutableStateOf(false)
         private set
 
+    var selectedTask: KidTaskDto? by mutableStateOf(null)
+
     var errorMessage by mutableStateOf<String?>(null)
         private set
 

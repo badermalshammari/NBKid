@@ -1,435 +1,213 @@
 package com.example.androidtemplate.ui.screens
 
-
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.androidtemplate.navigation.Screen
+import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
+import com.example.androidtemplate.viewmodels.LeaderboardViewModel
+import com.example.androidtemplate.viewmodels.NBKidsViewModel
+import com.example.androidtemplate.viewmodels.TaskViewModel
+import com.example.androidtemplate.viewmodels.WalletViewModel
+import com.example.androidtemplate.R
+
 
 @Composable
 fun LeaderboardScreen(
-    modifier: Modifier = Modifier
+    navController: NavController,
+    nbkidsViewModel: NBKidsViewModel
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        // Header Section
-        LeaderboardHeader()
+    val context = LocalContext.current
+    val walletViewModel = remember { WalletViewModel(context) }
+    val taskViewModel = remember { TaskViewModel(context) }
+    val leaderboardViewModel = remember { LeaderboardViewModel(context) }
 
-        // Leaderboard Content
-        LeaderboardContent(
-            modifier = Modifier.weight(1f)
-        )
+    var selectedTab by remember { mutableStateOf("Leaderboard") }
+    val child = nbkidsViewModel.selectedChild
 
-        // Bottom Navigation
-        //BottomNavigationBar()
-    }
-}
-
-@Composable
-fun LeaderboardHeader() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // User Avatar
-        Box(
-            modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape)
-                .background(Color(0xFFF5F5F5)),
-            contentAlignment = Alignment.Center
-        ) {
-            // User avatar placeholder - replace with actual image
-            Text("👦", fontSize = 40.sp)
+    LaunchedEffect(child) {
+        child?.childId?.let {
+            walletViewModel.fetchWallet(it)
+            taskViewModel.fetchTasks(it)
+            leaderboardViewModel.fetchLeaderboard()
         }
+    }
 
-        Spacer(modifier = Modifier.height(16.dp))
+    val wallet = walletViewModel.wallet
+    val leaderboard = leaderboardViewModel.entries
+    val leaderboardLoading = leaderboardViewModel.isLoading
+    val leaderboardError = leaderboardViewModel.errorMessage
 
-        // Gems and Points Row
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            // Available Gems
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    "Available Gems",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .background(Color(0xFF10B981), CircleShape)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        "3000",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                Text(
-                    "+ 3,000 KD",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
-            }
+    if (child == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("No child selected.", color = Color.Red)
+        }
+        return
+    }
 
-            // Points
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    "Points",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .background(Color(0xFFFFA500), CircleShape)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        "48307",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
+    Scaffold(
+        bottomBar = {
+            ZuzuBottomNavBar(selected = selectedTab) { item ->
+                selectedTab = item
+                when (item) {
+                    "Home" -> navController.navigate(Screen.ChildDashboardScreen.route)
+                    "Tasks" -> navController.navigate(Screen.TaskScreen.route)
+                    "Store" -> navController.navigate(Screen.StoreScreen.route)
+                    "Leaderboard" -> navController.navigate(Screen.LeaderboardScreen.route)
                 }
             }
         }
-    }
-}
-
-@Composable
-fun LeaderboardContent(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-    ) {
-        // Gradient divider
-        Box(
+    ) { innerPadding ->
+        LazyColumn(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(4.dp)
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            Color(0xFFFF6B35),
-                            Color(0xFFFFA500),
-                            Color(0xFFFFD700)
-                        )
-                    )
-                )
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Leaderboard Title
-        Text(
-            "Leaderboard",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Monthly/All-Time Toggle
-        Row(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            horizontalArrangement = Arrangement.spacedBy(0.dp)
-        ) {
-            ToggleButton(
-                text = "Monthly",
-                isSelected = false,
-                onClick = { }
-            )
-
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Podium Section
-        PodiumSection()
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Leaderboard List
-        LeaderboardList()
-    }
-}
-
-@Composable
-fun ToggleButton(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .clickable { onClick() }
-            .background(
-                color = if (isSelected) Color(0xFF1E40AF) else Color.Transparent,
-                shape = RoundedCornerShape(20.dp)
-            )
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Text(
-            text = text,
-            color = if (isSelected) Color.White else Color.Gray,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-        )
-    }
-}
-
-@Composable
-fun PodiumSection() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.Bottom
-    ) {
-        // Second Place
-        PodiumItem(
-            rank = "2",
-            name = "Bader",
-            points = "50587",
-            podiumColor = Color(0xFFFF6B35),  //0xFFFF6B35
-            height = 80.dp,
-            avatar = "👤"
-        )
-
-        // First Place
-        PodiumItem(
-            rank = "1",
-            name = "Fatemah",
-            points = "74999",
-            podiumColor = Color(0xFF8B5CF6),
-            height = 120.dp,
-            avatar = "👦",
-            showCrown = true
-        )
-
-        // Third Place
-        PodiumItem(
-            rank = "3",
-            name = "Khaled",
-            points = "48307",
-            podiumColor = Color(0xFF10B981),
-            height = 60.dp,
-            avatar = "👦"
-        )
-    }
-}
-
-@Composable
-fun PodiumItem(
-    rank: String,
-    name: String,
-    points: String,
-    podiumColor: Color,
-    height: Dp,
-    avatar: String,
-    showCrown: Boolean = false
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Crown for first place
-        if (showCrown) {
-            Text("👑", fontSize = 24.sp)
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-
-        // Avatar
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(Color(0xFFF5F5F5)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(avatar, fontSize = 20.sp)
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Name and Points
-        Text(
-            name,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            points,
-            style = MaterialTheme.typography.bodySmall,
-            color = Color.Gray
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Podium
-        Box(
-            modifier = Modifier
-                .width(60.dp)
-                .height(height)
-                .background(
-                    podiumColor,
-                    RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
+                .fillMaxSize()
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    start = 24.dp,
+                    end = 24.dp,
+                    bottom = innerPadding.calculateBottomPadding()
                 ),
-            contentAlignment = Alignment.Center
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(bottom = 100.dp)
         ) {
-            Text(
-                rank,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        Text("Welcome", fontSize = 20.sp, color = Color.Black)
+                        Text("${child.name}..", fontSize = 28.sp, color = Color.Black)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Surface(shape = CircleShape, shadowElevation = 6.dp) {
+                            Image(
+                                painter = painterResource(id = getAvatarDrawable(child.avatar)),
+                                contentDescription = "Avatar",
+                                modifier = Modifier.size(80.dp)
+                            )
+                        }
+                    }
+
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text("Available Gems", fontSize = 14.sp)
+                        Text("${wallet?.gems ?: "—"} 💎", fontSize = 18.sp)
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text("Points", fontSize = 14.sp)
+                        Text("${wallet?.pointsBalance ?: "—"} 🪙", fontSize = 18.sp)
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text("= ${"%.3f".format((wallet?.pointsBalance ?: 0) / 1000.0)} KD", fontSize = 12.sp)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+                Box(
+                    modifier = Modifier
+                        .height(4.dp)
+                        .fillMaxWidth()
+                        .background(brush = Brush.horizontalGradient(listOf(Color(0xFF8E2DE2), Color(0xFFF27121))))
+                )
+            }
+
+            item {
+                Text("Leaderboard", fontSize = 22.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 8.dp))
+            }
+
+            if (leaderboardLoading) {
+                item {
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+            } else if (leaderboardError != null) {
+                item {
+                    Text("Error loading leaderboard: $leaderboardError", color = Color.Red)
+                }
+            } else {
+                if (leaderboard.size >= 3) {
+                    val podium = leaderboard.take(3)
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.Bottom
+                        ) {
+                            // 2nd
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Image(
+                                    painter = painterResource(id = getAvatarDrawable(podium[1].avatar)),
+                                    contentDescription = podium[1].name,
+                                    modifier = Modifier.size(80.dp).clip(CircleShape)
+                                )
+                                Text(podium[1].name, fontWeight = FontWeight.SemiBold)
+                                Surface(color = Color(0xFFF1F4F9), shape = MaterialTheme.shapes.medium) {
+                                    Text("${podium[1].points}", fontWeight = FontWeight.Black, modifier = Modifier.padding(6.dp))
+                                }
+                                Image(painter = painterResource(id = R.drawable.leaderboard_2nd), contentDescription = "2nd", modifier = Modifier.size(100.dp))
+                            }
+
+                            // 1st with crown
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Box(contentAlignment = Alignment.TopCenter) {
+                                    Image(
+                                        painter = painterResource(id = getAvatarDrawable(podium[0].avatar)),
+                                        contentDescription = podium[0].name,
+                                        modifier = Modifier.size(90.dp).clip(CircleShape)
+                                    )
+                                    Image(
+                                        painter = painterResource(id = R.drawable.crown),
+                                        contentDescription = "Crown",
+                                        modifier = Modifier.size(30.dp).offset(y = (-12).dp)
+                                    )
+                                }
+                                Text(podium[0].name, fontWeight = FontWeight.SemiBold)
+                                Surface(color = Color(0xFFF1F4F9), shape = MaterialTheme.shapes.medium) {
+                                    Text("${podium[0].points}", fontWeight = FontWeight.Black, modifier = Modifier.padding(6.dp))
+                                }
+                                Image(painter = painterResource(id = R.drawable.leaderboard_1st), contentDescription = "1st", modifier = Modifier.size(120.dp))
+                            }
+
+                            // 3rd
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Image(
+                                    painter = painterResource(id = getAvatarDrawable(podium[2].avatar)),
+                                    contentDescription = podium[2].name,
+                                    modifier = Modifier.size(80.dp).clip(CircleShape)
+                                )
+                                Text(podium[2].name, fontWeight = FontWeight.SemiBold)
+                                Surface(color = Color(0xFFF1F4F9), shape = MaterialTheme.shapes.medium) {
+                                    Text("${podium[2].points}", fontWeight = FontWeight.Black, modifier = Modifier.padding(6.dp))
+                                }
+                                Image(painter = painterResource(id = R.drawable.leaderboard_3rd), contentDescription = "3rd", modifier = Modifier.size(100.dp))
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
+                }
+
+                val rest = leaderboard.drop(3)
+                itemsIndexed(rest) { index, entry ->
+                    Text("${index + 4}. ${entry.name} - ${entry.points} pts", fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp))
+                    Divider()
+                }
+            }
         }
-    }
-}
-
-@Composable
-fun LeaderboardList() {
-    // Sample data for remaining positions
-    val leaderboardData = listOf(
-        LeaderboardItem("👦", "Fatemah", "74999"),
-        LeaderboardItem("👤", "Bader", "50587"),
-        LeaderboardItem("👦", "Khaled", "48307")
-    )
-
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        itemsIndexed(leaderboardData) { index, item ->
-            LeaderboardRowItem(
-                rank = (index + 1).toString(),
-                avatar = item.avatar,
-                name = item.name,
-                points = item.points
-            )
-        }
-    }
-}
-
-
-@Composable
-fun LeaderboardRowItem(
-    rank: String,
-    avatar: String,
-    name: String,
-    points: String
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFFF8F9FA), RoundedCornerShape(12.dp))
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Rank
-        Text(
-            rank,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.width(24.dp)
-        )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        // Avatar
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(Color(0xFFF5F5F5)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(avatar, fontSize = 20.sp)
-        }
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        // Name
-        Text(
-            name,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.weight(1f)
-        )
-
-        // Points with coin icon
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier
-                    .size(16.dp)
-                    .background(Color(0xFFFFA500), CircleShape)
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                points,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-@Composable
-fun BottomNavItem(icon: String, isSelected: Boolean) {
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .background(
-                if (isSelected) Color.White.copy(alpha = 0.2f) else Color.Transparent,
-                CircleShape
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            icon,
-            fontSize = 20.sp,
-            color = Color.White
-        )
-    }
-}
-
-// Data class for leaderboard items
-data class LeaderboardItem(
-    val avatar: String,
-    val name: String,
-    val points: String
-)
-
-@Preview(showBackground = true)
-@Composable
-fun LeaderboardScreenPreview() {
-    MaterialTheme {
-        LeaderboardScreen()
     }
 }

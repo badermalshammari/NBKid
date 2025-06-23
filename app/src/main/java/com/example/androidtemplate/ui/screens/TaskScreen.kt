@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
@@ -18,17 +17,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.androidtemplate.ui.composables.StoreItemCard
-import com.example.androidtemplate.ui.composables.TaskCard
+import androidx.navigation.NavController
+import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
-import androidx.navigation.NavController
-import com.example.androidtemplate.navigation.Screen
 
 @Composable
-fun ChildDashboardScreen(
+fun TaskScreen(
     nbkidsViewModel: NBKidsViewModel,
     navController: NavController
 ) {
@@ -36,7 +33,7 @@ fun ChildDashboardScreen(
     val walletViewModel = remember { WalletViewModel(context) }
     val taskViewModel = remember { TaskViewModel(context) }
 
-    var selectedTab by remember { mutableStateOf("Home") }
+    var selectedTab by remember { mutableStateOf("Tasks") }
 
     val child = nbkidsViewModel.selectedChild
 
@@ -88,10 +85,9 @@ fun ChildDashboardScreen(
             contentPadding = PaddingValues(bottom = 100.dp)
         ) {
             item {
-                // Welcome + Avatar + Wallet
+                // Welcome + Avatar + Gems/Points
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Top
                 ) {
@@ -171,6 +167,8 @@ fun ChildDashboardScreen(
                     Text("Error loading wallet: $errorMessage", color = Color.Red)
                 }
 
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Box(
                     modifier = Modifier
                         .height(4.dp)
@@ -185,43 +183,43 @@ fun ChildDashboardScreen(
                 Text("To Do Tasks", fontSize = 22.sp, fontWeight = FontWeight.Bold)
             }
 
-            item {
-                when {
-                    tasksLoading -> {
+            when {
+                tasksLoading -> {
+                    item {
                         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                             CircularProgressIndicator()
                         }
                     }
-                    tasksError != null -> {
+                }
+
+                tasksError != null -> {
+                    item {
                         Text("Error loading tasks: $tasksError", color = Color.Red)
                     }
-                    tasks.isEmpty() -> {
+                }
+
+                tasks.isEmpty() -> {
+                    item {
                         Text("No tasks assigned.", color = Color.Gray)
                     }
-                    else -> {
-                        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            items(tasks) { task ->
-                                TaskCard(
-                                    title = task.title,
-                                    points = task.points ?: 0,
-                                    gems = task.gems
-                                )
-                            }
-                        }
-                    }
                 }
-            }
 
-            item {
-                Text("Store", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    StoreItemCard(name = "Toy House", gems = 99900)
-                    StoreItemCard(name = "Book", gems = 3500)
-                    StoreItemCard(name = "Surprise Box", gems = 15000)
+                else -> {
+                    items(tasks) { task ->
+                        com.example.androidtemplate.ui.composables.FancyTaskCard(
+                            title = task.title,
+                            points = task.points ?: 0,
+                            gems = task.gems,
+                            progressPercent = when (task.type.uppercase()) {
+                                "VIDEO", "QUIZ" -> 87
+                                else -> null
+                            },
+                            onClick = {
+                                nbkidsViewModel.selectedTask = task
+                                navController.navigate(Screen.TaskDetail.route)
+                            }
+                        )
+                    }
                 }
             }
         }
