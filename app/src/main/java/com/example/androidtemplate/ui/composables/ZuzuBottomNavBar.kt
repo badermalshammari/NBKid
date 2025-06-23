@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CardGiftcard
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.PlaylistAdd
@@ -37,12 +38,12 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ZuzuBottomNavBar(selected: String, onItemSelected: (String) -> Unit) {
-    val items = listOf("Tasks", "Leaderboard", "Store", "Wishlist")
+    val items = listOf("Home", "Tasks", "Store", "Leaderboard")
     val icons = listOf(
+        Icons.Default.Home,
         Icons.Default.PlaylistAdd,
-        Icons.Default.Leaderboard,
         Icons.Default.CardGiftcard,
-        Icons.Default.Favorite
+        Icons.Default.Leaderboard
     )
 
     Box(

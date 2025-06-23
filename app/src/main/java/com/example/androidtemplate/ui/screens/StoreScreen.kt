@@ -1,360 +1,241 @@
 package com.example.androidtemplate.ui.screens
 
-
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.clickable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.runtime.*
+import androidx.navigation.NavController
+import com.example.androidtemplate.R
+import com.example.androidtemplate.data.dtos.mockStoreItems
+import com.example.androidtemplate.navigation.Screen
+import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
+import com.example.androidtemplate.viewmodels.NBKidsViewModel
+import com.example.androidtemplate.viewmodels.TaskViewModel
+import com.example.androidtemplate.viewmodels.WalletViewModel
 
 @Composable
 fun StoreScreen(
-    modifier: Modifier = Modifier
+    nbkidsViewModel: NBKidsViewModel,
+    navController: NavController
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        // Header Section
-        StoreHeader()
+    val context = LocalContext.current
+    val walletViewModel = remember { WalletViewModel(context) }
+    val taskViewModel = remember { TaskViewModel(context) }
 
-        // Store Content
-        StoreContent(
-            modifier = Modifier.weight(1f)
-        )
+    var selectedTab by remember { mutableStateOf("Store") }
 
-        // Bottom Navigation
-        BottomNavigationBarDetail()
-    }
-}
+    val child = nbkidsViewModel.selectedChild
 
-@Composable
-fun StoreHeader() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // User Avatar
-        Box(
-            modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape)
-                .background(Color(0xFFE3F2FD)),
-            contentAlignment = Alignment.Center
-        ) {
-            // User avatar - replace with actual image
-            Text("👦", fontSize = 40.sp)
+    LaunchedEffect(child) {
+        child?.childId?.let {
+            walletViewModel.fetchWallet(it)
+            taskViewModel.fetchTasks(it)
         }
+    }
 
-        Spacer(modifier = Modifier.height(16.dp))
+    val wallet = walletViewModel.wallet
+    val isLoading = walletViewModel.isLoading
+    val errorMessage = walletViewModel.errorMessage
 
-        // Gems and Points Row
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            // Available Gems
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    "Available Gems",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .background(Color(0xFF10B981), CircleShape)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        "3000",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                Text(
-                    "= 3,000 KD",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
-            }
+    if (child == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("No child selected.", color = Color.Red)
+        }
+        return
+    }
 
-            // Points
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    "Points",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .background(Color(0xFFFFA500), CircleShape)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        "48307",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
+    Scaffold(
+        bottomBar = {
+            ZuzuBottomNavBar(selected = selectedTab) { item ->
+                selectedTab = item
+                when (item) {
+                    "Home" -> navController.navigate(Screen.ChildDashboardScreen.route)
+                    "Tasks" -> navController.navigate(Screen.TaskScreen.route)
+                    "Store" -> navController.navigate(Screen.StoreScreen.route)
+                    "Leaderboard" -> navController.navigate(Screen.LeaderboardScreen.route)
                 }
             }
         }
-    }
-}
-
-@Composable
-fun StoreContent(modifier: Modifier = Modifier,onBackClick: () -> Unit = {}) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-    ) {
-        // Gradient divider
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(4.dp)
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            Color(0xFFFF6B35),
-                            Color(0xFFFFA500),
-                            Color(0xFFFFD700)
-                        )
-                    )
-                )
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-
-        // Store Title with Arrow
-        Row(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Navigation Header with Back Arrow and Heart
-            //NavigationHeader(onBackClick = onBackClick)
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(Color(0xFFFF6B35), CircleShape)
-                    .clickable { onBackClick() },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = Color.White,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-
-
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Text(
-                "Store",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Store Items Grid
-        StoreItemsGrid()
-    }
-}
-
-@Composable
-fun StoreItemsGrid() {
-    val storeItems = listOf(
-        StoreItem("🏠", "99900", true),
-        StoreItem("📘", "3500", false),
-        StoreItem("🎮", "15000", false),
-        StoreItem("🏛️", "99900", false),
-        StoreItem("🤖", "2500", true),
-        StoreItem("🚗", "15000", false)
-    )
-
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(storeItems) { item ->
-            StoreItemCard(item = item)
-        }
-    }
-}
-
-@Composable
-fun StoreItemCard(item: StoreItem) {
-    var isFavorite by remember { mutableStateOf(item.isFavorite) }
-
-    Card(
-        modifier = Modifier
-            .aspectRatio(1f)
-            .clickable { },
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
-        )
-    ) {
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            // Favorite Icon
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                Icon(
-                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    contentDescription = "Favorite",
-                    tint = if (isFavorite) Color.Red else Color.Gray,
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clickable { isFavorite = !isFavorite }
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    start = 24.dp,
+                    end = 24.dp,
+                    bottom = innerPadding.calculateBottomPadding()
                 )
-            }
-
-            // Item Image (using emoji as placeholder)
-            Box(
+                .verticalScroll(rememberScrollState())
+        ) {
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
-                contentAlignment = Alignment.Center
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
             ) {
-                Text(
-                    item.emoji,
-                    fontSize = 40.sp
-                )
+                Column(horizontalAlignment = Alignment.Start) {
+                    Text("Welcome", fontSize = 20.sp, color = Color.Black)
+                    Text(
+                        text = "${child.name}..",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Surface(
+                        modifier = Modifier.size(100.dp),
+                        shape = CircleShape,
+                        color = Color.White,
+                        shadowElevation = 6.dp
+                    ) {
+                        Image(
+                            painter = painterResource(id = getAvatarDrawable(child.avatar)),
+                            contentDescription = "Child Avatar",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+
+                Column(horizontalAlignment = Alignment.End) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(48.dp)) {
+                        Text("Available Gems", fontSize = 14.sp, color = Color.Black)
+                        Text("Points", fontSize = 14.sp, color = Color.Black)
+                    }
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(48.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("💎", fontSize = 20.sp)
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = wallet?.gems?.toString() ?: "—",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
+                            )
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("🪙", fontSize = 20.sp)
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = wallet?.pointsBalance?.toString() ?: "—",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "= ${"%.3f".format((wallet?.pointsBalance ?: 0) / 1000.0)} KD",
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
+                }
             }
 
-            // Price
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(16.dp)
-                        .background(Color(0xFF10B981), CircleShape)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    item.price,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
             }
-        }
-    }
-}
 
+            if (errorMessage != null) {
+                Text("Error loading wallet: $errorMessage", color = Color.Red)
+            }
 
-@Composable
-fun BottomNavItem(icon: String, label: String, isSelected: Boolean) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .background(
-                    if (isSelected) Color.White.copy(alpha = 0.2f) else Color.Transparent,
-                    CircleShape
-                ),
-            contentAlignment = Alignment.Center
-        ) {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Box(
+                modifier = Modifier
+                    .height(4.dp)
+                    .fillMaxWidth()
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            listOf(Color(0xFF8E2DE2), Color(0xFFF27121))
+                        )
+                    )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             Text(
-                icon,
+                text = "Available Store Items",
                 fontSize = 20.sp,
-                color = Color.White
-            )
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            label,
-            fontSize = 10.sp,
-            color = Color.White,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-        )
-    }
-}
-
-@Composable
-fun BottomNavItemCenter() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(50.dp)
-                .background(Color.White, CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            // Z logo placeholder
-            Text(
-                "Z",
-                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF8B5CF6)
+                color = Color.Black,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 0.dp, max = 1000.dp) // allow it to grow with scroll
+            ) {
+                items(mockStoreItems) { item ->
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(6.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFECEFF1)),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp)
+                            .clickable {
+                                // TODO: handle item purchase
+                            }
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painter = painterResource(id = item.imageResId),
+                                contentDescription = item.name,
+                                modifier = Modifier
+                                    .size(64.dp)
+                                    .clip(CircleShape)
+                            )
+                            Text(text = item.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            Text(text = "${item.costInGems} 💎", fontSize = 14.sp, color = Color.Gray)
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp)) // extra space before nav bar
         }
     }
 }
-
-// Data class for store items
-data class StoreItem(
-    val emoji: String,
-    val price: String,
-    val isFavorite: Boolean = false
-)
-
-@Preview(showBackground = true)
-@Composable
-fun StoreScreenPreview() {
-    MaterialTheme {
-        StoreScreen()
-    }
-}
-

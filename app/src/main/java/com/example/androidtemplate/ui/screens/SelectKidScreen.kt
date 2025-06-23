@@ -137,6 +137,7 @@ fun SelectKidScreen(viewModel: NBKidsViewModel, navController: NavController) {
 fun getAvatarDrawable(avatar: String?): Int {
     return when (avatar?.lowercase()) {
         "zainah.png" -> R.drawable.zainah
+        "zain.png" -> R.drawable.zain
         else -> R.drawable.zain
     }
 }

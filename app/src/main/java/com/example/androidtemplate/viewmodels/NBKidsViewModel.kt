@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtemplate.data.dtos.BankCardDto
 import com.example.androidtemplate.data.dtos.Child
+import com.example.androidtemplate.data.dtos.KidTaskDto
 import com.example.androidtemplate.data.dtos.Parent
 import com.example.androidtemplate.data.dtos.User
 import com.example.androidtemplate.data.requests.RegisterRequest
@@ -43,6 +44,9 @@ class NBKidsViewModel(
     var children: List<Child> by mutableStateOf(emptyList())
         private set
     var selectedChild: Child? by mutableStateOf(null)
+
+    var selectedTask: KidTaskDto? by mutableStateOf(null)
+
 
     private var hasInitialized = false
 

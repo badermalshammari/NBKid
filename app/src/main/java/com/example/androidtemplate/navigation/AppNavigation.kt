@@ -1,7 +1,9 @@
 package com.example.androidtemplate.navigation
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -57,7 +59,39 @@ fun AppNavigation(
             )
         }
         composable(ChildDashboardScreen.route) {
-            ChildDashboardScreen(nbkidsViewModel = nbkidsViewModel)
+            ChildDashboardScreen(
+                nbkidsViewModel = nbkidsViewModel,
+                navController = navController
+            )
+        }
+        composable(StoreScreen.route) {
+            StoreScreen(
+                nbkidsViewModel = nbkidsViewModel,
+                navController = navController
+            )
+        }
+        composable(TaskScreen.route) {
+            TaskScreen(
+                nbkidsViewModel = nbkidsViewModel,
+                navController = navController
+            )
+        }
+        composable("taskDetail") {
+            val task = nbkidsViewModel.selectedTask
+            if (task != null) {
+                TaskDetail(
+                    task = task,
+                    onBackClick = { navController.popBackStack() }
+                )
+            } else {
+                Text("No task selected", color = Color.Red)
+            }
+        }
+        composable(LeaderboardScreen.route) {
+            LeaderboardScreen(
+                nbkidsViewModel = nbkidsViewModel,
+                navController = navController
+            )
         }
     }
 }
