@@ -32,8 +32,8 @@ import com.example.androidtemplate.ui.composables.TypingText
 
 @Composable
 fun LoginScreen(viewModel: NBKidsViewModel, navController: NavController) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("hussain") }
+    var password by remember { mutableStateOf("123") }
 
     val isLoading = viewModel.isLoading
     val errorMessage = viewModel.errorMessage

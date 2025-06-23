@@ -15,6 +15,7 @@ import com.example.androidtemplate.navigation.AppNavigation
 import com.example.androidtemplate.ui.theme.AndroidTemplateTheme
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
+import com.example.androidtemplate.viewmodels.WalletViewModel
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("ViewModelConstructorInComposable")
@@ -24,14 +25,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             AndroidTemplateTheme {
                 val navController = rememberNavController()
-                val viewModel = NBKidsViewModel(this)
-                val cardScreenViewModel = CardScreenViewModel(this)
+                val context = this // or LocalContext.current inside Composable
+
+                val viewModel = NBKidsViewModel(context)
+                val cardScreenViewModel = CardScreenViewModel(context)
+                val walletViewModel = WalletViewModel(context) // ✅ FIXED
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
                         AppNavigation(
-                            navController = navController, nbkidsViewModel = viewModel,
-                            cardScreenViewModel = cardScreenViewModel
+                            navController = navController,
+                            nbkidsViewModel = viewModel,
+                            cardScreenViewModel = cardScreenViewModel,
+                            walletViewModel = walletViewModel
                         )
                     }
                 }

@@ -12,12 +12,14 @@ import com.example.androidtemplate.navigation.Screen.*
 import com.example.androidtemplate.ui.screens.*
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
+import com.example.androidtemplate.viewmodels.WalletViewModel
 
 @Composable
 fun AppNavigation(
     navController: NavHostController,
     nbkidsViewModel: NBKidsViewModel,
-    cardScreenViewModel: CardScreenViewModel
+    cardScreenViewModel: CardScreenViewModel,
+    walletViewModel: WalletViewModel
 ) {
     NavHost(navController = navController, startDestination = Login.route) {
 
@@ -99,6 +101,16 @@ fun AppNavigation(
                 mainViewModel = nbkidsViewModel,
                 cardViewModel = cardScreenViewModel,
                 navController = navController
+            )
+        }
+        composable("parent_child_screen/{cardId}") { backStackEntry ->
+            val cardId = backStackEntry.arguments?.getString("cardId")?.toLongOrNull() ?: return@composable
+            ParentChildScreen(
+                mainViewModel = nbkidsViewModel,
+                cardViewModel = cardScreenViewModel,
+                walletViewModel = walletViewModel,
+                navController = navController,
+                cardId = cardId
             )
         }
     }

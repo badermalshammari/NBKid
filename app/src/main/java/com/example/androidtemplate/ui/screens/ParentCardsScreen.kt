@@ -92,7 +92,14 @@ fun ParentCardsScreen(
                             modifier = Modifier
                                 .width(300.dp)
                                 .fillMaxHeight()
-                                .clickable { cardViewModel.selectCard(card) }
+                                .clickable {
+                                    cardViewModel.selectCard(card)
+                                    Log.d("CARD_CLICK", "Clicked cardId = ${card.cardId}, holder = ${card.cardHolderName}")
+                                    if (!card.isParentCard) {
+                                        // Navigate to child card screen
+                                        navController.navigate("parent_child_screen/${card.cardId}")
+                                    }
+                                }
                         ) {
                             CreditCardComposable(card)
                         }

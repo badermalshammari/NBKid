@@ -14,16 +14,16 @@ import androidx.compose.ui.unit.sp
 fun FinancialDetailSection(balance: String, gems: Int, points: Int) {
     Column {
         Text("Available Balance", fontWeight = FontWeight.Bold)
-        Text("$balance KD", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text(balance, fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text("Available Gems")
-        Text("💎$gems • ${String.format("%.3f", gems / 1000.0)} KD", fontWeight = FontWeight.SemiBold)
+        Text("Gems", fontWeight = FontWeight.Bold)
+        Text("💎 $gems", fontSize = 16.sp)
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text("Points")
-        Text("✨$points", fontWeight = FontWeight.SemiBold)
+        Text("Points", fontWeight = FontWeight.Bold)
+        Text("✨ $points", fontSize = 16.sp)
     }
 }
