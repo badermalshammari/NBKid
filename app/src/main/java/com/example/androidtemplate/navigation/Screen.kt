@@ -20,4 +20,10 @@ sealed class Screen(val route: String){
     object CreateNewChildAccount : Screen("CreateNewChildAccount")
     object EnterCardScreen: Screen("EnterCardScreen")
 
+    // parent screens
+    object ParentChildScreen : Screen("ParentChildScreen")
+    object AddBalanceScreen : Screen("AddBalanceScreen")
+    object SettingsScreen : Screen("SettingsScreen")
+    object TransferScreen : Screen("TransferScreen")
+
 }

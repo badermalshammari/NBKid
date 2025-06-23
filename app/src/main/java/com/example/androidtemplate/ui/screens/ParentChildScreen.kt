@@ -1,56 +1,32 @@
 package com.example.androidtemplate.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.CardGiftcard
-import androidx.compose.material.icons.filled.Leaderboard
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.PlaylistAdd
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.androidtemplate.data.dtos.BankCardDto
-import com.example.androidtemplate.data.dtos.Child
-import com.example.androidtemplate.data.dtos.ChildDto
-import com.example.androidtemplate.data.dtos.Parent
-import com.example.androidtemplate.data.dtos.WalletResponseDto
-import com.example.androidtemplate.ui.composables.ActionButtonData
-import com.example.androidtemplate.ui.composables.ActionGrid
-import com.example.androidtemplate.ui.composables.CreditCardComposable
-import com.example.androidtemplate.ui.composables.FinancialDetailSection
+import androidx.navigation.NavController
+import com.example.androidtemplate.ui.composables.*
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
-import java.math.BigDecimal
-
 
 @Composable
 fun ParentChildScreen(
+    cardId: Long,
+    mainViewModel: NBKidsViewModel,
+    cardViewModel: CardScreenViewModel,
+    walletViewModel: WalletViewModel,
+    navController: NavController,
     onAddBalanceClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
     onTransferClick: () -> Unit = {},
@@ -58,73 +34,108 @@ fun ParentChildScreen(
     onAddTaskClick: () -> Unit = {},
     onGiftsClick: () -> Unit = {}
 ) {
-    // Fake card data
-    val dummyCard = BankCardDto(
-        cardId = 1L,
-        cardNumber = "1234567812345678",
-        accountNumber = 12345678910,
-        cardHolderName = "Khaled Jr.",
-        expiryMonth = 12,
-        expiryYear = 2028,
-        cvv = "123",
-        balance = BigDecimal("199.990"),
-        cardDesign = "parentcard_1",
-        isParentCard = true
-    )
+    val context = LocalContext.current
+    val parentId = mainViewModel.user?.parentId
+    val cards by cardViewModel.cards.collectAsState()
+    val selectedCard = cards.find { it.cardId == cardId }
+    val wallet = walletViewModel.wallet
 
-    val gems = 2500
-    val points = 12000
-    val balance = dummyCard.balance.toPlainString()
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(horizontal = 16.dp, vertical = 24.dp)
-    ) {
-        // Fake top bar
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Icon(Icons.Default.ArrowBack, contentDescription = null)
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Khaled Jr. Account", fontWeight = FontWeight.Bold)
-                Text("(12345678910)", fontSize = 12.sp)
+    // ✅ Only fetch cards if they haven't been loaded yet
+    LaunchedEffect(parentId) {
+        if (cards.isEmpty()) {
+            parentId?.let {
+                cardViewModel.fetchCards(it)
             }
-            Icon(Icons.Default.Notifications, contentDescription = null)
         }
+    }
 
-        Spacer(modifier = Modifier.height(16.dp))
+    // ✅ Fetch wallet for the selected card
+    LaunchedEffect(cardId) {
+        walletViewModel.fetchWallet(cardId)
+    }
 
-        CreditCardComposable(card = dummyCard)
+    Scaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(Color.White)
+                .padding(horizontal = 16.dp, vertical = 24.dp)
+        ) {
+            // Top bar
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("${selectedCard?.cardHolderName ?: "Child"} Account", fontWeight = FontWeight.Bold)
+                    Text("(${selectedCard?.accountNumber ?: "••••••••"})", fontSize = 12.sp)
+                }
+                IconButton(onClick = { /* TODO: Handle notifications */ }) {
+                    Icon(Icons.Default.Notifications, contentDescription = "Notifications")
+                }
+            }
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        FinancialDetailSection(balance = balance, gems = gems, points = points)
+            // Card display
+            selectedCard?.let { card ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .aspectRatio(1.6f)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    CreditCardComposable(card = card)
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+            }
 
-        Spacer(modifier = Modifier.height(24.dp))
+            // Financial section using card.balance
+            selectedCard?.let { card ->
+                FinancialDetailSection(
+                    balance = "KD ${card.balance}",
+                    gems = wallet?.gems ?: 0,
+                    points = wallet?.pointsBalance ?: 0
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+            }
 
-        ActionGrid(
-            buttons = listOf(
-                ActionButtonData("Add Balance", Icons.Default.Add, onAddBalanceClick),
-                ActionButtonData("Settings", Icons.Default.Settings, onSettingsClick),
-                ActionButtonData("Transfer", Icons.Default.Send, onTransferClick),
-                ActionButtonData("Leaderboard", Icons.Default.Leaderboard, onLeaderboardClick),
-                ActionButtonData("Add Task", Icons.Default.PlaylistAdd, onAddTaskClick),
-                ActionButtonData("Gifts", Icons.Default.CardGiftcard, onGiftsClick)
+            // Action grid
+            ActionGrid(
+                buttons = listOf(
+                    ActionButtonData("Add Balance", Icons.Default.Add, onAddBalanceClick),
+                    ActionButtonData("Settings", Icons.Default.Settings, onSettingsClick),
+                    ActionButtonData("Transfer", Icons.Default.Send, onTransferClick),
+                    ActionButtonData("Leaderboard", Icons.Default.Leaderboard, onLeaderboardClick),
+                    ActionButtonData("Add Task", Icons.Default.PlaylistAdd, onAddTaskClick),
+                    ActionButtonData("Gifts", Icons.Default.CardGiftcard, onGiftsClick)
+                )
             )
-        )
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Text("Latest Transactions", fontWeight = FontWeight.Bold)
-        // TODO: Add dummy transactions list if needed
+            // Transactions
+            Text("Latest Transactions", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Column(modifier = Modifier.fillMaxWidth()) {
+                repeat(3) { index ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text("Transaction #${index + 1}")
+                        Text("- KD ${(index + 1) * 1.250}")
+                    }
+                }
+            }
+        }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewParentChildScreen() {
-//    ParentChildScreen()
-//}
