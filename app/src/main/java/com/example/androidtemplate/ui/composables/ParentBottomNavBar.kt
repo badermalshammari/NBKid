@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.CardGiftcard
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Leaderboard
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Settings
@@ -36,11 +37,11 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ParentBottomNavBar(selected: String, onItemSelected: (String) -> Unit) {
-    val items = listOf("Person", "Wallet", "Chat", "Settings")
+    val items = listOf("Person", "Wallet", "Notification", "Settings")
     val icons = listOf(
         Icons.Default.Person,
         Icons.Default.AccountBalanceWallet,
-        Icons.Default.Chat,
+        Icons.Default.Notifications,
         Icons.Default.Settings
     )
 
@@ -61,7 +62,7 @@ fun ParentBottomNavBar(selected: String, onItemSelected: (String) -> Unit) {
                 )
                 .background(
                     brush = Brush.horizontalGradient(
-                        colors = listOf(Color(0xFF0AABCA), Color(0xFF065DA7))
+                        listOf(Color(0xFF3875A7), Color(0xFF264B6D))
                     ),
                     shape = RoundedCornerShape(40.dp)
                 )
@@ -83,14 +84,14 @@ fun ParentBottomNavBar(selected: String, onItemSelected: (String) -> Unit) {
                         Icon(
                             imageVector = icons[index],
                             contentDescription = item,
-                            tint = if (item == selected) Color.White else Color(0xFF0D335B),
+                            tint = if (item == selected) Color.White else Color(0x60000000),
                             modifier = Modifier.size(28.dp)
                         )
                         Text(
                             text = item,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
-                            color = if (item == selected) Color.White else Color(0xFF0D335B)
+                            color = if (item == selected) Color.White else Color(0x60000000)
                         )
                     }
                 }
