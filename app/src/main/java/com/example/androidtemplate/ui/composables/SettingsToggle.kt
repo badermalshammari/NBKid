@@ -46,7 +46,7 @@ fun SettingsToggle(
                 modifier = Modifier
                     .background(
                         brush = Brush.horizontalGradient(
-                            colors = listOf(Color(0xFF0052D4), Color(0xFF4364F7), Color(0xFF6FB1FC))
+                            listOf(Color(0xFF3875A7), Color(0xFF264B6D))
                         ),
                         shape = RoundedCornerShape(50)
                     )
@@ -69,7 +69,7 @@ fun SettingsToggle(
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Color.White,
                             uncheckedThumbColor = Color.LightGray,
-                            checkedTrackColor = Color(0xFF003399),
+                            checkedTrackColor = Color(0xFF4CAF50),
                             uncheckedTrackColor = Color.Gray
                         )
                     )

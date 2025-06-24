@@ -25,6 +25,7 @@ import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.ActionButtonItem
 import com.example.androidtemplate.ui.composables.AddnewCreditCardComposable
 import com.example.androidtemplate.ui.composables.CreditCardComposable
+import com.example.androidtemplate.ui.composables.ParentBottomNavBar
 import com.example.androidtemplate.ui.composables.SettingsToggle
 import com.example.androidtemplate.utils.Logout
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
@@ -40,6 +41,7 @@ fun ParentCardsScreen(
     val context = LocalContext.current
     val parentId = mainViewModel.user?.parentId
 
+    var selectedTab by remember { mutableStateOf("Wallet") }
     val cards by cardViewModel.cards.collectAsState()
     val selectedCard by cardViewModel.selectedCard.collectAsState()
     val displayZuzu by cardViewModel.displayZuzu.collectAsState()
@@ -57,19 +59,32 @@ fun ParentCardsScreen(
         }
     }
 
-    // Show parent cards always; show child cards only if toggle is ON
-    val visibleCards = cards.filter { it.isParentCard || displayZuzu }
+    val parentCards = cards.filter { it.isParentCard == true}
+    val kidCards = cards.filter { it.isParentCard == false }
+
+
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("YOUR CARDS") },
+            CenterAlignedTopAppBar(
+                title = { Text("YOUR CARDS", fontWeight = FontWeight.Black) },
                 navigationIcon = {
                     IconButton(onClick = { Logout(mainViewModel, navController) }) {
                         Icon(Icons.Default.Logout, contentDescription = null)
                     }
                 }
             )
+        },
+        bottomBar = {
+            ParentBottomNavBar(selected = selectedTab) {
+                selectedTab = it
+                when (it) {
+                    "Person" -> {}
+                    "Wallet" -> {}
+                    "Chat" -> {}
+                    "Settings" -> {}
+                }
+            }
         }
     ) { padding ->
         LazyColumn(
@@ -80,26 +95,20 @@ fun ParentCardsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                Text("YOUR CARDS", color = Color.Gray)
+                Text("Personal Cards", color = Color.Gray)
+                Spacer(modifier = Modifier.height(20.dp))
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(visibleCards) { card ->
+                    items(parentCards) { card ->
                         Box(
                             modifier = Modifier
                                 .width(300.dp)
                                 .fillMaxHeight()
-                                .clickable {
-                                    cardViewModel.selectCard(card)
-                                    Log.d("CARD_CLICK", "Clicked cardId = ${card.cardId}, holder = ${card.cardHolderName}")
-                                    if (!card.isParentCard) {
-                                        // Navigate to child card screen
-                                        navController.navigate("parent_child_screen/${card.cardId}")
-                                    }
-                                }
+                                .clickable { cardViewModel.selectCard(card) }
                         ) {
                             CreditCardComposable(card)
                         }
@@ -110,21 +119,55 @@ fun ParentCardsScreen(
                                 .width(300.dp)
                                 .fillMaxHeight()
                                 .clickable {
-                                    navController.navigate(Screen.CreateNewChildAccount.route)
-                                }
+                                    navController.navigate(Screen.CreateNewChildAccount.route)                                }
                         ) {
                             AddnewCreditCardComposable(true)
+                        }                    }
+                }
+            }
+            if (displayZuzu == true) {
+                item {
+                    Text("NBKidz Cards", color = Color.Gray)
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(kidCards) { card ->
+                            Box(
+                                modifier = Modifier
+                                    .width(300.dp)
+                                    .fillMaxHeight()
+                                    .clickable { cardViewModel.selectCard(card) }
+                            ) {
+                                println("Card: ${card.cardHolderName}, isParent: ${card.isParentCard}")
+                                CreditCardComposable(card)
+                            }
+                        }
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .width(300.dp)
+                                    .fillMaxHeight()
+                                    .clickable { navController.navigate(route= Screen.CreateNewChildAccount.route) }) {
+                                AddnewCreditCardComposable(false)
+                            }
                         }
                     }
                 }
             }
 
             item {
+                // Display selected card balance
                 Divider(
                     modifier = Modifier.padding(vertical = 8.dp),
                     color = Color.Gray,
                     thickness = 1.dp
                 )
+                Spacer(modifier = Modifier.height(20.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -133,7 +176,7 @@ fun ParentCardsScreen(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                "(${selectedCard?.cardHolderName?.uppercase() ?: "No Card Selected"})",
+                                "${selectedCard?.cardHolderName?.uppercase() ?: "No Card Selected"}",
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 23.sp,
@@ -165,7 +208,7 @@ fun ParentCardsScreen(
                 ) {
                     ActionButtonItem(
                         icon = Icons.AutoMirrored.Filled.Send,
-                        label = "Transactions",
+                        label = "Transfer",
                         onClick = { /* TODO */ }
                     )
                     ActionButtonItem(

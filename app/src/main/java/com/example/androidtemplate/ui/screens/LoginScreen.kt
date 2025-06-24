@@ -32,8 +32,8 @@ import com.example.androidtemplate.ui.composables.TypingText
 
 @Composable
 fun LoginScreen(viewModel: NBKidsViewModel, navController: NavController) {
-    var username by remember { mutableStateOf("hussain") }
-    var password by remember { mutableStateOf("123") }
+    var username by remember { mutableStateOf("test") }
+    var password by remember { mutableStateOf("1234") }
 
     val isLoading = viewModel.isLoading
     val errorMessage = viewModel.errorMessage
@@ -70,7 +70,9 @@ fun LoginScreen(viewModel: NBKidsViewModel, navController: NavController) {
                     painter = painterResource(id = R.drawable.loginpage),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize().size(30.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .size(30.dp)
                 )
                 FloatUp(modifier = Modifier.fillMaxSize()) {
                     Box(
@@ -114,7 +116,8 @@ fun LoginScreen(viewModel: NBKidsViewModel, navController: NavController) {
                         value = username,
                         onValueChange = { username = it },
                         placeholder = { Text("   USERNAME", color = Color.Gray, fontSize = 13.sp) },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .padding(15.dp)
                             .size(width = 50.dp, height = 50.dp),
                         colors = OutlinedTextFieldDefaults.colors(
@@ -132,7 +135,8 @@ fun LoginScreen(viewModel: NBKidsViewModel, navController: NavController) {
                         onValueChange = { password = it },
                         placeholder = { Text("   PASSWORD", color = Color.Gray, fontSize = 13.sp) },
                         visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .padding(15.dp)
                             .size(width = 50.dp, height = 50.dp),
 
