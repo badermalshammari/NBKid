@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
 
                 val viewModel = NBKidsViewModel(context)
                 val cardScreenViewModel = CardScreenViewModel(context)
-                val walletViewModel = WalletViewModel(context) // ✅ FIXED
+                val walletViewModel = WalletViewModel(context)
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {

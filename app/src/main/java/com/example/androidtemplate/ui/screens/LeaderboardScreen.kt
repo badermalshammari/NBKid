@@ -49,7 +49,7 @@ fun LeaderboardScreen(
         }
     }
 
-    val wallet = walletViewModel.wallet
+    val wallet by walletViewModel.walletState.collectAsState()
     val leaderboard = leaderboardViewModel.entries
     val leaderboardLoading = leaderboardViewModel.isLoading
     val leaderboardError = leaderboardViewModel.errorMessage

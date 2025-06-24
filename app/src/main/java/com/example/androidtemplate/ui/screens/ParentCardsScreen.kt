@@ -1,8 +1,9 @@
 package com.example.androidtemplate.ui.screens
 
-import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -17,10 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.ActionButtonItem
 import com.example.androidtemplate.ui.composables.AddnewCreditCardComposable
@@ -30,12 +33,14 @@ import com.example.androidtemplate.ui.composables.SettingsToggle
 import com.example.androidtemplate.utils.Logout
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
+import com.example.androidtemplate.viewmodels.WalletViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ParentCardsScreen(
     mainViewModel: NBKidsViewModel,
     cardViewModel: CardScreenViewModel,
+    walletViewModel: WalletViewModel,
     navController: NavController
 ) {
     val context = LocalContext.current
@@ -43,8 +48,9 @@ fun ParentCardsScreen(
 
     var selectedTab by remember { mutableStateOf("Wallet") }
     val cards by cardViewModel.cards.collectAsState()
-    val selectedCard by cardViewModel.selectedCard.collectAsState()
     val displayZuzu by cardViewModel.displayZuzu.collectAsState()
+    val wallet by walletViewModel.walletState.collectAsState()
+    val selectedCard by cardViewModel.selectedCard.collectAsState()
 
     LaunchedEffect(parentId) {
         parentId?.let {
@@ -59,6 +65,11 @@ fun ParentCardsScreen(
         }
     }
 
+    LaunchedEffect(selectedCard) {
+        selectedCard?.cardId?.let {
+            walletViewModel.fetchWallet(it)
+        }
+    }
     val parentCards = cards.filter { it.isParentCard == true}
     val kidCards = cards.filter { it.isParentCard == false }
 
@@ -169,35 +180,94 @@ fun ParentCardsScreen(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                             Text(
                                 "${selectedCard?.cardHolderName?.uppercase() ?: "No Card Selected"}",
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 23.sp,
+                                fontSize = 30.sp,
                                 color = Color.Black
                             )
                             Text(
                                 "(${selectedCard?.accountNumber ?: "N/A"})",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = Color.Gray
-                            )
+                                color = Color.Gray,
+                                fontSize = 15.sp,
+                                )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                    if (selectedCard?.isParentCard == false) {
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(
+                                    modifier = Modifier.weight(1f),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.points),
+                                        contentDescription = "points",
+                                        modifier = Modifier.size(40.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        "Points ${wallet?.pointsBalance ?: 0}",
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+
+                                Row(
+                                    modifier = Modifier.weight(1f),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.gems),
+                                        contentDescription = "gems",
+                                        modifier = Modifier.size(40.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("Gems ${wallet?.gems ?: 0}", fontWeight = FontWeight.Bold)
+                                }
+
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text("Available Balance", color = Color.Gray)
+                                    Text(
+                                        text = "${selectedCard?.balance ?: 0.0} KD",
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                            }else{
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text("Available Balance", color = Color.Gray)
+                                Text(
+                                    text = "${selectedCard?.balance ?: 0.0} KD",
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
                         }
 
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Available Balance", color = Color.Gray)
-                            Text(
-                                text = "${selectedCard?.balance ?: 0.0} KD",
-                                style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
+
+
                 }
             }
 
@@ -209,17 +279,22 @@ fun ParentCardsScreen(
                     ActionButtonItem(
                         icon = Icons.AutoMirrored.Filled.Send,
                         label = "Transfer",
-                        onClick = { /* TODO */ }
+                        onClick = {  },
                     )
                     ActionButtonItem(
                         icon = Icons.Default.BarChart,
                         label = "Statistics",
-                        onClick = { /* TODO */ }
+                        onClick = { /* TODO */ },
                     )
                     ActionButtonItem(
                         icon = Icons.Default.Settings,
                         label = "Settings",
-                        onClick = { /* TODO */ }
+                        // Navigation
+                        onClick = {
+                            selectedCard?.cardId?.let {
+                                navController.navigate("enter_card_screen/$it")
+                            }
+                        },
                     )
                 }
             }

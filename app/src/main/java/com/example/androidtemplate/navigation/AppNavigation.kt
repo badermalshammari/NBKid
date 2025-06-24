@@ -1,5 +1,6 @@
 package com.example.androidtemplate.navigation
 
+import GiftsScreen
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -52,26 +53,37 @@ fun AppNavigation(
         }
 
         composable(ParentCardsScreen.route) {
-            val context = LocalContext.current
-            val cardViewModel = remember { CardScreenViewModel(context) }
-
             ParentCardsScreen(
                 mainViewModel = nbkidsViewModel,
-                cardViewModel = cardViewModel,
-                navController = navController
+                cardViewModel = cardScreenViewModel,
+                navController = navController,
+                walletViewModel = walletViewModel,
             )
         }
+
         composable(ChildDashboardScreen.route) {
             ChildDashboardScreen(
                 nbkidsViewModel = nbkidsViewModel,
                 navController = navController
             )
         }
+
         composable(StoreScreen.route) {
             StoreScreen(
                 nbkidsViewModel = nbkidsViewModel,
                 navController = navController
             )
+        }
+        composable("enter_card_screen/{cardId}") { backStackEntry ->
+            val cardId = backStackEntry.arguments?.getString("cardId")?.toLongOrNull()
+            if (cardId != null) {
+                GiftsScreen(
+                    cardId = cardId,
+                    cardViewModel = cardScreenViewModel,
+                    walletViewModel = walletViewModel,
+                    navController = navController
+                )
+            }
         }
         composable(TaskScreen.route) {
             TaskScreen(
@@ -79,6 +91,8 @@ fun AppNavigation(
                 navController = navController
             )
         }
+
+
         composable("taskDetail") {
             val task = nbkidsViewModel.selectedTask
             if (task != null) {
@@ -90,12 +104,14 @@ fun AppNavigation(
                 Text("No task selected", color = Color.Red)
             }
         }
+
         composable(LeaderboardScreen.route) {
             LeaderboardScreen(
                 nbkidsViewModel = nbkidsViewModel,
                 navController = navController
             )
         }
+
         composable(CreateNewChildAccount.route) {
             CreateNewChildAccount(
                 mainViewModel = nbkidsViewModel,
@@ -103,15 +119,18 @@ fun AppNavigation(
                 navController = navController
             )
         }
-        composable("parent_child_screen/{cardId}") { backStackEntry ->
-            val cardId = backStackEntry.arguments?.getString("cardId")?.toLongOrNull() ?: return@composable
-            ParentChildScreen(
-                mainViewModel = nbkidsViewModel,
-                cardViewModel = cardScreenViewModel,
-                walletViewModel = walletViewModel,
-                navController = navController,
-                cardId = cardId
-            )
+
+        composable("enter_card_screen/{cardId}") { backStackEntry ->
+            val cardId = backStackEntry.arguments?.getString("cardId")?.toLongOrNull()
+            if (cardId != null) {
+                EnterCardScreen(
+                    cardId = cardId,
+                    cardViewModel = cardScreenViewModel,
+                    walletViewModel = walletViewModel,
+                    navController = navController
+                )
+            }
         }
+
     }
 }

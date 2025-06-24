@@ -27,8 +27,6 @@ class CardScreenViewModel(context: Context) : ViewModel() {
     private val _selectedCard = MutableStateFlow<BankCardDto?>(null)
     val selectedCard: StateFlow<BankCardDto?> = _selectedCard
 
-    private val _selectedWallet = MutableStateFlow<WalletResponseDto?>(null)
-    val selectedWallet: StateFlow<WalletResponseDto?> = _selectedWallet
 
 
     var isLoading by mutableStateOf(false)

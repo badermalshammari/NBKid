@@ -48,8 +48,8 @@ fun TaskScreen(
     val tasksLoading = taskViewModel.isLoading
     val tasksError = taskViewModel.errorMessage
 
-    val wallet = walletViewModel.wallet
-    val isLoading = walletViewModel.isLoading
+    val wallet by walletViewModel.walletState.collectAsState()
+    val isLoading by walletViewModel.isLoading.collectAsState()
     val errorMessage = walletViewModel.errorMessage
 
     if (child == null) {
