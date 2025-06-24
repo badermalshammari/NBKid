@@ -1,5 +1,6 @@
 package com.example.androidtemplate.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -130,10 +131,20 @@ fun ParentCardsScreen(
                                 .width(300.dp)
                                 .fillMaxHeight()
                                 .clickable {
-                                    navController.navigate(Screen.CreateNewChildAccount.route)                                }
+                                    cardViewModel.createParentCard(
+                                        parentId = mainViewModel.user?.parentId ?: return@clickable,
+                                        onSuccess = {
+                                            Toast.makeText(context, "New card created!", Toast.LENGTH_SHORT).show()
+                                        },
+                                        onError = {
+                                            Toast.makeText(context, "Error: ${it.message}", Toast.LENGTH_LONG).show()
+                                        }
+                                    )
+                                }
                         ) {
                             AddnewCreditCardComposable(true)
-                        }                    }
+                        }
+                    }
                 }
             }
             if (displayZuzu == true) {

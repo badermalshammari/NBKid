@@ -27,5 +27,4 @@ sealed class Screen(val route: String){
     object TransferScreen : Screen("TransferScreen")
     object GiftsScreen : Screen("GiftsScreen")
 
-
 }

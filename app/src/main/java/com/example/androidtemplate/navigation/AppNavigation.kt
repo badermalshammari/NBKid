@@ -74,24 +74,12 @@ fun AppNavigation(
                 navController = navController
             )
         }
-        composable("enter_card_screen/{cardId}") { backStackEntry ->
-            val cardId = backStackEntry.arguments?.getString("cardId")?.toLongOrNull()
-            if (cardId != null) {
-                GiftsScreen(
-                    cardId = cardId,
-                    cardViewModel = cardScreenViewModel,
-                    walletViewModel = walletViewModel,
-                    navController = navController
-                )
-            }
-        }
         composable(TaskScreen.route) {
             TaskScreen(
                 nbkidsViewModel = nbkidsViewModel,
                 navController = navController
             )
         }
-
 
         composable("taskDetail") {
             val task = nbkidsViewModel.selectedTask
@@ -130,6 +118,9 @@ fun AppNavigation(
                     navController = navController
                 )
             }
+        }
+        composable(AddBalanceScreen.route) {
+            AddBalanceScreen()
         }
 
     }
