@@ -2,8 +2,8 @@ package com.example.androidtemplate.data.dtos
 
 
 data class WalletResponseDto(
-    val walletId: Long,
-    val child: ChildDto,
+    val walletId: Long? = null,
+    val child: ChildDto?= null,
     val pointsBalance: Int,
     val gems: Int
 )

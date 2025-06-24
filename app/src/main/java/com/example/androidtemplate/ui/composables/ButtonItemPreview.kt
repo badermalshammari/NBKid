@@ -2,6 +2,7 @@ package com.example.androidtemplate.ui.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -17,31 +18,30 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
+
 @Composable
-fun ActionButtonItem(
-    icon: ImageVector,
-    label: String,
-    onClick: () -> Unit,
-    backgroundColor: Color =Color(0xFFFFFFFF)
-) {
+fun ButtonItemPreview(icon: ImageVector, title: String, color: Color, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .clip(RoundedCornerShape(25.dp))
-            .background(
-                Brush.horizontalGradient(
-                    listOf(Color(0xFF3875A7), Color(0xFF264B6D))
-                )
-            )
-            .size(width = 100.dp, height = 100.dp)
-            .padding(16.dp)
-            .clickable { onClick() }
     ) {
-        Icon(icon, contentDescription = label, tint = Color(0xFFFFFFFF), modifier = Modifier.size(32.dp))
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(label, fontSize = 15.sp, color = backgroundColor)
+        Box(
+            modifier = Modifier
+                .size(60.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(color)
+                .clickable(){
+                    onClick()
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(imageVector = icon, contentDescription = title, tint = Color.White)
+        }
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(title, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
     }
 }
