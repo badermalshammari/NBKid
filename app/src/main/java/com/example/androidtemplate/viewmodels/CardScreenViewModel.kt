@@ -27,18 +27,13 @@ class CardScreenViewModel(context: Context) : ViewModel() {
     private val _selectedCard = MutableStateFlow<BankCardDto?>(null)
     val selectedCard: StateFlow<BankCardDto?> = _selectedCard
 
-
+    private val _displayZuzu = MutableStateFlow(true)
+    val displayZuzu: StateFlow<Boolean> = _displayZuzu
 
     var isLoading by mutableStateOf(false)
         private set
     var errorMessage: String? by mutableStateOf(null)
         internal set
-
-
-    private val _displayZuzu = MutableStateFlow(true)
-    val displayZuzu: StateFlow<Boolean> = _displayZuzu
-
-
 
     fun fetchCards(parentId: Long) {
         viewModelScope.launch {
@@ -46,11 +41,28 @@ class CardScreenViewModel(context: Context) : ViewModel() {
                 val fetched = apiService.getParentCards(parentId)
                 _cards.value = fetched
                 _selectedCard.value = fetched.firstOrNull()
-            } catch (_: Exception) {
-                // You may log or emit error state here
+            } catch (e: Exception) {
+                errorMessage = "Failed to fetch cards: ${e.message}"
             }
         }
     }
+
+    fun createParentCard(
+        parentId: Long,
+        onSuccess: (BankCardDto) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val newCard = apiService.createParentCard(parentId)
+                _cards.value = _cards.value + newCard
+                onSuccess(newCard)
+            } catch (e: Exception) {
+                onError(e)
+            }
+        }
+    }
+
     fun createChild(
         request: CreateChildRequest,
         onSuccess: () -> Unit,
@@ -72,7 +84,6 @@ class CardScreenViewModel(context: Context) : ViewModel() {
             }
         }
     }
-
 
     fun selectCard(card: BankCardDto) {
         _selectedCard.value = card
