@@ -134,18 +134,38 @@ fun ChildDashboardScreen(
                         Column {
                             Text("Available Gems", color = Color.Gray, fontSize = 14.sp)
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Image(painter = painterResource(id = R.drawable.gems), contentDescription = "Gems", modifier = Modifier.size(24.dp))
+                                Image(
+                                    painter = painterResource(id = R.drawable.gems),
+                                    contentDescription = "Gems",
+                                    modifier = Modifier.size(24.dp)
+                                )
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text("${wallet?.gems ?: 0}", fontWeight = FontWeight.ExtraBold, fontSize = 14.sp)
+                                Text(
+                                    "${wallet?.gems ?: 0}",
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = 14.sp
+                                )
                             }
-                            Text("= ${"%.3f".format((wallet?.gems ?: 0) / 1000.0)} KD", fontSize = 10.sp, color = Color.Gray)
+                            Text(
+                                "= ${"%.3f".format((wallet?.gems ?: 0) / 1000.0)} KD",
+                                fontSize = 10.sp,
+                                color = Color.Gray
+                            )
                         }
                         Column {
                             Text("Points", color = Color.Gray, fontSize = 14.sp)
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Image(painter = painterResource(id = R.drawable.points), contentDescription = "Points", modifier = Modifier.size(24.dp))
+                                Image(
+                                    painter = painterResource(id = R.drawable.points),
+                                    contentDescription = "Points",
+                                    modifier = Modifier.size(24.dp)
+                                )
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text("${wallet?.pointsBalance ?: 0}", fontWeight = FontWeight.ExtraBold, fontSize = 14.sp)
+                                Text(
+                                    "${wallet?.pointsBalance ?: 0}",
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = 14.sp
+                                )
                             }
                         }
                     }
@@ -168,12 +188,20 @@ fun ChildDashboardScreen(
             Text("To Do Tasks", fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
             when {
-                tasksLoading -> Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+                tasksLoading -> Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) { CircularProgressIndicator() }
+
                 tasksError != null -> Text("Error loading tasks: $tasksError", color = Color.Red)
                 tasks.isEmpty() -> Text("No tasks assigned.", color = Color.Gray)
                 else -> LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(tasks) { task ->
-                        ViewTaskCard(title = task.title, points = task.points ?: 0, gems = task.gems)
+                        ViewTaskCard(
+                            title = task.title,
+                            points = task.points ?: 0,
+                            gems = task.gems
+                        )
                     }
                 }
             }
@@ -185,15 +213,15 @@ fun ChildDashboardScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
 
+            val visibleItems = storeItems.filter { !it.isHidden }
+
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 600.dp)
+                modifier = Modifier.fillMaxSize()
             ) {
-                items(storeItems) { item ->
+                items(visibleItems) { item ->
                     val imageResId = remember(item.globalItem.photo) {
                         val resId = context.resources.getIdentifier(
                             item.globalItem.photo,
@@ -209,7 +237,7 @@ fun ChildDashboardScreen(
                         canAfford = (wallet?.gems ?: 0) >= item.globalItem.costInGems,
                         onOrderClick = {
                             child?.childId?.let { id ->
-//                                nbkidsViewModel.orderItem(id, item.globalItem.id)
+                                // nbkidsViewModel.orderItem(id, item.globalItem.id)
                             }
                         }
                     )
