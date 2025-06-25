@@ -157,8 +157,12 @@ fun EnterCardScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.weight(1f)
                         ) {
-                            ButtonItemPreview(Icons.Default.Add, "Add Balance", Color(0xFFFFC107),
-                                onClick = { navController.navigate(Screen.AddBalanceScreen.route)}
+                            ButtonItemPreview(Icons.Default.Add, "Add Gems", Color(0xFFFFC107),
+                                onClick = {
+                                    card.childId?.let { childId ->
+                                        navController.navigate("add_balance_screen/$childId")
+                                    }
+                                }
                             )
                             ButtonItemPreview(Icons.Default.Send, "Transfer", Color(0xFF7E57C2),
                                 onClick = { navController.navigate(Screen.TransferScreen.route)}

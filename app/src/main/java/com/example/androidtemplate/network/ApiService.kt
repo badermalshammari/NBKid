@@ -38,5 +38,11 @@ interface ApiService {
     @POST("cards/parent/{parentId}/new")
     suspend fun createParentCard(@Path("parentId") parentId: Long): BankCardDto
 
+    @POST("wallet/child/{childId}/add-gems")
+    suspend fun addGemsToChild(
+        @Path("childId") childId: Long,
+        @Body request: AddGemsRequest
+    ): Response<WalletResponseDto>
+
 
 }
