@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtemplate.data.dtos.BankCardDto
 import com.example.androidtemplate.data.dtos.Child
+import com.example.androidtemplate.data.dtos.ChildStoreItemDto
 import com.example.androidtemplate.data.dtos.KidTaskDto
 import com.example.androidtemplate.data.dtos.Parent
 import com.example.androidtemplate.data.dtos.User
@@ -30,6 +31,10 @@ class NBKidsViewModel(
         internal set
     var isAccountLoaded by mutableStateOf(false)
         private set
+
+    //Store
+    private val _storeitems = mutableStateOf<List<ChildStoreItemDto>>(emptyList())
+    val storeitems: State<List<ChildStoreItemDto>> = _storeitems
 
     // Auth State
     var token: String? by mutableStateOf(null)
@@ -113,7 +118,15 @@ class NBKidsViewModel(
             }
         }
     }
-
+    fun fetchStoreItems(childId: Long) {
+        viewModelScope.launch {
+            try {
+                _storeitems.value = apiService.getChildStoreItems(childId)
+            } catch (e: Exception) {
+                Log.e("StoreViewModel", "Error loading store items", e)
+            }
+        }
+    }
     fun register(
         name: String,
         phone: String,

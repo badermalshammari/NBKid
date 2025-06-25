@@ -1,9 +1,10 @@
 package com.example.androidtemplate.data.dtos
 
-data class StoreItem(
+data class GlobalItemDto(
     val name: String,
     val description: String,
-    val age: Int,
+    val photo: String,
     val costInGems: Int,
-    val imageResId: String
+    val age: Int,
+    val type: String
 )

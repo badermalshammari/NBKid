@@ -30,6 +30,7 @@ fun HomeScreen(viewModel: NBKidsViewModel, navController: NavController) {
     val user = viewModel.user
     val isLoading = viewModel.isLoading
 
+
     if (isLoading) {
         LoadingIndicator()
         return

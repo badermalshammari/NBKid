@@ -38,11 +38,28 @@ interface ApiService {
     @POST("cards/parent/{parentId}/new")
     suspend fun createParentCard(@Path("parentId") parentId: Long): BankCardDto
 
+
+    @GET("/api/children/{childId}/store")
+    suspend fun getChildStoreItems(@Path("childId") childId: Long): List<ChildStoreItemDto>
+
+    @POST("/api/children/{childId}/item/{itemId}/toggle")
+    suspend fun toggleHidden(
+        @Path("childId") childId: Long,
+        @Path("itemId") itemId: Long
+    ): ChildStoreItemDto
+
+    @POST("/api/children/{childId}/item/{itemId}/wishlist/toggle")
+    suspend fun toggleWishlist(
+        @Path("childId") childId: Long,
+        @Path("itemId") itemId: Long
+    ): ChildStoreItemDto
+
     @POST("wallet/child/{childId}/add-gems")
     suspend fun addGemsToChild(
         @Path("childId") childId: Long,
         @Body request: AddGemsRequest
     ): Response<WalletResponseDto>
+
 
 
 }
