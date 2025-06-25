@@ -119,8 +119,13 @@ fun AppNavigation(
                 )
             }
         }
-        composable(AddBalanceScreen.route) {
-            AddBalanceScreen()
+        composable("add_balance_screen/{childId}") { backStackEntry ->
+            val childId = backStackEntry.arguments?.getString("childId")?.toLongOrNull() ?: return@composable
+            AddBalanceScreen(
+                navController = navController,
+                walletViewModel = walletViewModel,
+                childId = childId
+            )
         }
 
     }
