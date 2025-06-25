@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
@@ -93,12 +94,7 @@ fun TaskScreen(
                 ) {
                     Column(horizontalAlignment = Alignment.Start) {
                         Text("Welcome", fontSize = 20.sp, color = Color.Black)
-                        Text(
-                            text = "${child.name}..",
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
+                        Text(text = "${child.name}..", fontSize = 28.sp, fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.height(16.dp))
                         Surface(
                             modifier = Modifier.size(100.dp),
@@ -115,58 +111,30 @@ fun TaskScreen(
                     }
 
                     Column(horizontalAlignment = Alignment.End) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(48.dp)) {
-                            Text("Available Gems", fontSize = 14.sp, color = Color.Black)
-                            Text("Points", fontSize = 14.sp, color = Color.Black)
-                        }
-
-                        Spacer(modifier = Modifier.height(6.dp))
-
                         Row(
-                            horizontalArrangement = Arrangement.spacedBy(48.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            horizontalArrangement = Arrangement.spacedBy(20.dp),
+                            verticalAlignment = Alignment.Top
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("💎", fontSize = 20.sp)
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text(
-                                    text = wallet?.gems?.toString() ?: "—",
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black
-                                )
+                            Column {
+                                Text("Available Gems", color = Color.Gray, fontSize = 14.sp)
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Image(painter = painterResource(id = com.example.androidtemplate.R.drawable.gems), contentDescription = "Gems", modifier = Modifier.size(24.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text("${wallet?.gems ?: 0}", fontWeight = FontWeight.ExtraBold, fontSize = 14.sp)
+                                }
+                                Text("= ${"%.3f".format((wallet?.gems ?: 0) / 1000.0)} KD", fontSize = 10.sp, color = Color.Gray)
                             }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("🪙", fontSize = 20.sp)
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text(
-                                    text = wallet?.pointsBalance?.toString() ?: "—",
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black
-                                )
+                            Column {
+                                Text("Points", color = Color.Gray, fontSize = 14.sp)
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Image(painter = painterResource(id = R.drawable.points), contentDescription = "Points", modifier = Modifier.size(24.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text("${wallet?.pointsBalance ?: 0}", fontWeight = FontWeight.ExtraBold, fontSize = 14.sp)
+                                }
                             }
                         }
-
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = "= ${"%.3f".format((wallet?.pointsBalance ?: 0) / 1000.0)} KD",
-                            fontSize = 12.sp,
-                            color = Color.Gray
-                        )
                     }
                 }
-
-                if (isLoading) {
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-                    }
-                }
-
-                if (errorMessage != null) {
-                    Text("Error loading wallet: $errorMessage", color = Color.Red)
-                }
-
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Box(
@@ -179,6 +147,7 @@ fun TaskScreen(
                             )
                         )
                 )
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text("To Do Tasks", fontSize = 22.sp, fontWeight = FontWeight.Bold)
             }

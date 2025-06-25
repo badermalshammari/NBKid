@@ -25,6 +25,7 @@ import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
 import com.example.androidtemplate.ui.composables.CreditCardComposable
 import com.example.androidtemplate.ui.composables.ButtonItemPreview
+import com.example.androidtemplate.ui.composables.LoadingIndicator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,9 +38,15 @@ fun EnterCardScreen(
     val cards by cardViewModel.cards.collectAsState()
     val card = cards.find { it.cardId == cardId }
     val wallet by walletViewModel.walletState.collectAsState()
+    val isLoading = cardViewModel.isLoading
 
     LaunchedEffect(cardId) {
         walletViewModel.fetchWallet(cardId)
+    }
+
+    if (isLoading) {
+        LoadingIndicator()
+        return
     }
 
     if (card == null) {
