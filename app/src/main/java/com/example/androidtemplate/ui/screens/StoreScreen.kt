@@ -196,16 +196,15 @@ fun StoreScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            val visibleItems = storeItems.filter { !it.isHidden }
+
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 600.dp)
+                modifier = Modifier.fillMaxSize()
             ) {
-
-                items(storeItems) { item ->
+                items(visibleItems) { item ->
                     val imageResId = remember(item.globalItem.photo) {
                         val resId = context.resources.getIdentifier(
                             item.globalItem.photo,
@@ -221,7 +220,7 @@ fun StoreScreen(
                         canAfford = (wallet?.gems ?: 0) >= item.globalItem.costInGems,
                         onOrderClick = {
                             child?.childId?.let { id ->
-//                                nbkidsViewModel.orderItem(id, item.globalItem.id)
+                                // nbkidsViewModel.orderItem(id, item.globalItem.id)
                             }
                         }
                     )
