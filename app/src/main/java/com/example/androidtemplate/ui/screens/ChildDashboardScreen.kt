@@ -109,12 +109,20 @@ fun ChildDashboardScreen(
             Text("To Do Tasks", fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
             when {
-                tasksLoading -> Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+                tasksLoading -> Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) { CircularProgressIndicator() }
+
                 tasksError != null -> Text("Error loading tasks: $tasksError", color = Color.Red)
                 tasks.isEmpty() -> Text("No tasks assigned.", color = Color.Gray)
                 else -> LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(tasks) { task ->
-                        ViewTaskCard(title = task.title, points = task.points ?: 0, gems = task.gems)
+                        ViewTaskCard(
+                            title = task.title,
+                            points = task.points ?: 0,
+                            gems = task.gems
+                        )
                     }
                 }
             }
@@ -126,15 +134,15 @@ fun ChildDashboardScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
 
+            val visibleItems = storeItems.filter { !it.isHidden }
+
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 600.dp)
+                modifier = Modifier.fillMaxSize()
             ) {
-                items(storeItems) { item ->
+                items(visibleItems) { item ->
                     val imageResId = remember(item.globalItem.photo) {
                         val resId = context.resources.getIdentifier(
                             item.globalItem.photo,
@@ -150,7 +158,7 @@ fun ChildDashboardScreen(
                         canAfford = (wallet?.gems ?: 0) >= item.globalItem.costInGems,
                         onOrderClick = {
                             child?.childId?.let { id ->
-//                                nbkidsViewModel.orderItem(id, item.globalItem.id)
+                                // nbkidsViewModel.orderItem(id, item.globalItem.id)
                             }
                         }
                     )
