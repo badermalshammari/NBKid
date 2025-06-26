@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
@@ -37,6 +38,8 @@ import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
 
+import com.google.accompanist.swiperefresh.*
+
 @Composable
 fun ChildDashboardScreen(
     nbkidsViewModel: NBKidsViewModel,
@@ -47,37 +50,30 @@ fun ChildDashboardScreen(
     val taskViewModel = remember { TaskViewModel(context) }
 
     var selectedTab by remember { mutableStateOf("Home") }
+    var isRefreshing by remember { mutableStateOf(false) }
 
     val child = nbkidsViewModel.selectedChild
     val storeItems by nbkidsViewModel.storeitems
-
-    LaunchedEffect(child) {
-        child?.childId?.let {
-            walletViewModel.fetchWallet(it)
-            taskViewModel.fetchTasks(it)
-            taskViewModel.fetchTasks(it)
-
-        }
-    }
+    val wallet by walletViewModel.walletState.collectAsState()
+    val isLoading by walletViewModel.isLoading.collectAsState()
 
     val tasks = taskViewModel.tasks
     val tasksLoading = taskViewModel.isLoading
     val tasksError = taskViewModel.errorMessage
 
-    val wallet by walletViewModel.walletState.collectAsState()
+    LaunchedEffect(child) {
+        child?.childId?.let {
+            walletViewModel.fetchWallet(it)
+            taskViewModel.fetchTasks(it)
+            nbkidsViewModel.fetchStoreItems(it)
+        }
+    }
 
     if (child == null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("No child selected.", color = Color.Red)
         }
         return
-    }
-    val isLoading by walletViewModel.isLoading.collectAsState()
-
-    if (isLoading) {
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
     }
 
     Scaffold(
@@ -93,55 +89,68 @@ fun ChildDashboardScreen(
             }
         }
     ) { innerPadding ->
-        Column(
+
+        val visibleItems = storeItems.filter { !it.isHidden }
+
+        val swipeState = rememberSwipeRefreshState(isRefreshing)
+
+        SwipeRefresh(
+            state = swipeState,
+            onRefresh = {
+                isRefreshing = true
+                child?.childId?.let {
+                    nbkidsViewModel.fetchStoreItems(it)
+                    walletViewModel.fetchWallet(it)
+                    taskViewModel.fetchTasks(it)
+                }
+                isRefreshing = false
+            },
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    start = 24.dp,
-                    end = 24.dp,
-                    bottom = innerPadding.calculateBottomPadding()
-                ),
+                .padding(innerPadding)
         ) {
-            Header(child = child, wallet = wallet)
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text("To Do Tasks", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-
-            when {
-                tasksLoading -> Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) { CircularProgressIndicator() }
-
-                tasksError != null -> Text("Error loading tasks: $tasksError", color = Color.Red)
-                tasks.isEmpty() -> Text("No tasks assigned.", color = Color.Gray)
-                else -> LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    items(tasks) { task ->
-                        ViewTaskCard(
-                            title = task.title,
-                            points = task.points ?: 0,
-                            gems = task.gems
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text("Available Store Items", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-
-            val visibleItems = storeItems.filter { !it.isHidden }
-
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp)
             ) {
+
+                item(span = { GridItemSpan(2) }) {
+                    Column {
+                        Header(child = child, wallet = wallet)
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text("To Do Tasks", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+
+                        when {
+                            tasksLoading -> Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) { CircularProgressIndicator() }
+
+                            tasksError != null -> Text("Error loading tasks: $tasksError", color = Color.Red)
+                            tasks.isEmpty() -> Text("No tasks assigned.", color = Color.Gray)
+                            else -> LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                items(tasks) { task ->
+                                    ViewTaskCard(
+                                        title = task.title,
+                                        points = task.points ?: 0,
+                                        gems = task.gems
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Text("Available Store Items", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
+                }
+
                 items(visibleItems) { item ->
                     val imageResId = remember(item.globalItem.photo) {
                         val resId = context.resources.getIdentifier(
@@ -157,7 +166,7 @@ fun ChildDashboardScreen(
                         imageResId = imageResId,
                         canAfford = (wallet?.gems ?: 0) >= item.globalItem.costInGems,
                         onOrderClick = {
-                            child?.childId?.let { id ->
+                            child.childId?.let { id ->
                                 // nbkidsViewModel.orderItem(id, item.globalItem.id)
                             }
                         }

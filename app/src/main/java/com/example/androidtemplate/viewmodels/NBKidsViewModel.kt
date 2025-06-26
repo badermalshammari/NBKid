@@ -32,10 +32,6 @@ class NBKidsViewModel(
     var isAccountLoaded by mutableStateOf(false)
         private set
 
-    //Store
-    private val _storeitems = mutableStateOf<List<ChildStoreItemDto>>(emptyList())
-    val storeitems: State<List<ChildStoreItemDto>> = _storeitems
-
     // Auth State
     var token: String? by mutableStateOf(null)
         private set
@@ -118,12 +114,16 @@ class NBKidsViewModel(
             }
         }
     }
-    fun fetchStoreItems(childId: Long) {
+    private val _storeItems = mutableStateOf<List<ChildStoreItemDto>>(emptyList())
+    val storeitems: State<List<ChildStoreItemDto>> get() = _storeItems
+
+    fun fetchStoreItems(cardId: Long) {
         viewModelScope.launch {
             try {
-                _storeitems.value = apiService.getChildStoreItems(childId)
+                val result = apiService.getChildStoreItems(cardId)
+                _storeItems.value = result
             } catch (e: Exception) {
-                Log.e("StoreViewModel", "Error loading store items", e)
+                Log.e("NBKidsViewModel", "Error fetching store items", e)
             }
         }
     }
@@ -197,6 +197,16 @@ class NBKidsViewModel(
         }
     }
 
+    fun toggleItemHidden(childId: Long, itemId: Long) {
+        viewModelScope.launch {
+            try {
+                apiService.toggleHidden(childId, itemId)
+                fetchStoreItems(childId)
+            } catch (e: Exception) {
+                Log.e("ParentStoreItemCard", "Error toggling item hidden: ${e.message}")
+            }
+        }
+    }
     fun fetchChildren() {
         viewModelScope.launch {
             isLoading = true

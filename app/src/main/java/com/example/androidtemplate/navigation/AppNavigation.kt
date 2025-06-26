@@ -140,6 +140,20 @@ fun AppNavigation(
                 nbKidsViewModel = nbkidsViewModel
             )
         }
+        composable("gifts_screen/{cardId}") { backStackEntry ->
+            val cardId = backStackEntry.arguments?.getString("cardId")?.toLongOrNull()
+            if (cardId != null) {
+                GiftsScreen(
+                    cardId = cardId,
+                    cardViewModel = cardScreenViewModel,
+                    walletViewModel = walletViewModel,
+                    nbkidsViewModel = nbkidsViewModel,
+                    navController = navController
+                )
+            } else {
+                Text("Invalid Card ID", color = Color.Red)
+            }
+        }
 
     }
 }
