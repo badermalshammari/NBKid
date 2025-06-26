@@ -1,45 +1,64 @@
 package com.example.androidtemplate.ui.screens
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.DragAndDropPermissionsCompat.request
+import androidx.navigation.NavController
 import com.example.androidtemplate.R
-import com.example.androidtemplate.data.mockVideoList
 import com.example.androidtemplate.data.VideoOption
+import com.example.androidtemplate.data.dtos.CreateTaskRequest
+import com.example.androidtemplate.data.dtos.TaskType
+import com.example.androidtemplate.data.mockVideoList
+import com.example.androidtemplate.ui.composables.BalanceTaskInfoComposable
+import com.example.androidtemplate.ui.composables.GradientSendButton
+import com.example.androidtemplate.ui.composables.LabeledInput
+import com.example.androidtemplate.ui.composables.TaskTypeOption
+import com.example.androidtemplate.viewmodels.CardScreenViewModel
+import com.example.androidtemplate.viewmodels.NBKidsViewModel
+import com.example.androidtemplate.viewmodels.TaskViewModel
+import com.example.androidtemplate.viewmodels.WalletViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskScreen(
-    onBackClick: () -> Unit = {}
+    cardId: Long,
+    cardViewModel: CardScreenViewModel,
+    walletViewModel: WalletViewModel,
+    navController: NavController,
+    taskViewModel: TaskViewModel,
+    nbKidsViewModel: NBKidsViewModel,
 ) {
-    // Dummy data
-    val accountName = "Khaled Account"
-    val accountNumber = "12345678910"
-    val availableBalance = "299.230 KD"
-    val availableGems = "3000"
-    val points = "48307"
+    val context = LocalContext.current
+    val cards by cardViewModel.cards.collectAsState()
+    val card = cards.find { it.cardId == cardId }
+    val wallet by walletViewModel.walletState.collectAsState()
+
+    LaunchedEffect(cardId) {
+        walletViewModel.fetchWallet(cardId)
+    }
+
+    val accountName = card?.cardHolderName ?: "N/A"
+    val accountNumber = card?.accountNumber?.toString() ?: "N/A"
+    val availableBalance = "${card?.balance ?: "0.000"} KD"
+    val availableGems = (wallet?.gems ?: 0).toString()
+    val points = (wallet?.pointsBalance ?: 0).toString()
 
     val todoIcon = painterResource(id = R.drawable.todolist)
     val videoIcon = painterResource(id = R.drawable.transfaremoney)
 
-    // State
     var selectedTaskType by remember { mutableStateOf("Task ToDo") }
     var task by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -54,7 +73,7 @@ fun AddTaskScreen(
             TopAppBar(
                 title = { Text("Add Task") },
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -69,57 +88,35 @@ fun AddTaskScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Account Header
-            Text(text = accountName, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(text = accountName.replaceFirstChar { it.uppercaseChar() }, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Text(text = "($accountNumber)", fontSize = 14.sp, color = Color.Gray)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Balance Info
-            BalanceTaskInfoComposable(
-                availableBalance = availableBalance,
-                availableGems = availableGems,
-                points = points
-            )
+            BalanceTaskInfoComposable(availableBalance, availableGems, points)
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Task Type Selection
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                TaskTypeOption(
-                    icon = todoIcon,
-                    label = "Task ToDo",
-                    selected = selectedTaskType == "Task ToDo",
-                    onClick = {
-                        selectedTaskType = "Task ToDo"
-                        task = ""
-                        description = ""
-                        selectedVideo = null
-                    }
-                )
-                TaskTypeOption(
-                    icon = videoIcon,
-                    label = "Video",
-                    selected = selectedTaskType == "Video",
-                    onClick = {
-                        selectedTaskType = "Video"
-                        task = ""
-                        description = ""
-                    }
-                )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                TaskTypeOption(todoIcon, "Task ToDo", selectedTaskType == "Task ToDo") {
+                    selectedTaskType = "Task ToDo"
+                    task = ""
+                    description = ""
+                    selectedVideo = null
+                }
+                TaskTypeOption(videoIcon, "Video", selectedTaskType == "Video") {
+                    selectedTaskType = "Video"
+                    task = ""
+                    description = ""
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Inputs
             LabeledInput("Task", task) { task = it }
             LabeledInput("Description", description) { description = it }
             LabeledInput("Gems", gems) { gems = it }
 
-            // Dropdown if type = Video
             if (selectedTaskType == "Video") {
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -132,12 +129,8 @@ fun AddTaskScreen(
                         value = selectedVideo?.title ?: "Select Video",
                         onValueChange = {},
                         label = { Text("Select Video") },
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = videoDropdownExpanded)
-                        },
-                        modifier = Modifier
-                            .menuAnchor()
-                            .fillMaxWidth()
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = videoDropdownExpanded) },
+                        modifier = Modifier.menuAnchor().fillMaxWidth()
                     )
 
                     ExposedDropdownMenu(
@@ -162,104 +155,43 @@ fun AddTaskScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             GradientSendButton {
-                // send logic here
+                Log.d("TASK_DEBUG", "Send button clicked")
+                val gemsInt = gems.toIntOrNull() ?: 0
+                val parentId = nbKidsViewModel.user?.parentId
+                val childId = card?.childId
+
+                Log.d("TASK_DEBUG", "Validation: parentId=$parentId, childId=$childId, task='$task', gems=$gemsInt")
+
+                if (parentId != null && childId != null && task.isNotBlank() && gemsInt > 0) {
+                    val request = CreateTaskRequest(
+                        parentId = parentId,
+                        childId = childId,
+                        title = task,
+                        description = description,
+                        type = if (selectedTaskType == "Video") TaskType.VIDEO else TaskType.TASK,
+                        gems = gemsInt,
+                        educationalContentId = selectedVideo?.id
+                    )
+
+                    Log.d("TASK_DEBUG", "Sending request: $request")
+
+                    taskViewModel.createTask(
+                        request,
+                        onSuccess = {
+                            Toast.makeText(context, "Task created successfully", Toast.LENGTH_SHORT).show()
+                            navController.popBackStack()
+                        },
+                        onError = {
+                            Log.e("TASK_DEBUG", "Error creating task: $it")
+                            Toast.makeText(context, "Failed to create task: $it", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                } else {
+                    Toast.makeText(context, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))
         }
     }
-}
-
-@Composable
-fun TaskTypeOption(
-    icon: Painter,
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable { onClick() }
-    ) {
-        Image(
-            painter = icon,
-            contentDescription = label,
-            modifier = Modifier
-                .size(50.dp)
-                .padding(4.dp)
-        )
-        Text(
-            text = label,
-            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-            color = if (selected) Color(0xFF3F51B5) else Color.Gray
-        )
-        RadioButton(
-            selected = selected,
-            onClick = onClick,
-            colors = RadioButtonDefaults.colors(selectedColor = Color(0xFF3F51B5))
-        )
-    }
-}
-
-@Composable
-fun BalanceTaskInfoComposable(
-    availableBalance: String,
-    availableGems: String,
-    points: String
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(horizontalAlignment = Alignment.Start) {
-            Text(text = "Available Balance", fontSize = 12.sp, color = Color.Gray)
-            Text(text = availableBalance, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-        }
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Available Gems", fontSize = 12.sp, color = Color.Gray)
-            Text(text = availableGems, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Text(text = "= 3.000 KD", fontSize = 12.sp, color = Color.Gray)
-        }
-        Column(horizontalAlignment = Alignment.End) {
-            Text(text = "Points", fontSize = 12.sp, color = Color.Gray)
-            Text(text = points, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-        }
-    }
-}
-
-@Composable
-fun LabeledInput(label: String, value: String, onValueChange: (String) -> Unit) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        label = { Text(label) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp)
-    )
-}
-
-@Composable
-fun GradientSendButton(onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(Color(0xFF3F51B5), Color(0xFF2196F3))
-                )
-            )
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Send", color = Color.White, fontSize = 16.sp)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewAddTaskScreen() {
-    AddTaskScreen()
 }

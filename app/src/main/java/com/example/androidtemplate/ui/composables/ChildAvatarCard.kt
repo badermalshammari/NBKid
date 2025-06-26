@@ -36,7 +36,7 @@ fun ChildAvatarCard(
     ) {
         Image(
             painter = painterResource(id = child.avatarResId),
-            contentDescription = child.name,
+            contentDescription = child.name.replaceFirstChar { it.uppercaseChar() },
             modifier = Modifier
                 .size(if (isSelected) avatarSize.dp else (avatarSize-50).dp)
                 .clip(CircleShape)
@@ -48,7 +48,7 @@ fun ChildAvatarCard(
                 .background(color = Color.White)
         )
         Text(
-            child.name,
+            child.name.replaceFirstChar { it.uppercaseChar() },
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             color = if (isSelected) Color.Black else Color.White,
             modifier = Modifier.padding(top = 8.dp)
