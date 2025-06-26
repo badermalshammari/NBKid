@@ -61,7 +61,7 @@ fun EnterCardScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = card.cardHolderName ?: "No Name", fontWeight = FontWeight.Bold)
+                        Text(text = card.cardHolderName.replaceFirstChar { it.uppercaseChar() }, fontWeight = FontWeight.Bold)
                         Text(text = "(${card.accountNumber})", style = MaterialTheme.typography.labelSmall)
                     }
                 },
@@ -174,8 +174,11 @@ fun EnterCardScreen(
                             ButtonItemPreview(Icons.Default.Send, "Transfer", Color(0xFF7E57C2),
                                 onClick = { navController.navigate(Screen.TransferScreen.route)}
                             )
-                            ButtonItemPreview(Icons.Default.List, "Add Task", Color(0xFFEF5350),
-                                onClick = { navController.navigate(Screen.TaskScreen.route)}
+                            ButtonItemPreview(
+                                icon = Icons.Default.List,
+                                title = "Add Task",
+                                color = Color(0xFFEF5350),
+                                onClick = { navController.navigate("add_task_screen/${card.cardId}") }
                             )
                         }
                         Column(

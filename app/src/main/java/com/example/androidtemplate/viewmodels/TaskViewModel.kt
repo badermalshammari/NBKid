@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.androidtemplate.data.dtos.CreateTaskRequest
 import com.example.androidtemplate.data.dtos.KidTaskDto
 import com.example.androidtemplate.network.ApiService
 import com.example.androidtemplate.network.RetrofitHelper
@@ -37,27 +38,22 @@ class TaskViewModel(context: Context) : ViewModel() {
             }
         }
     }
+    fun createTask(
+        request: CreateTaskRequest,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.createTask(request)
+                if (response.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError("Error ${response.code()}: ${response.message()}")
+                }
+            } catch (e: Exception) {
+                onError(e.localizedMessage ?: "Unknown error")
+            }
+        }
+    }
 }
-
-
-
-
-
-
-
-//class WalletViewModel {
-//
-//    fun fetchWallet(childId: Long) {
-//        viewModelScope.launch {
-//            isLoading = true
-//            try {
-//                wallet = apiService.getWalletByChildId(childId)
-//                errorMessage = null
-//            } catch (e: Exception) {
-//                errorMessage = e.message
-//            } finally {
-//                isLoading = false
-//            }
-//        }
-//    }
-//}

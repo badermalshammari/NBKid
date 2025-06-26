@@ -13,6 +13,7 @@ import com.example.androidtemplate.navigation.Screen.*
 import com.example.androidtemplate.ui.screens.*
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
+import com.example.androidtemplate.viewmodels.TaskViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
 
 @Composable
@@ -20,7 +21,8 @@ fun AppNavigation(
     navController: NavHostController,
     nbkidsViewModel: NBKidsViewModel,
     cardScreenViewModel: CardScreenViewModel,
-    walletViewModel: WalletViewModel
+    walletViewModel: WalletViewModel,
+    taskViewModel: TaskViewModel
 ) {
     NavHost(navController = navController, startDestination = Login.route) {
 
@@ -125,6 +127,17 @@ fun AppNavigation(
                 navController = navController,
                 walletViewModel = walletViewModel,
                 childId = childId
+            )
+        }
+        composable("add_task_screen/{cardId}") { backStackEntry ->
+            val cardId = backStackEntry.arguments?.getString("cardId")?.toLongOrNull() ?: return@composable
+            AddTaskScreen(
+                cardId = cardId,
+                cardViewModel = cardScreenViewModel,
+                walletViewModel = walletViewModel,
+                navController = navController,
+                taskViewModel = taskViewModel,
+                nbKidsViewModel = nbkidsViewModel
             )
         }
 

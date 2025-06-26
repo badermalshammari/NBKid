@@ -15,6 +15,7 @@ import com.example.androidtemplate.navigation.AppNavigation
 import com.example.androidtemplate.ui.theme.AndroidTemplateTheme
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
+import com.example.androidtemplate.viewmodels.TaskViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
 
 class MainActivity : ComponentActivity() {
@@ -37,7 +38,8 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             nbkidsViewModel = viewModel,
                             cardScreenViewModel = cardScreenViewModel,
-                            walletViewModel = walletViewModel
+                            walletViewModel = walletViewModel,
+                            taskViewModel = TaskViewModel(context)
                         )
                     }
                 }

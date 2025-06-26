@@ -9,7 +9,3 @@ data class KidTaskDto(
     val gems: Int,
     val childName: String,
 )
-
-enum class TaskType {
-    TASK, QUIZ, VIDEO
-}

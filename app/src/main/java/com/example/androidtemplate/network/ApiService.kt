@@ -60,6 +60,9 @@ interface ApiService {
         @Body request: AddGemsRequest
     ): Response<WalletResponseDto>
 
+    @POST("tasks")
+    suspend fun createTask(@Body request: CreateTaskRequest): Response<KidTaskDto>
+
 
 
 }
