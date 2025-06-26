@@ -39,9 +39,10 @@ fun EnterCardScreen(
     val card = cards.find { it.cardId == cardId }
     val wallet by walletViewModel.walletState.collectAsState()
     val isLoading = cardViewModel.isLoading
+    val childId = (wallet?.child?.childId ?: Long) as Long
 
     LaunchedEffect(cardId) {
-        walletViewModel.fetchWallet(cardId)
+        walletViewModel.fetchWallet(childId)
     }
 
     if (isLoading) {
@@ -193,7 +194,7 @@ fun EnterCardScreen(
                                 onClick = { navController.navigate(Screen.LeaderboardScreen.route)}
                             )
                             ButtonItemPreview(Icons.Default.CardGiftcard, "Gifts", Color(0xFF66BB6A),
-                                onClick = { navController.navigate(Screen.GiftsScreen.route)}
+                                onClick = { navController.navigate("gifts_screen/${cardId}")}
                             )
                         }
                     }

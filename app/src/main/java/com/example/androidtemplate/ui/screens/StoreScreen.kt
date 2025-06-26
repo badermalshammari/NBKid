@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
@@ -27,11 +28,14 @@ import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.Header
+import com.example.androidtemplate.ui.composables.LoadingIndicator
 import com.example.androidtemplate.ui.composables.StoreItemCard
 import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun StoreScreen(
@@ -45,12 +49,19 @@ fun StoreScreen(
     var selectedTab by remember { mutableStateOf("Store") }
     val child = nbkidsViewModel.selectedChild
 
+    var isRefreshing by remember { mutableStateOf(false) }
+
     LaunchedEffect(child) {
         child?.childId?.let {
             nbkidsViewModel.fetchStoreItems(it)
             walletViewModel.fetchWallet(it)
             taskViewModel.fetchTasks(it)
         }
+    }
+
+    if (nbkidsViewModel.isLoading) {
+        LoadingIndicator()
+        return
     }
 
     val wallet by walletViewModel.walletState.collectAsState()
@@ -70,47 +81,49 @@ fun StoreScreen(
             }
         }
     ) { innerPadding ->
-        Column(
+
+        val visibleItems = storeItems.filter { !it.isHidden }
+
+        val swipeState = rememberSwipeRefreshState(isRefreshing)
+
+        SwipeRefresh(
+            state = swipeState,
+            onRefresh = {
+                isRefreshing = true
+                child?.childId?.let {
+                    nbkidsViewModel.fetchStoreItems(it)
+                    walletViewModel.fetchWallet(it)
+                }
+                isRefreshing = false
+            },
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    start = 24.dp,
-                    end = 24.dp,
-                    bottom = innerPadding.calculateBottomPadding()
-                )
-                .verticalScroll(rememberScrollState())
+                .padding(innerPadding)
         ) {
-            if (child != null) {
-                Header(child = child, wallet = wallet)
-            }
-
-            if (isLoading) {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Available Store Items",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            val visibleItems = storeItems.filter { !it.isHidden }
-
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp)
             ) {
+                item(span = { GridItemSpan(2) }) {
+                    Column {
+                        if (child != null) {
+                            Header(child = child, wallet = wallet)
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+
+                        Text(
+                            text = "Available Store Items",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+                    }
+                }
 
                 items(visibleItems) { item ->
                     val imageResId = remember(item.globalItem.photo) {

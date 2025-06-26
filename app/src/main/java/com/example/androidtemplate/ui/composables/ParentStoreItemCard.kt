@@ -25,11 +25,30 @@ import com.example.androidtemplate.R
 fun ParentStoreItemCard(
     item: ChildStoreItemDto,
     imageResId: Int,
+    onToggleHidden: (ChildStoreItemDto) -> Unit
 ) {
     Box(
-        modifier = Modifier
-            .clickable { item.isHidden = !item.isHidden } // Toggle hidden on click
+        modifier = Modifier.clickable {
+            item.isHidden = !item.isHidden
+            onToggleHidden(item)
+        }
     ) {
+        if (item.isHidden == true) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0xAA000000),
+                                Color(0x66000000)
+                            )
+                        ),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+            )
+        }
+
         Card(
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(6.dp),
@@ -53,7 +72,6 @@ fun ParentStoreItemCard(
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
                     text = item.globalItem.name,
                     fontWeight = FontWeight.Bold,
@@ -61,50 +79,8 @@ fun ParentStoreItemCard(
                     color = Color.Black
                 )
 
-                Spacer(modifier = Modifier.height(6.dp))
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Get it now",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Image(
-                            painter = painterResource(id = R.drawable.gems),
-                            contentDescription = "gems",
-                            modifier = Modifier.size(13.dp)
-                        )
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text(
-                            text = "${item.globalItem.costInGems}",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp
-                        )
-                    }
-                }
-
-        }
-
-        if (item.isHidden == true) {
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xAA000000),
-                                Color(0x66000000)
-                            )
-                        )
-                    )
-            )
+            }
         }
     }
 }
