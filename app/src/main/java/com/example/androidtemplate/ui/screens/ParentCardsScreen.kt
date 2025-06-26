@@ -67,8 +67,9 @@ fun ParentCardsScreen(
     }
 
     LaunchedEffect(selectedCard) {
-        selectedCard?.cardId?.let {
-            walletViewModel.fetchWallet(it)
+        val card = selectedCard
+        if (card != null && !card.isParentCard && card.childId != null) {
+            walletViewModel.fetchWallet(card.childId)
         }
     }
     val parentCards = cards.filter { it.isParentCard == true}
