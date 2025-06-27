@@ -63,6 +63,9 @@ interface ApiService {
     @POST("tasks")
     suspend fun createTask(@Body request: CreateTaskRequest): Response<KidTaskDto>
 
+    @POST("transactions/transfer")
+    suspend fun transfer(@Body request: TransferRequest): TransactionDto
+
 
 
 }

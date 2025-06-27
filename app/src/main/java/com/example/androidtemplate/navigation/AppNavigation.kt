@@ -3,9 +3,7 @@ package com.example.androidtemplate.navigation
 import GiftsScreen
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,6 +12,7 @@ import com.example.androidtemplate.ui.screens.*
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
+import com.example.androidtemplate.viewmodels.TransferViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
 
 @Composable
@@ -22,7 +21,8 @@ fun AppNavigation(
     nbkidsViewModel: NBKidsViewModel,
     cardScreenViewModel: CardScreenViewModel,
     walletViewModel: WalletViewModel,
-    taskViewModel: TaskViewModel
+    taskViewModel: TaskViewModel,
+    transferViewModel: TransferViewModel
 ) {
     NavHost(navController = navController, startDestination = Login.route) {
 
@@ -153,6 +153,12 @@ fun AppNavigation(
             } else {
                 Text("Invalid Card ID", color = Color.Red)
             }
+        }
+        composable("TransferScreen") {
+            TransferScreen(viewModel = transferViewModel,
+                navController = navController,
+                mainViewModel = nbkidsViewModel,
+                cardViewModel = cardScreenViewModel)
         }
 
     }
