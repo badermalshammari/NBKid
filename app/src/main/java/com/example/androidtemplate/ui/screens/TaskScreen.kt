@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
+import com.example.androidtemplate.ui.composables.FancyTaskCard
 import com.example.androidtemplate.ui.composables.Header
 import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
@@ -116,7 +117,7 @@ fun TaskScreen(
 
                 else -> {
                     items(tasks) { task ->
-                        com.example.androidtemplate.ui.composables.FancyTaskCard(
+                        FancyTaskCard(
                             title = task.title,
                             points = task.points ?: 0,
                             gems = task.gems,

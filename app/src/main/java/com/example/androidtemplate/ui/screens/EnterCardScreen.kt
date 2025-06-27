@@ -71,11 +71,6 @@ fun EnterCardScreen(
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
-                actions = {
-                    IconButton(onClick = { /* Notifications */ }) {
-                        Icon(Icons.Default.Notifications, contentDescription = "Notifications")
-                    }
-                }
             )
         }
     ) { innerPadding ->
@@ -106,14 +101,14 @@ fun EnterCardScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         // Info Column
-                        Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+                        Column(verticalArrangement = Arrangement.spacedBy(50.dp)) {
                             // Balance
                             Column {
                                 Text("Available Balance", color = Color.Gray, fontSize = 14.sp)
                                 Text(
-                                    "${card.balance}KD",
+                                    "${card.balance} KD",
                                     fontWeight = FontWeight.ExtraBold,
-                                    fontSize = 22.sp
+                                    fontSize = 25.sp
                                 )
                             }
                             // Gems
@@ -123,18 +118,18 @@ fun EnterCardScreen(
                                     Image(
                                         painter = painterResource(id = R.drawable.gems),
                                         contentDescription = "Gems",
-                                        modifier = Modifier.size(24.dp)
+                                        modifier = Modifier.size(25.dp)
                                     )
-                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Spacer(modifier = Modifier.width(10.dp))
                                     Text(
                                         "${wallet?.gems ?: 0}",
                                         fontWeight = FontWeight.ExtraBold,
-                                        fontSize = 18.sp
+                                        fontSize = 35.sp
                                     )
                                 }
                                 Text(
                                     "= ${"%.3f".format((wallet?.gems ?: 0) / 1000.0)} KD",
-                                    fontSize = 12.sp,
+                                    fontSize = 20.sp,
                                     color = Color.Gray
                                 )
                             }
@@ -145,18 +140,18 @@ fun EnterCardScreen(
                                     Image(
                                         painter = painterResource(id = R.drawable.points),
                                         contentDescription = "Points",
-                                        modifier = Modifier.size(24.dp)
+                                        modifier = Modifier.size(25.dp)
                                     )
-                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Spacer(modifier = Modifier.width(10.dp))
                                     Text(
                                         "${wallet?.pointsBalance ?: 0}",
                                         fontWeight = FontWeight.ExtraBold,
-                                        fontSize = 18.sp
+                                        fontSize = 35.sp
                                     )
                                 }
-                            }
-                        }
 
+                        }
+                    }
                         Spacer(modifier = Modifier.width(16.dp))
 
                         // Buttons Columns

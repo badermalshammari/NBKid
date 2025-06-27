@@ -42,15 +42,15 @@ fun ChildAvatarCard(
                 .clip(CircleShape)
                 .border(
                     width = if (isSelected) fontSize.dp else (fontSize-3).dp,
-                    color = if (isSelected) Color.LightGray else Color.White,
+                    color = if (isSelected) Color.LightGray else Color.DarkGray,
                     shape = CircleShape
                 )
                 .background(color = Color.White)
         )
         Text(
             child.name.replaceFirstChar { it.uppercaseChar() },
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-            color = if (isSelected) Color.Black else Color.White,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Bold,
+            color = if (isSelected) Color.White else Color.White,
             modifier = Modifier.padding(top = 8.dp)
         )
     }

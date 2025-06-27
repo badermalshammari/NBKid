@@ -44,13 +44,14 @@ fun LeaderboardScreen(
 
     var selectedTab by remember { mutableStateOf("Leaderboard") }
     val child = nbkidsViewModel.selectedChild
+    val childId = (child?.childId ?: Long) as Long
+
 
     LaunchedEffect(child) {
-        child?.childId?.let {
-            walletViewModel.fetchWallet(it)
-            taskViewModel.fetchTasks(it)
+            walletViewModel.fetchWallet(childId)
+            taskViewModel.fetchTasks(childId)
             leaderboardViewModel.fetchLeaderboard()
-        }
+
     }
 
     val wallet by walletViewModel.walletState.collectAsState()
@@ -141,22 +142,23 @@ fun LeaderboardScreen(
                                 Text(podium[0].name, fontWeight = FontWeight.SemiBold)
                                 Surface(
                                     color = Color(0xFFCECECE),
-                                    shape = MaterialTheme.shapes.medium
+                                    shape = MaterialTheme.shapes.medium,
                                 ) {
                                     Text(
                                         "${podium[0].points}",
                                         fontWeight = FontWeight.Black,
-                                        modifier = Modifier.padding(6.dp)
+                                        modifier = Modifier.padding(6.dp),
                                     )
                                 }
                                 Image(
                                     painter = painterResource(id = R.drawable.leaderboard_1st),
                                     contentDescription = "1st",
-                                    modifier = Modifier.size(120.dp)
+                                    modifier = Modifier.size(250.dp)
                                 )
                             }
                         }
                     }
+                }
                     if (leaderboard.size == 2) {
                         val podium = leaderboard.take(2)
                         // 1st with crown
@@ -186,7 +188,7 @@ fun LeaderboardScreen(
                                     Image(
                                         painter = painterResource(id = R.drawable.leaderboard_2nd),
                                         contentDescription = "2nd",
-                                        modifier = Modifier.size(100.dp)
+                                        modifier = Modifier.size(200.dp)
                                     )
                                 }
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -216,7 +218,7 @@ fun LeaderboardScreen(
                                     Image(
                                         painter = painterResource(id = R.drawable.leaderboard_1st),
                                         contentDescription = "1st",
-                                        modifier = Modifier.size(120.dp)
+                                        modifier = Modifier.size(200.dp)
                                     )
                                 }
                             }
@@ -227,8 +229,8 @@ fun LeaderboardScreen(
                         item {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.Bottom
+                                verticalAlignment = Alignment.Bottom,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 // 2nd
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -251,7 +253,7 @@ fun LeaderboardScreen(
                                     Image(
                                         painter = painterResource(id = R.drawable.leaderboard_2nd),
                                         contentDescription = "2nd",
-                                        modifier = Modifier.size(100.dp)
+                                        modifier = Modifier.size(120.dp)
                                     )
                                 }
 
@@ -308,7 +310,7 @@ fun LeaderboardScreen(
                                     Image(
                                         painter = painterResource(id = R.drawable.leaderboard_3rd),
                                         contentDescription = "3rd",
-                                        modifier = Modifier.size(100.dp)
+                                        modifier = Modifier.size(120.dp)
                                     )
                                 }
                             }
@@ -322,13 +324,10 @@ fun LeaderboardScreen(
                             )
 
                         }
-                    }
+
                 }
                 itemsIndexed(leaderboard) { index, entry ->
-
                     LeaderboardItem((index + 1), entry)
-                    Spacer(modifier = Modifier.height(10.dp))
-
                 }
             }
         }

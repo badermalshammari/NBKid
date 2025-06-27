@@ -29,8 +29,10 @@ interface ApiService {
     @GET("/api/tasks/child/{childId}")
     suspend fun getTasksForChild(@Path("childId") childId: Long): List<KidTaskDto>
 
-    @GET("/api/leaderboard")
-    suspend fun getLeaderboard(@Query("top") top: Int = 3): List<LeaderboardEntryDto>
+    @GET("/api/leaderboard/top")
+    suspend fun getLeaderboard(@Query("top") top: Int = 10): List<LeaderboardEntryDto>
+
+
 
     @POST("children/create")
     suspend fun createChild(@Body request: CreateChildRequest): Response<ResponseBody>

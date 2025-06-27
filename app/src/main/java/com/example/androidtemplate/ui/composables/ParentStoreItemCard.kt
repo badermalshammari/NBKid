@@ -39,10 +39,8 @@ fun ParentStoreItemCard(
                     .matchParentSize()
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xAA000000),
-                                Color(0x66000000)
-                            )
+                            colors = listOf(Color(0xFF8E2DE2), Color(0xFFF27121))
+
                         ),
                         shape = RoundedCornerShape(16.dp)
                     )
