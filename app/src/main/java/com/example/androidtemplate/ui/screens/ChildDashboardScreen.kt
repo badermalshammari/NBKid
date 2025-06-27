@@ -29,10 +29,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
+import com.example.androidtemplate.ui.composables.FancyTaskCard
 import com.example.androidtemplate.ui.composables.Header
 import com.example.androidtemplate.ui.composables.StoreItemCard
-import com.example.androidtemplate.ui.composables.TaskCard
-import com.example.androidtemplate.ui.composables.ViewTaskCard
 import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
@@ -135,10 +134,15 @@ fun ChildDashboardScreen(
                             tasks.isEmpty() -> Text("No tasks assigned.", color = Color.Gray)
                             else -> LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                 items(tasks) { task ->
-                                    ViewTaskCard(
+                                    FancyTaskCard(
                                         title = task.title,
                                         points = task.points ?: 0,
-                                        gems = task.gems
+                                        gems = task.gems,
+                                        onClick = {
+                                            nbkidsViewModel.selectedTask = task
+                                            navController.navigate(Screen.TaskDetail.route)
+
+                                        }
                                     )
                                 }
                             }

@@ -26,7 +26,7 @@ fun LeaderboardItem(rank: Int, entry: LeaderboardEntryDto) {
         1 -> Color(0xFFFFD700) // Gold
         2 -> Color(0xFFC0C0C0) // Silver
         3 -> Color(0xFFCD7F32) // Bronze
-        else -> Color.Transparent
+        else -> Color(0xFFECECEC)
     }
 
     Card(

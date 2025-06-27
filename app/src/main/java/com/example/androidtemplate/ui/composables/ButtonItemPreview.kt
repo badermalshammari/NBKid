@@ -31,17 +31,17 @@ fun ButtonItemPreview(icon: ImageVector, title: String, color: Color, onClick: (
     ) {
         Box(
             modifier = Modifier
-                .size(60.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .size(80.dp)
+                .clip(RoundedCornerShape(25.dp))
                 .background(color)
                 .clickable(){
                     onClick()
                 },
             contentAlignment = Alignment.Center
         ) {
-            Icon(imageVector = icon, contentDescription = title, tint = Color.White)
+            Icon(imageVector = icon, contentDescription = title, tint = Color.White, modifier = Modifier.size(25.dp))
         }
         Spacer(modifier = Modifier.height(6.dp))
-        Text(title, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+        Text(title, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
     }
 }

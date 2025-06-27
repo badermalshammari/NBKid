@@ -119,7 +119,7 @@ fun CreateNewChildAccount(
             OutlinedTextField(
                 value = birthday.value,
                 onValueChange = {birthday.value = it},
-                label = { Text("Birthday") },
+                label = { Text("Birthday (YYYY-MM-DD)") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { datePickerDialog.show() },
