@@ -68,6 +68,12 @@ interface ApiService {
     @POST("transactions/transfer")
     suspend fun transfer(@Body request: TransferRequest): TransactionDto
 
+    @POST("tasks/complete")
+    suspend fun markTaskAsFinished(
+        @Query("childId") childId: Long,
+        @Query("taskId") taskId: Long
+    ): Response<TaskProgressDto>
+
 
 
 }

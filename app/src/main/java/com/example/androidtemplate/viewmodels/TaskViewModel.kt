@@ -56,4 +56,24 @@ class TaskViewModel(context: Context) : ViewModel() {
             }
         }
     }
+    fun completeTask(
+        childId: Long,
+        taskId: Long,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.markTaskAsFinished(childId, taskId)
+                if (response.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError("Error: ${response.code()} - ${response.message()}")
+                }
+            } catch (e: Exception) {
+                onError(e.message ?: "Unknown error")
+            }
+        }
+    }
+
 }
