@@ -18,6 +18,9 @@ fun BalanceInfoComposable(
     availableGems: String,
     points: String
 ) {
+    val gemsAsInt = availableGems.toIntOrNull() ?: 0
+    val gemValueInKD = gemsAsInt / 1000.0
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
@@ -29,7 +32,7 @@ fun BalanceInfoComposable(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text("Available Gems", fontSize = 12.sp, color = Color.Gray)
             Text(availableGems, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text("= 3.000 KD", fontSize = 12.sp, color = Color.Gray)
+            Text("= %.3f KD".format(gemValueInKD), fontSize = 12.sp, color = Color.Gray)
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text("Points", fontSize = 12.sp, color = Color.Gray)

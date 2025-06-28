@@ -29,6 +29,16 @@ class TransferViewModel(
 
                 val response = apiService.transfer(request)
                 successMessage = "Transferred ${response.amount} successfully!"
+
+            } catch (e: retrofit2.HttpException) {
+                when (e.code()) {
+                    403 -> {
+                        errorMessage = "Insufficient balance. Please try a lower amount."
+                    }
+                    else -> {
+                        errorMessage = "Transfer failed with status code ${e.code()}"
+                    }
+                }
             } catch (e: Exception) {
                 errorMessage = e.localizedMessage ?: "Transfer failed"
             } finally {

@@ -125,6 +125,7 @@ fun AppNavigation(
             AddBalanceScreen(
                 navController = navController,
                 walletViewModel = walletViewModel,
+                cardViewModel = cardScreenViewModel,
                 childId = childId
             )
         }
