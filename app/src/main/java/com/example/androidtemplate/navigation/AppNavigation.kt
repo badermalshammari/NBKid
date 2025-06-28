@@ -160,6 +160,13 @@ fun AppNavigation(
                 mainViewModel = nbkidsViewModel,
                 cardViewModel = cardScreenViewModel)
         }
+        composable(Screen.ParentCheckTask.route) {
+            ParentCheckTaskScreen(
+                navController = navController,
+                cardViewModel = cardScreenViewModel,
+                taskViewModel = taskViewModel
+            )
+        }
 
     }
 }
