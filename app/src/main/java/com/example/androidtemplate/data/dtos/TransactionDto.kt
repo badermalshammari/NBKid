@@ -4,8 +4,8 @@ import java.math.BigDecimal
 
 data class TransactionDto(
     val transactionId: Long,
-    val fromCardNumber: String,
-    val toCardNumber: String,
+    val fromAccountNumber: String,
+    val toAccountNumber: String,
     val amount: BigDecimal,
     val timestamp: String,
     val description: String?

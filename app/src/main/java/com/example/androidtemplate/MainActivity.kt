@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AndroidTemplateTheme {
                 val navController = rememberNavController()
-                val context = this // or LocalContext.current inside Composable
+                val context = this
 
                 val viewModel = NBKidsViewModel(context)
                 val cardScreenViewModel = CardScreenViewModel(context)

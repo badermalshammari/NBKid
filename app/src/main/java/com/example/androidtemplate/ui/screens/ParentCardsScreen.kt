@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -222,10 +223,9 @@ fun ParentCardsScreen(
                     ) {
                         ActionButtonItem(icon = Icons.AutoMirrored.Filled.Send, label = "Transfer", onClick = {navController.navigate(
                             Screen.TransferScreen.route)})
-                        ActionButtonItem(icon = Icons.Default.BarChart, label = "Statistics", onClick = {})
                         ActionButtonItem(
-                            icon = Icons.Default.Settings,
-                            label = "Settings",
+                            icon = Icons.Default.Description,
+                            label = "Kids",
                             onClick = {
                                 selectedCard?.cardId?.let {
                                     navController.navigate("enter_card_screen/$it")

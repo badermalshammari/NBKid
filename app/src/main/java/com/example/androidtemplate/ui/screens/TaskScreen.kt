@@ -69,6 +69,7 @@ fun TaskScreen(
             }
         }
     ) { innerPadding ->
+        val toDoTasks = tasks.filter { it.status != "FINISHED" }
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -110,7 +111,7 @@ fun TaskScreen(
                 }
 
                 else -> {
-                    items(tasks) { task ->
+                    items(toDoTasks) { task ->
                         FancyTaskCard(
                             title = task.title,
                             points = task.points ?: 0,

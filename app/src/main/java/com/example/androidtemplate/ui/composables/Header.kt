@@ -13,10 +13,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.androidtemplate.R
 import com.example.androidtemplate.data.dtos.Child
+import com.example.androidtemplate.data.dtos.ChildDto
 import com.example.androidtemplate.data.dtos.WalletResponseDto
 import com.example.androidtemplate.ui.screens.getAvatarDrawable
 
@@ -50,12 +52,17 @@ fun Header(child: Child, wallet: WalletResponseDto?) {
         }
 
         Column(horizontalAlignment = Alignment.End) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
-                verticalAlignment = Alignment.Top
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.End
             ) {
-                Column {
-                    Text("Available Gems", color = Color.Gray, fontSize = 14.sp)
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = "Available Gems",
+                        color = Color.Black,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Image(
                             painter = painterResource(id = R.drawable.gems),
@@ -63,12 +70,26 @@ fun Header(child: Child, wallet: WalletResponseDto?) {
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("${wallet?.gems ?: 0}", fontWeight = FontWeight.ExtraBold, fontSize = 14.sp)
+                        Text(
+                            "${wallet?.gems ?: 0}",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
                     }
-                    Text("= ${"%.3f".format((wallet?.gems ?: 0) / 1000.0)} KD", fontSize = 10.sp, color = Color.Gray)
+                    Text(
+                        "= ${"%.3f".format((wallet?.gems ?: 0) / 1000.0)} KD",
+                        fontSize = 10.sp,
+                        color = Color.Gray
+                    )
                 }
-                Column {
-                    Text("Points", color = Color.Gray, fontSize = 14.sp)
+
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = "Points",
+                        color = Color.Black,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Image(
                             painter = painterResource(id = R.drawable.points),
@@ -76,7 +97,11 @@ fun Header(child: Child, wallet: WalletResponseDto?) {
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("${wallet?.pointsBalance ?: 0}", fontWeight = FontWeight.ExtraBold, fontSize = 14.sp)
+                        Text(
+                            "${wallet?.pointsBalance ?: 0}",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
                     }
                 }
             }
@@ -95,4 +120,33 @@ fun Header(child: Child, wallet: WalletResponseDto?) {
                 )
             )
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HeaderPreview() {
+    val mockChild = Child(
+        childId = 1L,
+        name = "Zuzu",
+        civilId = "123456789",
+        birthday = "2015-05-10",
+        gender = "FEMALE",
+        avatar = "avatar_1",
+        stats = "Excellent",
+        avatarResId = R.drawable.zain
+    )
+
+    val mockWallet = WalletResponseDto(
+        walletId = 1L,
+        child = ChildDto(
+            childId = 1L,
+            name = "Zuzu",
+            avatar = "avatar_1",
+            stats = "Excellent"
+        ),
+        pointsBalance = 150,
+        gems = 10010100
+    )
+
+    Header(child = mockChild, wallet = mockWallet)
 }

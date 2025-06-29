@@ -1,12 +1,10 @@
 package com.example.androidtemplate.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,14 +17,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
-import com.example.androidtemplate.ui.composables.FancyTaskCard
 import com.example.androidtemplate.ui.composables.Header
 import com.example.androidtemplate.ui.composables.StoreItemCard
 import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
-
 import com.google.accompanist.swiperefresh.*
 
 @Composable
@@ -80,7 +76,6 @@ fun ChildDashboardScreen(
     ) { innerPadding ->
 
         val visibleItems = storeItems.filter { !it.isHidden }
-
         val swipeState = rememberSwipeRefreshState(isRefreshing)
 
         SwipeRefresh(
@@ -112,7 +107,7 @@ fun ChildDashboardScreen(
                         Header(child = child, wallet = wallet)
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        Text("To Do Tasks", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                        val toDoCount = tasks.count { it.status != "FINISHED" }
 
                         when {
                             tasksLoading -> Box(
@@ -121,20 +116,12 @@ fun ChildDashboardScreen(
                             ) { CircularProgressIndicator() }
 
                             tasksError != null -> Text("Error loading tasks: $tasksError", color = Color.Red)
-                            tasks.isEmpty() -> Text("No tasks assigned.", color = Color.Gray)
-                            else -> LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                items(tasks) { task ->
-                                    FancyTaskCard(
-                                        title = task.title,
-                                        points = task.points ?: 0,
-                                        gems = task.gems,
-                                        onClick = {
-                                            nbkidsViewModel.selectedTask = task
-                                            navController.navigate(Screen.TaskDetail.route)
-
-                                        }
-                                    )
-                                }
+                            else -> {
+                                Text(
+                                    text = "You have $toDoCount task${if (toDoCount == 1) "" else "s"} to do!",
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
                             }
                         }
 
