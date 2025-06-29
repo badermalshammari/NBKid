@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                             cardScreenViewModel = cardScreenViewModel,
                             walletViewModel = walletViewModel,
                             taskViewModel = TaskViewModel(context),
-                            leaderboardViewModel = leaderboardViewModel
+                            leaderboardViewModel = leaderboardViewModel,
                             transferViewModel = transferViewModel
                         )
                     }

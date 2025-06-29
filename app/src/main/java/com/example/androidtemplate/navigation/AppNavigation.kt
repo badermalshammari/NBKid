@@ -24,7 +24,7 @@ fun AppNavigation(
     cardScreenViewModel: CardScreenViewModel,
     walletViewModel: WalletViewModel,
     taskViewModel: TaskViewModel,
-    leaderboardViewModel: LeaderboardViewModel
+    leaderboardViewModel: LeaderboardViewModel,
     transferViewModel: TransferViewModel
 ) {
     NavHost(navController = navController, startDestination = Login.route) {
