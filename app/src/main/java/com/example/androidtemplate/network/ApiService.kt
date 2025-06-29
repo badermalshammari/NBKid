@@ -37,8 +37,10 @@ interface ApiService {
     @POST("children/create")
     suspend fun createChild(@Body request: CreateChildRequest): Response<ResponseBody>
 
+
     @POST("cards/parent/{parentId}/new")
-    suspend fun createParentCard(@Path("parentId") parentId: Long): BankCardDto
+    suspend fun createParentCard(@Body request: CreateParentCardRequest): Response<BankCardDto>
+
 
 
     @GET("/api/children/{childId}/store")

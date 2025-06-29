@@ -117,15 +117,7 @@ fun ParentCardsScreen(
                                     .width(300.dp)
                                     .fillMaxHeight()
                                     .clickable {
-                                        cardViewModel.createParentCard(
-                                            parentId = mainViewModel.user?.parentId ?: return@clickable,
-                                            onSuccess = {
-                                                Toast.makeText(context, "New card created!", Toast.LENGTH_SHORT).show()
-                                            },
-                                            onError = {
-                                                Toast.makeText(context, "Error: ${it.message}", Toast.LENGTH_LONG).show()
-                                            }
-                                        )
+                                    navController.navigate(Screen.CreateNewParentAccount.route)
                                     }
                             ) {
                                 AddnewCreditCardComposable(true)

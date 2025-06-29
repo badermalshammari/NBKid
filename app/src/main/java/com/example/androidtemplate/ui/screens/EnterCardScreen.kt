@@ -186,7 +186,7 @@ fun EnterCardScreen(
                                 onClick = { navController.navigate(Screen.SettingsScreen.route)})
 
                             ButtonItemPreview(Icons.Default.Star, "Leaderboard", Color(0xFFFFCA28),
-                                onClick = { navController.navigate(Screen.LeaderboardScreen.route)}
+                                onClick = { navController.navigate(Screen.LeaderboardParent.createRoute(cardId))}
                             )
                             ButtonItemPreview(Icons.Default.CardGiftcard, "Gifts", Color(0xFF66BB6A),
                                 onClick = { navController.navigate("gifts_screen/${cardId}")}

@@ -1,7 +1,6 @@
 package com.example.androidtemplate.viewmodels
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtemplate.data.dtos.BankCardDto
 import com.example.androidtemplate.data.dtos.CreateChildRequest
-import com.example.androidtemplate.data.dtos.WalletResponseDto
+import com.example.androidtemplate.data.dtos.CreateParentCardRequest
 import com.example.androidtemplate.network.RetrofitHelper
 import com.example.androidtemplate.network.ApiService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,22 +45,29 @@ class CardScreenViewModel(context: Context) : ViewModel() {
             }
         }
     }
-
     fun createParentCard(
-        parentId: Long,
-        onSuccess: (BankCardDto) -> Unit,
-        onError: (Throwable) -> Unit
+        request: CreateParentCardRequest,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
     ) {
         viewModelScope.launch {
+            isLoading = true
             try {
-                val newCard = apiService.createParentCard(parentId)
-                _cards.value = _cards.value + newCard
-                onSuccess(newCard)
+
+                val response = apiService.createParentCard(request)
+                if (response.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError("Error: ${response.code()} ${response.message()}")
+                }
             } catch (e: Exception) {
-                onError(e)
+                onError(e.localizedMessage ?: "Unknown error")
+            } finally {
+                isLoading = false
             }
         }
     }
+
 
     fun createChild(
         request: CreateChildRequest,
