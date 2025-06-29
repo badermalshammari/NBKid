@@ -4,11 +4,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.androidtemplate.navigation.Screen.*
 import com.example.androidtemplate.ui.screens.*
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
+import com.example.androidtemplate.viewmodels.LeaderboardViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
 import com.example.androidtemplate.viewmodels.TransferViewModel
@@ -21,6 +24,7 @@ fun AppNavigation(
     cardScreenViewModel: CardScreenViewModel,
     walletViewModel: WalletViewModel,
     taskViewModel: TaskViewModel,
+    leaderboardViewModel: LeaderboardViewModel
     transferViewModel: TransferViewModel
 ) {
     NavHost(navController = navController, startDestination = Login.route) {
@@ -82,6 +86,20 @@ fun AppNavigation(
             )
         }
 
+        composable(
+            route = "LeaderboardParent/{cardId}",
+            arguments = listOf(navArgument("cardId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val cardId = backStackEntry.arguments?.getLong("cardId") ?: return@composable
+
+            LeaderboardParent(
+                cardId = cardId,
+                cardViewModel = cardScreenViewModel,
+                leaderboardViewModel = leaderboardViewModel,
+                navController = navController
+            )
+        }
+
         composable("taskDetail") {
             val task = nbkidsViewModel.selectedTask
             if (task != null) {
@@ -103,6 +121,14 @@ fun AppNavigation(
 
         composable(CreateNewChildAccount.route) {
             CreateNewChildAccount(
+                mainViewModel = nbkidsViewModel,
+                cardViewModel = cardScreenViewModel,
+                navController = navController
+            )
+        }
+
+        composable(CreateNewParentAccount.route) {
+            CreateNewParentAccount(
                 mainViewModel = nbkidsViewModel,
                 cardViewModel = cardScreenViewModel,
                 navController = navController
@@ -169,4 +195,5 @@ fun AppNavigation(
         }
 
     }
+
 }

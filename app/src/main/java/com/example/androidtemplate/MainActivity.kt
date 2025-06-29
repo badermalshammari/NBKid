@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.androidtemplate.navigation.AppNavigation
 import com.example.androidtemplate.ui.theme.AndroidTemplateTheme
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
+import com.example.androidtemplate.viewmodels.LeaderboardViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
 import com.example.androidtemplate.viewmodels.TransferViewModel
@@ -32,6 +33,9 @@ class MainActivity : ComponentActivity() {
                 val viewModel = NBKidsViewModel(context)
                 val cardScreenViewModel = CardScreenViewModel(context)
                 val walletViewModel = WalletViewModel(context)
+                val leaderboardViewModel = LeaderboardViewModel(context)
+
+
                 val transferViewModel = TransferViewModel(context)
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -42,6 +46,7 @@ class MainActivity : ComponentActivity() {
                             cardScreenViewModel = cardScreenViewModel,
                             walletViewModel = walletViewModel,
                             taskViewModel = TaskViewModel(context),
+                            leaderboardViewModel = leaderboardViewModel
                             transferViewModel = transferViewModel
                         )
                     }

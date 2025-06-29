@@ -32,7 +32,7 @@ fun LeaderboardItem(rank: Int, entry: LeaderboardEntryDto) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 4.dp)
             .then(
                 if (borderColor != Color.Transparent) {
                     Modifier.border(

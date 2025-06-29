@@ -18,9 +18,13 @@ sealed class Screen(val route: String){
     object TaskDetail : Screen("TaskDetail")
     object LeaderboardScreen : Screen("LeaderboardScreen")
     object CreateNewChildAccount : Screen("CreateNewChildAccount")
-    object EnterCardScreen: Screen("EnterCardScreen")
+    object CreateNewParentAccount : Screen("CreateNewParentAccount")
 
-    // parent screens
+    object EnterCardScreen: Screen("EnterCardScreen")
+    object LeaderboardParent : Screen("LeaderboardParent") {
+        fun createRoute(cardId: Long) = "LeaderboardParent/$cardId"
+    }
+        // parent screens
     object ParentChildScreen : Screen("ParentChildScreen")
     object AddBalanceScreen : Screen("AddBalanceScreen")
     object SettingsScreen : Screen("SettingsScreen")
