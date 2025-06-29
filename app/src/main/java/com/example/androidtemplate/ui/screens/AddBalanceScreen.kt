@@ -21,20 +21,32 @@ import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.ui.composables.BalanceInfoComposable
 import com.example.androidtemplate.ui.composables.SendButton
+import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddBalanceScreen(    navController: NavController,
-                         walletViewModel: WalletViewModel,
-                         childId: Long) {
+fun AddBalanceScreen(
+    navController: NavController,
+    walletViewModel: WalletViewModel,
+    cardViewModel: CardScreenViewModel,
+    childId: Long
+) {
     val context = LocalContext.current
-
     var amount by remember { mutableStateOf("") }
 
-    val availableBalance = "299.230 KD"
-    val availableGems = "3000"
-    val points = "48307"
+    // Fetch wallet when screen loads
+    LaunchedEffect(Unit) {
+        walletViewModel.fetchWallet(childId)
+    }
+
+    val wallet by walletViewModel.walletState.collectAsState()
+    val selectedCard by cardViewModel.selectedCard.collectAsState()
+
+    val availableBalance = selectedCard?.balance?.toPlainString()?.let { "KD $it" } ?: "KD 0.000"
+    val availableGems = wallet?.gems?.toString() ?: "0"
+    val points = wallet?.pointsBalance?.toString() ?: "0"
+
     val gemIcon = painterResource(id = R.drawable.gems)
 
     Scaffold(
@@ -43,10 +55,7 @@ fun AddBalanceScreen(    navController: NavController,
                 title = { Text("Add Gems") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
-                        )
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 modifier = Modifier.background(Color.White)
@@ -63,7 +72,6 @@ fun AddBalanceScreen(    navController: NavController,
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Gems icon centered
                 Image(
                     painter = gemIcon,
                     contentDescription = "Gem Icon",
@@ -72,7 +80,6 @@ fun AddBalanceScreen(    navController: NavController,
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Balance info
                 BalanceInfoComposable(
                     availableBalance = availableBalance,
                     availableGems = availableGems,
@@ -81,7 +88,6 @@ fun AddBalanceScreen(    navController: NavController,
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Amount input field
                 TextField(
                     value = amount,
                     onValueChange = { amount = it },
@@ -94,7 +100,6 @@ fun AddBalanceScreen(    navController: NavController,
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Send button
                 SendButton(onClick = {
                     val enteredAmount = amount.toDoubleOrNull()
                     if (enteredAmount == null || enteredAmount <= 0.0) {
@@ -109,7 +114,7 @@ fun AddBalanceScreen(    navController: NavController,
                             Toast.makeText(context, "Gems added successfully!", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()
                         } else {
-                            Toast.makeText(context, "Failed to add gems", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Insufficient balance or error occurred", Toast.LENGTH_SHORT).show()
                         }
                     }
                 })

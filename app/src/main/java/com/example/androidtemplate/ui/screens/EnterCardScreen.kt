@@ -182,8 +182,8 @@ fun EnterCardScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.weight(1f)
                         ) {
-                            ButtonItemPreview(Icons.Default.Settings, "Settings", Color(0xFFFF7043),
-                                onClick = { navController.navigate(Screen.SettingsScreen.route)})
+                            ButtonItemPreview(Icons.Default.Settings, "Check Tasks", Color(0xFFFF7043),
+                                onClick = { navController.navigate(Screen.ParentCheckTask.route)})
 
                             ButtonItemPreview(Icons.Default.Star, "Leaderboard", Color(0xFFFFCA28),
                                 onClick = { navController.navigate(Screen.LeaderboardParent.createRoute(cardId))}

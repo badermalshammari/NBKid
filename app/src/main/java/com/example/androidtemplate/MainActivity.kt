@@ -17,6 +17,7 @@ import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.LeaderboardViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
+import com.example.androidtemplate.viewmodels.TransferViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
 
 class MainActivity : ComponentActivity() {
@@ -35,6 +36,8 @@ class MainActivity : ComponentActivity() {
                 val leaderboardViewModel = LeaderboardViewModel(context)
 
 
+                val transferViewModel = TransferViewModel(context)
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
                         AppNavigation(
@@ -44,6 +47,7 @@ class MainActivity : ComponentActivity() {
                             walletViewModel = walletViewModel,
                             taskViewModel = TaskViewModel(context),
                             leaderboardViewModel = leaderboardViewModel
+                            transferViewModel = transferViewModel
                         )
                     }
                 }

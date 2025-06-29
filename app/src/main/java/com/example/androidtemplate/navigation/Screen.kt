@@ -30,5 +30,5 @@ sealed class Screen(val route: String){
     object SettingsScreen : Screen("SettingsScreen")
     object TransferScreen : Screen("TransferScreen")
     object GiftsScreen : Screen("GiftsScreen")
-
+    object ParentCheckTask : Screen("parent_check_task")
 }

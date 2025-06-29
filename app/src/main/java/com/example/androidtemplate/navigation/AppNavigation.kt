@@ -14,6 +14,7 @@ import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.LeaderboardViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
+import com.example.androidtemplate.viewmodels.TransferViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
 
 @Composable
@@ -24,6 +25,7 @@ fun AppNavigation(
     walletViewModel: WalletViewModel,
     taskViewModel: TaskViewModel,
     leaderboardViewModel: LeaderboardViewModel
+    transferViewModel: TransferViewModel
 ) {
     NavHost(navController = navController, startDestination = Login.route) {
 
@@ -149,6 +151,7 @@ fun AppNavigation(
             AddBalanceScreen(
                 navController = navController,
                 walletViewModel = walletViewModel,
+                cardViewModel = cardScreenViewModel,
                 childId = childId
             )
         }
@@ -176,6 +179,19 @@ fun AppNavigation(
             } else {
                 Text("Invalid Card ID", color = Color.Red)
             }
+        }
+        composable("TransferScreen") {
+            TransferScreen(viewModel = transferViewModel,
+                navController = navController,
+                mainViewModel = nbkidsViewModel,
+                cardViewModel = cardScreenViewModel)
+        }
+        composable(Screen.ParentCheckTask.route) {
+            ParentCheckTaskScreen(
+                navController = navController,
+                cardViewModel = cardScreenViewModel,
+                taskViewModel = taskViewModel
+            )
         }
 
     }

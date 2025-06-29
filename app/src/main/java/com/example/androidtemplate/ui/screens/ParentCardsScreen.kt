@@ -220,7 +220,8 @@ fun ParentCardsScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        ActionButtonItem(icon = Icons.AutoMirrored.Filled.Send, label = "Transfer", onClick = {})
+                        ActionButtonItem(icon = Icons.AutoMirrored.Filled.Send, label = "Transfer", onClick = {navController.navigate(
+                            Screen.TransferScreen.route)})
                         ActionButtonItem(icon = Icons.Default.BarChart, label = "Statistics", onClick = {})
                         ActionButtonItem(
                             icon = Icons.Default.Settings,
