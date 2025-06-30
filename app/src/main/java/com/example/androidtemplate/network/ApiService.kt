@@ -74,6 +74,12 @@ interface ApiService {
     @POST("transactions/transfer")
     suspend fun transfer(@Body request: TransferRequest): TransactionDto
 
+    @POST("store/items/order")
+    suspend fun orderItem(
+        @Query("childId") childId: Long,
+        @Query("itemId") itemId: Long
+    ): OrderedItemDto
+
     @POST("tasks/complete")
     suspend fun markTaskAsFinished(
         @Query("childId") childId: Long,
@@ -83,11 +89,10 @@ interface ApiService {
     @GET("content")
     suspend fun getAllVideos(): List<VideoOption>
 
-    @POST("store/items/order")
-    suspend fun orderStoreItem(
-        @Query("childId") childId: Long,
-        @Query("itemId") itemId: Long
-    ): Response<OrderedItemDto>
+
+    @GET("api/store/orders/{childId}")
+    suspend fun getOrdersForChild(@Path("childId") childId: Long?): List<OrderedItemDto>
+
 
 
 }

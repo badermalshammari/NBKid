@@ -127,6 +127,7 @@ class NBKidsViewModel(
             }
         }
     }
+
     fun register(
         name: String,
         phone: String,

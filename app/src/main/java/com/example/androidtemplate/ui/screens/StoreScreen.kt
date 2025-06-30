@@ -1,5 +1,6 @@
 package com.example.androidtemplate.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -13,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
@@ -59,15 +61,17 @@ fun StoreScreen(
 
     Scaffold(
         bottomBar = {
-            ZuzuBottomNavBar(selected = selectedTab) { item ->
-                selectedTab = item
-                when (item) {
-                    "Home" -> navController.navigate(Screen.ChildDashboardScreen.route)
-                    "Tasks" -> navController.navigate(Screen.TaskScreen.route)
-                    "Store" -> navController.navigate(Screen.StoreScreen.route)
-                    "Leaderboard" -> navController.navigate(Screen.LeaderboardScreen.route)
-                }
-            }
+            ZuzuBottomNavBar(
+                navController = navController, selected = selectedTab,
+                onItemSelected = { item ->
+                    selectedTab = item
+                    when (item) {
+                        "Orders" -> navController.navigate(Screen.OrdersScreen.route)
+                        "Tasks" -> navController.navigate(Screen.TaskScreen.route)
+                        "Store" -> navController.navigate(Screen.StoreScreen.route)
+                        "Leaderboard" -> navController.navigate(Screen.LeaderboardScreen.route)
+                    }
+                })
         }
     ) { innerPadding ->
 
@@ -129,9 +133,17 @@ fun StoreScreen(
                         imageResId = imageResId,
                         canAfford = (wallet?.gems ?: 0) >= item.globalItem.costInGems,
                         onOrderClick = {
-                            child?.childId?.let { id ->
-                                // nbkidsViewModel.orderItem(id, item.globalItem.id)
+                            if (child?.childId != null) {
+                                walletViewModel.orderItem(
+                                    childId = child.childId,
+                                    itemId = item.id,
+                                    onSuccess = {
+                                        Toast.makeText(context, "تم الطلب!", Toast.LENGTH_SHORT).show()
+                                                },
+                                    onError = { msg -> Toast.makeText(context, msg, Toast.LENGTH_LONG).show() }
+                                )
                             }
+
                         }
                     )
                 }

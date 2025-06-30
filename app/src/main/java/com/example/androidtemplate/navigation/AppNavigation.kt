@@ -143,6 +143,9 @@ fun AppNavigation(
                 navController = navController
             )
         }
+        composable(OrdersScreen.route) {
+            OrdersScreen(viewModel = walletViewModel)
+        }
 
         composable("enter_card_screen/{cardId}") { backStackEntry ->
             val cardId = backStackEntry.arguments?.getString("cardId")?.toLongOrNull()
@@ -195,7 +198,7 @@ fun AppNavigation(
                 mainViewModel = nbkidsViewModel,
                 cardViewModel = cardScreenViewModel)
         }
-        composable(Screen.ParentCheckTask.route) {
+        composable(ParentCheckTask.route) {
             ParentCheckTaskScreen(
                 navController = navController,
                 cardViewModel = cardScreenViewModel,

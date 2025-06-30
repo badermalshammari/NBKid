@@ -1,9 +1,13 @@
 package com.example.androidtemplate.viewmodels
 
 import android.content.Context
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtemplate.data.dtos.AddGemsRequest
+import com.example.androidtemplate.data.dtos.OrderedItemDto
 import com.example.androidtemplate.data.dtos.WalletResponseDto
 import com.example.androidtemplate.network.ApiService
 import com.example.androidtemplate.network.RetrofitHelper
@@ -13,6 +17,12 @@ import kotlinx.coroutines.launch
 
 class WalletViewModel(context: Context) : ViewModel() {
     private val apiService = RetrofitHelper.getInstance(context).create(ApiService::class.java)
+
+
+    var orders by mutableStateOf<List<OrderedItemDto>>(emptyList())
+    var is_Loading by mutableStateOf(false)
+    var error_Message: String? by mutableStateOf(null)
+
 
     private val _walletState = MutableStateFlow<WalletResponseDto?>(null)
     val walletState: StateFlow<WalletResponseDto?> = _walletState
@@ -34,6 +44,30 @@ class WalletViewModel(context: Context) : ViewModel() {
                 errorMessage.value = e.message
             } finally {
                 isLoading.value = false
+            }
+        }
+    }
+    fun fetchOrders(childId: Long?) {
+        viewModelScope.launch {
+            is_Loading = true
+            try {
+                orders = apiService.getOrdersForChild(childId)
+                error_Message = null
+            } catch (e: Exception) {
+                error_Message = "Failed to load orders"
+            } finally {
+                is_Loading = false
+            }
+        }
+
+}
+    fun orderItem(childId: Long, itemId: Long, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.orderItem(childId, itemId)
+                onSuccess()
+            } catch (e: Exception) {
+                onError("Error: ${e.message}")
             }
         }
     }

@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.PlaylistAdd
+import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -35,15 +36,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.androidtemplate.navigation.Screen
 
 @Composable
-fun ZuzuBottomNavBar(selected: String, onItemSelected: (String) -> Unit) {
-    val items = listOf("Home", "Tasks", "Store", "Leaderboard")
+fun ZuzuBottomNavBar(selected: String, onItemSelected: (String) -> Unit, navController: NavController) {
+    val items = listOf("Leaderboard", "Tasks", "Store", "Orders")
     val icons = listOf(
-        Icons.Default.Home,
+        Icons.Default.Leaderboard,
         Icons.Default.PlaylistAdd,
         Icons.Default.CardGiftcard,
-        Icons.Default.Leaderboard
+        Icons.Default.ViewList
     )
 
     Box(
@@ -110,7 +113,9 @@ fun ZuzuBottomNavBar(selected: String, onItemSelected: (String) -> Unit) {
         ) {
             Image(
                 painter = painterResource(com.example.androidtemplate.R.drawable.nbkidz_logo),
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(40.dp).clickable(){
+                    navController.navigate(Screen.ChildDashboardScreen.route)
+                },
                 contentDescription = "Logo"
             )
         }

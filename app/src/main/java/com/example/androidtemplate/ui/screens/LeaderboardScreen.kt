@@ -65,15 +65,17 @@ fun LeaderboardScreen(
 
     Scaffold(
         bottomBar = {
-            ZuzuBottomNavBar(selected = selectedTab) { item ->
-                selectedTab = item
-                when (item) {
-                    "Home" -> navController.navigate(Screen.ChildDashboardScreen.route)
-                    "Tasks" -> navController.navigate(Screen.TaskScreen.route)
-                    "Store" -> navController.navigate(Screen.StoreScreen.route)
-                    "Leaderboard" -> navController.navigate(Screen.LeaderboardScreen.route)
-                }
-            }
+            ZuzuBottomNavBar(
+                navController = navController, selected = selectedTab,
+                onItemSelected = { item ->
+                    selectedTab = item
+                    when (item) {
+                        "Orders" -> navController.navigate(Screen.OrdersScreen.route)
+                        "Tasks" -> navController.navigate(Screen.TaskScreen.route)
+                        "Store" -> navController.navigate(Screen.StoreScreen.route)
+                        "Leaderboard" -> navController.navigate(Screen.LeaderboardScreen.route)
+                    }
+                })
         }
     ) { innerPadding ->
         LazyColumn(
