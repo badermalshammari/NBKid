@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonSearch
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
@@ -37,11 +38,10 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ParentBottomNavBar(selected: String, onItemSelected: (String) -> Unit) {
-    val items = listOf("Person", "Wallet", "Notification", "Settings")
+    val items = listOf("Person", "Switch", "Settings")
     val icons = listOf(
         Icons.Default.Person,
-        Icons.Default.AccountBalanceWallet,
-        Icons.Default.Notifications,
+        Icons.Default.PersonSearch,
         Icons.Default.Settings
     )
 

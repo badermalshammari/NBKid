@@ -66,6 +66,15 @@ fun AppNavigation(
             )
         }
 
+        composable(CardSettingsScreen.route) {
+            CardSettingsScreen(
+                mainViewModel = nbkidsViewModel,
+                cardViewModel = cardScreenViewModel,
+                navController = navController,
+                walletViewModel = walletViewModel,
+            )
+        }
+
         composable(ChildDashboardScreen.route) {
             ChildDashboardScreen(
                 nbkidsViewModel = nbkidsViewModel,
@@ -190,7 +199,8 @@ fun AppNavigation(
             ParentCheckTaskScreen(
                 navController = navController,
                 cardViewModel = cardScreenViewModel,
-                taskViewModel = taskViewModel
+                taskViewModel = taskViewModel,
+                walletViewModel = walletViewModel
             )
         }
 

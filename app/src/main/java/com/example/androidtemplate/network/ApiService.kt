@@ -24,7 +24,7 @@ interface ApiService {
     suspend fun getParentCards(@Path("parentId") parentId: Long): List<BankCardDto>
 
     @GET("/api/wallet/child/{childId}")
-    suspend fun getWalletByChildId(@Path("childId") childId: Long): WalletResponseDto
+    suspend fun getWalletByChildId(@Path("childId") childId: Long?): WalletResponseDto
 
     @GET("/api/tasks/child/{childId}")
     suspend fun getTasksForChild(@Path("childId") childId: Long): List<KidTaskDto>
@@ -41,7 +41,11 @@ interface ApiService {
     @POST("cards/parent/{parentId}/new")
     suspend fun createParentCard(@Body request: CreateParentCardRequest): Response<BankCardDto>
 
-
+    @POST("cards/{cardId}/activation")
+    suspend fun toggleCardActivation(
+        @Path("cardId") cardId: Long,
+        @Query("active") active: Boolean
+    ): Response<BankCardDto>
 
     @GET("/api/children/{childId}/store")
     suspend fun getChildStoreItems(@Path("childId") childId: Long): List<ChildStoreItemDto>

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,7 +16,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -88,8 +91,7 @@ fun TransferScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(8.dp))
-                    .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+                    .background(Color.White, RoundedCornerShape(25.dp))
                     .clickable { expandedFrom = true }
                     .padding(16.dp)
             ) {
@@ -117,7 +119,7 @@ fun TransferScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(25.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text("Available Balance", style = MaterialTheme.typography.labelSmall)
@@ -152,15 +154,27 @@ fun TransferScreen(
                     onValueChange = { toAccount = it },
                     label = { Text("Enter Account Number") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .height(65.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp)),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFFFFFFF),
+                        unfocusedBorderColor = Color.LightGray,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        cursorColor = Color.Black,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(50.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                 )
             } else {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White, RoundedCornerShape(8.dp))
-                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+                        .background(Color.White, RoundedCornerShape(25.dp))
                         .clickable { expandedTo = true }
                         .padding(16.dp)
                 ) {
@@ -195,8 +209,20 @@ fun TransferScreen(
                 label = { Text("Amount") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
-            )
+                modifier = Modifier
+                    .height(65.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp)),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFFFFFFFF),
+                    unfocusedBorderColor = Color.LightGray,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    cursorColor = Color.Black,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                ),
+                shape = RoundedCornerShape(50.dp),            )
 
             Spacer(Modifier.height(12.dp))
 
@@ -204,8 +230,20 @@ fun TransferScreen(
                 value = description,
                 onValueChange = { description = it },
                 label = { Text("Description (optional)") },
-                modifier = Modifier.fillMaxWidth()
-            )
+                modifier = Modifier
+                    .height(65.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp)),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFFFFFFFF),
+                    unfocusedBorderColor = Color.LightGray,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    cursorColor = Color.Black,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                ),
+                shape = RoundedCornerShape(50.dp),            )
 
             Spacer(Modifier.height(24.dp))
 
@@ -219,12 +257,16 @@ fun TransferScreen(
                     )
                     viewModel.performTransfer(request)
                 },
-                enabled = isFormValid && !isLoading,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(12.dp)
-            ) {
+                    .height(52.dp)
+                    .clip(RoundedCornerShape(30.dp)),
+
+                colors = ButtonDefaults.buttonColors(disabledContainerColor = Color(0xFFB0B0B0), containerColor = Color(
+                    0xFF32658F
+                )
+                ),
+                enabled = isFormValid && !isLoading) {
                 if (isLoading) {
                     CircularProgressIndicator(
                         color = Color.White,

@@ -1,10 +1,12 @@
 package com.example.androidtemplate.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -103,7 +105,7 @@ fun ChildDashboardScreen(
             ) {
 
                 item(span = { GridItemSpan(2) }) {
-                    Column {
+                    Column (horizontalAlignment = Alignment.CenterHorizontally){
                         Header(child = child, wallet = wallet)
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -118,21 +120,50 @@ fun ChildDashboardScreen(
                             tasksError != null -> Text("Error loading tasks: $tasksError", color = Color.Red)
                             else -> {
                                 Text(
-                                    text = "You have $toDoCount task${if (toDoCount == 1) "" else "s"} to do!",
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight.Bold
+                                    text = "TODO TASKS",
+                                    fontSize = 30.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF1C1C1C)
                                 )
+                                Spacer(Modifier.height(20.dp))
+                                Card(
+                                    shape = RoundedCornerShape(16.dp),
+                                    elevation = CardDefaults.cardElevation(6.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(6.dp)
+                                        .clickable { navController.navigate(Screen.TaskScreen.route) },
+                                ) {
+                                    Column(modifier = Modifier.padding(16.dp)) {
+                                        Text(text = "You have $toDoCount task${if (toDoCount == 1) "" else "s"} to do!"
+                                            ,fontSize = 25.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color(0xFF0D1A2B))
+
+                                        Spacer(modifier = Modifier.height(4.dp))
+
+                                        Text(
+                                            text = "Take me there"
+                                        )
+                                    }
+                                }
                             }
                         }
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        Text("Available Store Items", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "DAILY PICKS",
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF1C1C1C)
+                        )
                         Spacer(modifier = Modifier.height(24.dp))
                     }
                 }
+                items(visibleItems.shuffled().take(4)) { item ->
 
-                items(visibleItems) { item ->
                     val imageResId = remember(item.globalItem.photo) {
                         val resId = context.resources.getIdentifier(
                             item.globalItem.photo,

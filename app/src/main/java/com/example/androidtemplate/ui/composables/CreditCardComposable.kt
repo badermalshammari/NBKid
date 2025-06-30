@@ -42,6 +42,9 @@ fun CreditCardComposable(card: BankCardDto?) {
     val imageResId = remember(card.cardDesign) {
         context.resources.getIdentifier(card.cardDesign, "drawable", context.packageName)
     }
+    val disabledimageResId = remember("${card.cardDesign}_disabled") {
+        context.resources.getIdentifier("${card.cardDesign}_disabled", "drawable", context.packageName)
+    }
     if (imageResId == 0) {
         Log.e("CreditCardComposable", "Invalid drawable resource for card design: ${card.cardDesign}")
         return
@@ -51,13 +54,22 @@ fun CreditCardComposable(card: BankCardDto?) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
     ) {
-        Image(
-            painter = painterResource(id = imageResId),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-        )
+        if(card.isActive==true) {
+            Image(
+                painter = painterResource(id = imageResId),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+        }else{
+            Image(
+                painter = painterResource(id = disabledimageResId),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize())
+        }
 
 
         Column(
@@ -72,26 +84,36 @@ fun CreditCardComposable(card: BankCardDto?) {
                 fontSize = 15.sp
 
             )
-            Text(
-                text = "**** **** **** ${card.cardNumber.takeLast(4)}",
-                style = MaterialTheme.typography.labelSmall,
-                color = Color.White,
-                fontSize = 25.sp
-            )
+            if(card.isActive==true) {
+                Text(
+                    text = "**** **** **** ${card.cardNumber.takeLast(4)}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.White,
+                    fontSize = 25.sp
+                )
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Column {
-                    Text("VALID", color = Color.White, style = MaterialTheme.typography.labelSmall)
-                    Text("${card.expiryMonth}/${card.expiryYear}", color = Color.White)
-                }
-                Spacer(modifier = Modifier.width(60.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Column {
+                        Text(
+                            "VALID",
+                            color = Color.White,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                        Text("${card.expiryMonth}/${card.expiryYear}", color = Color.White)
+                    }
+                    Spacer(modifier = Modifier.width(60.dp))
 
-                Column {
-                    Text("CVV", color = Color.White, style = MaterialTheme.typography.labelSmall)
-                    Text(card.cvv, color = Color.White)
+                    Column {
+                        Text(
+                            "CVV",
+                            color = Color.White,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                        Text(card.cvv, color = Color.White)
+                    }
                 }
             }
         }

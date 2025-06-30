@@ -3,19 +3,20 @@ package com.example.androidtemplate.ui.screens
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.DragAndDropPermissionsCompat.request
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.data.VideoOption
@@ -44,10 +45,11 @@ fun AddTaskScreen(
     val context = LocalContext.current
     val cards by cardViewModel.cards.collectAsState()
     val card = cards.find { it.cardId == cardId }
-    val wallet by walletViewModel.walletState.collectAsState()
 
-    LaunchedEffect(cardId) {
-        walletViewModel.fetchWallet(cardId)
+    val wallet by walletViewModel.walletState.collectAsState()
+    val childid = wallet?.child?.childId
+    LaunchedEffect(childid) {
+        walletViewModel.fetchWallet(childid)
     }
 
     val accountName = card?.cardHolderName ?: "N/A"
@@ -77,7 +79,6 @@ fun AddTaskScreen(
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
             )
         }
     ) { paddingValues ->
@@ -130,7 +131,18 @@ fun AddTaskScreen(
                         onValueChange = {},
                         label = { Text("Select Video") },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = videoDropdownExpanded) },
-                        modifier = Modifier.menuAnchor().fillMaxWidth()
+                        modifier = Modifier.menuAnchor().fillMaxWidth(0.85f)
+                             .height(65.dp)
+                            .clip(RoundedCornerShape(16.dp)),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFFFFFFF),
+                            unfocusedBorderColor = Color.LightGray,
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            cursorColor = Color.Black,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black
+                        ),
                     )
 
                     ExposedDropdownMenu(

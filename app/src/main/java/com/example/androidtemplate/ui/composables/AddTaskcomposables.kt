@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
@@ -34,7 +35,7 @@ fun BalanceTaskInfoComposable(
     points: String
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 50.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(horizontalAlignment = Alignment.Start) {
@@ -58,26 +59,27 @@ fun TaskTypeOption(
     icon: Painter,
     label: String,
     selected: Boolean,
-    onClick: () -> Unit
-) {
+    onClick: () -> Unit,
+    ) {
     Column(
+        modifier = Modifier.clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable { onClick() }
     ) {
         Image(
             painter = icon,
             contentDescription = label,
-            modifier = Modifier.size(50.dp).padding(4.dp)
+            modifier = Modifier.size(100.dp).padding(4.dp)
         )
         Text(
             text = label,
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-            color = if (selected) Color(0xFF3F51B5) else Color.Gray
-        )
+            color = if (selected) Color(0xFF000000) else Color.Gray,
+            fontSize = 20.sp,
+            )
         RadioButton(
             selected = selected,
             onClick = onClick,
-            colors = RadioButtonDefaults.colors(selectedColor = Color(0xFF3F51B5))
+            colors = RadioButtonDefaults.colors(selectedColor = Color(0xFF000000))
         )
     }
 }
@@ -88,7 +90,20 @@ fun LabeledInput(label: String, value: String, onValueChange: (String) -> Unit) 
         value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
-        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)
+        modifier = Modifier
+            .height(65.dp)
+            .fillMaxWidth(0.85f)
+            .clip(RoundedCornerShape(16.dp)),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Color(0xFFFFFFFF),
+            unfocusedBorderColor = Color.LightGray,
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            cursorColor = Color.Black,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black
+        ),
+        shape = RoundedCornerShape(50.dp)
     )
 }
 
@@ -96,12 +111,12 @@ fun LabeledInput(label: String, value: String, onValueChange: (String) -> Unit) 
 fun GradientSendButton(onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
             .height(50.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .fillMaxWidth(0.85f)
+            .clip(RoundedCornerShape(30.dp))
             .background(
                 brush = Brush.horizontalGradient(
-                    colors = listOf(Color(0xFF3F51B5), Color(0xFF2196F3))
+                    colors = listOf(Color(0xFFE3692C), Color(0xFF8A30D5))
                 )
             )
             .clickable { onClick() },

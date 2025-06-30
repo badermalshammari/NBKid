@@ -3,7 +3,6 @@ package com.example.androidtemplate.ui.screens
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -16,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.ui.composables.BalanceInfoComposable
@@ -93,12 +91,19 @@ fun AddBalanceScreen(
                     onValueChange = { amount = it },
                     label = { Text("Amount") },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
-                        .padding(4.dp)
+                        .size(width = 300.dp, height = 50.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFF3875A7),
+                        unfocusedBorderColor = Color.White,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        cursorColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(50.dp)
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
+
 
                 SendButton(onClick = {
                     val enteredAmount = amount.toDoubleOrNull()
