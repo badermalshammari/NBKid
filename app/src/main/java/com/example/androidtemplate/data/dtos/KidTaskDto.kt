@@ -8,5 +8,6 @@ data class KidTaskDto(
     val points: Int?,
     val gems: Int,
     val childName: String,
-    val status: String
+    val status: String,
+    val youtubeUrl: String? = null
 )
