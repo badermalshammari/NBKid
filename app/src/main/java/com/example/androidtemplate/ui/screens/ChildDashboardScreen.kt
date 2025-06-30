@@ -65,15 +65,17 @@ fun ChildDashboardScreen(
 
     Scaffold(
         bottomBar = {
-            ZuzuBottomNavBar(selected = selectedTab) { item ->
+            ZuzuBottomNavBar(
+                navController = navController, selected = selectedTab,
+                onItemSelected = { item ->
                 selectedTab = item
                 when (item) {
-                    "Home" -> navController.navigate(Screen.ChildDashboardScreen.route)
+                    "Orders" -> navController.navigate(Screen.OrdersScreen.route)
                     "Tasks" -> navController.navigate(Screen.TaskScreen.route)
                     "Store" -> navController.navigate(Screen.StoreScreen.route)
                     "Leaderboard" -> navController.navigate(Screen.LeaderboardScreen.route)
                 }
-            }
+            })
         }
     ) { innerPadding ->
 
