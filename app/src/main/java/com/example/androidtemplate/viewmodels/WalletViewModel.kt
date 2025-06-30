@@ -20,8 +20,13 @@ class WalletViewModel(context: Context) : ViewModel() {
 
 
     var orders by mutableStateOf<List<OrderedItemDto>>(emptyList())
+        private set
+
     var is_Loading by mutableStateOf(false)
-    var error_Message: String? by mutableStateOf(null)
+        private set
+
+    var error_Message by mutableStateOf<String?>(null)
+        private set
 
 
     private val _walletState = MutableStateFlow<WalletResponseDto?>(null)
@@ -47,38 +52,45 @@ class WalletViewModel(context: Context) : ViewModel() {
             }
         }
     }
-    fun fetchOrders(childId: Long?) {
+
+
+    fun fetchOrders(childId: Long) {
         viewModelScope.launch {
             is_Loading = true
+            error_Message = null
             try {
-                orders = apiService.getOrdersForChild(childId)
-                error_Message = null
+                orders = apiService.getOrders(childId)
             } catch (e: Exception) {
-                error_Message = "Failed to load orders"
+                error_Message = e.localizedMessage
             } finally {
                 is_Loading = false
             }
         }
+    }
+        fun orderItem(
+            childId: Long,
+            itemId: Long,
+            onSuccess: () -> Unit,
+            onError: (String) -> Unit
+        ) {
+            viewModelScope.launch {
+                try {
+                    val response = apiService.orderItem(childId, itemId)
+                    onSuccess()
+                } catch (e: Exception) {
+                    onError("Error: ${e.message}")
+                }
+            }
+        }
 
-}
-    fun orderItem(childId: Long, itemId: Long, onSuccess: () -> Unit, onError: (String) -> Unit) {
-        viewModelScope.launch {
-            try {
-                val response = apiService.orderItem(childId, itemId)
-                onSuccess()
-            } catch (e: Exception) {
-                onError("Error: ${e.message}")
+        fun addGemsToChild(childId: Long, gems: Int, onResult: (Boolean) -> Unit) {
+            viewModelScope.launch {
+                try {
+                    val response = apiService.addGemsToChild(childId, AddGemsRequest(gems))
+                    onResult(response.isSuccessful)
+                } catch (e: Exception) {
+                    onResult(false)
+                }
             }
         }
     }
-    fun addGemsToChild(childId: Long, gems: Int, onResult: (Boolean) -> Unit) {
-        viewModelScope.launch {
-            try {
-                val response = apiService.addGemsToChild(childId, AddGemsRequest(gems))
-                onResult(response.isSuccessful)
-            } catch (e: Exception) {
-                onResult(false)
-            }
-        }
-    }
-}

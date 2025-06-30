@@ -90,8 +90,8 @@ interface ApiService {
     suspend fun getAllVideos(): List<VideoOption>
 
 
-    @GET("api/store/orders/{childId}")
-    suspend fun getOrdersForChild(@Path("childId") childId: Long?): List<OrderedItemDto>
+    @GET("store/orders/{childId}")
+    suspend fun getOrders(@Path("childId") childId: Long): List<OrderedItemDto>
 
 
 

@@ -144,7 +144,7 @@ fun AppNavigation(
             )
         }
         composable(OrdersScreen.route) {
-            OrdersScreen(viewModel = walletViewModel)
+            OrdersScreen(viewModel = walletViewModel, navController = navController, nbkidsViewModel)
         }
 
         composable("enter_card_screen/{cardId}") { backStackEntry ->
