@@ -80,6 +80,14 @@ interface ApiService {
         @Query("taskId") taskId: Long
     ): Response<TaskProgressDto>
 
+    @GET("content")
+    suspend fun getAllVideos(): List<VideoOption>
+
+    @POST("store/items/order")
+    suspend fun orderStoreItem(
+        @Query("childId") childId: Long,
+        @Query("itemId") itemId: Long
+    ): Response<OrderedItemDto>
 
 
 }

@@ -19,10 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
-import com.example.androidtemplate.data.VideoOption
+import com.example.androidtemplate.data.dtos.VideoOption
 import com.example.androidtemplate.data.dtos.CreateTaskRequest
 import com.example.androidtemplate.data.dtos.TaskType
-import com.example.androidtemplate.data.mockVideoList
 import com.example.androidtemplate.ui.composables.BalanceTaskInfoComposable
 import com.example.androidtemplate.ui.composables.GradientSendButton
 import com.example.androidtemplate.ui.composables.LabeledInput
@@ -48,8 +47,19 @@ fun AddTaskScreen(
 
     val wallet by walletViewModel.walletState.collectAsState()
     val childid = wallet?.child?.childId
+
+    val videoOptions = taskViewModel.videoOptions.distinctBy { it.id } // ✅ Deduplicate
+    var selectedVideo by remember { mutableStateOf<VideoOption?>(null) }
+    var videoDropdownExpanded by remember { mutableStateOf(false) }
+
+    var videoOptionsLoaded by remember { mutableStateOf(false) }
+
     LaunchedEffect(childid) {
         walletViewModel.fetchWallet(childid)
+        if (!videoOptionsLoaded) {
+            taskViewModel.fetchVideos()
+            videoOptionsLoaded = true
+        }
     }
 
     val accountName = card?.cardHolderName ?: "N/A"
@@ -65,10 +75,6 @@ fun AddTaskScreen(
     var task by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var gems by remember { mutableStateOf("") }
-
-    val videoOptions = mockVideoList
-    var selectedVideo by remember { mutableStateOf<VideoOption?>(null) }
-    var videoDropdownExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -89,7 +95,11 @@ fun AddTaskScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = accountName.replaceFirstChar { it.uppercaseChar() }, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(
+                text = accountName.replaceFirstChar { it.uppercaseChar() },
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
             Text(text = "($accountNumber)", fontSize = 14.sp, color = Color.Gray)
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -130,9 +140,13 @@ fun AddTaskScreen(
                         value = selectedVideo?.title ?: "Select Video",
                         onValueChange = {},
                         label = { Text("Select Video") },
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = videoDropdownExpanded) },
-                        modifier = Modifier.menuAnchor().fillMaxWidth(0.85f)
-                             .height(65.dp)
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = videoDropdownExpanded)
+                        },
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth(0.85f)
+                            .height(65.dp)
                             .clip(RoundedCornerShape(16.dp)),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFFFFFFF),
