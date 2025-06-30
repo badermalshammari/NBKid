@@ -1,9 +1,11 @@
 package com.example.androidtemplate.ui.composables
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,8 +19,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.androidtemplate.R
 
 @Composable
 fun ActionButtonItem(
@@ -40,7 +45,22 @@ fun ActionButtonItem(
             .padding(16.dp)
             .clickable { onClick() }
     ) {
-        Icon(icon, contentDescription = label, tint = Color(0xFFFFFFFF), modifier = Modifier.size(32.dp))
+        if(label == "Control"){
+            Image(
+                painter = painterResource(id = R.drawable.nbkidz_logo_grey),
+                contentDescription = label,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(40.dp)
+            )
+        }else{
+            Icon(
+                icon,
+                contentDescription = label,
+                tint = Color(0xFFFFFFFF),
+                modifier = Modifier.size(32.dp)
+            )
+        }
         Spacer(modifier = Modifier.height(8.dp))
         Text(label, fontSize = 15.sp, color = backgroundColor)
     }

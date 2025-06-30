@@ -3,8 +3,10 @@ package com.example.androidtemplate.ui.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -22,18 +24,16 @@ fun SendButton(onClick: () -> Unit) {
 
     Box(
         modifier = Modifier
-            .height(40.dp)
-            .width(150.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(Color(0xFF3F51B5), Color(0xFF2196F3))
-                )
+            .size(width = 300.dp, height = 50.dp)
+        .background(
+                Brush.horizontalGradient(
+                    listOf(Color(0xFF8E2DE2), Color(0xFFF27121))
+                ),
+                shape = RoundedCornerShape(50)
             )
-            .clickable { onClick() },
+            .clickable(){onClick},
         contentAlignment = Alignment.Center
-    ) {
+    )  {
         Text(
             text = "Send",
             color = Color.White,

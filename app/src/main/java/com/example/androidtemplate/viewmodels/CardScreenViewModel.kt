@@ -68,7 +68,29 @@ class CardScreenViewModel(context: Context) : ViewModel() {
         }
     }
 
-
+    fun toggleCardActivation(
+        cardId: Long,
+        active: Boolean,
+        onSuccess: (BankCardDto) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.toggleCardActivation(cardId, active)
+                if (response.isSuccessful) {
+                    val updatedCard = response.body()!!
+                    _cards.value = _cards.value.map {
+                        if (it.cardId == cardId) updatedCard else it
+                    }
+                    onSuccess(updatedCard)
+                } else {
+                    onError(Exception("Failed with code ${response.code()} - ${response.message()}"))
+                }
+            } catch (e: Exception) {
+                onError(e)
+            }
+        }
+    }
     fun createChild(
         request: CreateChildRequest,
         onSuccess: () -> Unit,

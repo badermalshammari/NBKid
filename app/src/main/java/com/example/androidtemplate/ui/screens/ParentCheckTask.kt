@@ -16,13 +16,15 @@ import androidx.navigation.NavController
 import com.example.androidtemplate.ui.composables.FancyTaskCard
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
+import com.example.androidtemplate.viewmodels.WalletViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ParentCheckTaskScreen(
     navController: NavController,
     cardViewModel: CardScreenViewModel,
-    taskViewModel: TaskViewModel
+    taskViewModel: TaskViewModel,
+    walletViewModel: WalletViewModel
 ) {
     val context = LocalContext.current
     val selectedCard by cardViewModel.selectedCard.collectAsState()
@@ -37,6 +39,8 @@ fun ParentCheckTaskScreen(
     LaunchedEffect(childId) {
         if (childId != null) {
             taskViewModel.fetchTasks(childId)
+            walletViewModel.fetchWallet(childId)
+
         }
     }
 
@@ -70,6 +74,7 @@ fun ParentCheckTaskScreen(
             ) {
                 Button(
                     onClick = { selectedFilter = "INCOMPLETE" },
+                    modifier = Modifier,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (selectedFilter == "INCOMPLETE") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
                     )

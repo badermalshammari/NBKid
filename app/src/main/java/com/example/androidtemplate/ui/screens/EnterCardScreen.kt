@@ -167,14 +167,14 @@ fun EnterCardScreen(
                                     }
                                 }
                             )
-                            ButtonItemPreview(Icons.Default.Send, "Transfer", Color(0xFF7E57C2),
-                                onClick = { navController.navigate(Screen.TransferScreen.route)}
-                            )
                             ButtonItemPreview(
                                 icon = Icons.Default.List,
                                 title = "Add Task",
                                 color = Color(0xFFEF5350),
                                 onClick = { navController.navigate("add_task_screen/${card.cardId}") }
+                            )
+                            ButtonItemPreview(Icons.Default.Send, "Transfer", Color(0xFF7E57C2),
+                                onClick = { navController.navigate(Screen.TransferScreen.route)}
                             )
                         }
                         Column(
@@ -182,17 +182,17 @@ fun EnterCardScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.weight(1f)
                         ) {
-                            ButtonItemPreview(Icons.Default.Settings, "Check Tasks", Color(0xFFFF7043),
-                                onClick = { navController.navigate(Screen.ParentCheckTask.route)})
-
-                            ButtonItemPreview(Icons.Default.Star, "Leaderboard", Color(0xFFFFCA28),
-                                onClick = { navController.navigate(Screen.LeaderboardParent.createRoute(cardId))}
-                            )
                             ButtonItemPreview(Icons.Default.CardGiftcard, "Gifts", Color(0xFF66BB6A),
                                 onClick = { navController.navigate("gifts_screen/${cardId}")}
                             )
-                        }
+                            ButtonItemPreview(Icons.Default.Settings, "Check Tasks", Color(0xFFFF7043),
+                                onClick = { navController.navigate(Screen.ParentCheckTask.route)})
+
+                        ButtonItemPreview(Icons.Default.Star, "Leaderboard", Color(0xFFFFCA28),
+                            onClick = { navController.navigate(Screen.LeaderboardParent.createRoute(cardId))}
+                        )
                     }
+                }
                 }
 
                 // Transactions Header

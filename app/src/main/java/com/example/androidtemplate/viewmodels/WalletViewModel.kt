@@ -23,11 +23,11 @@ class WalletViewModel(context: Context) : ViewModel() {
     var errorMessage = MutableStateFlow<String?>(null)
         private set
 
-    fun fetchWallet(childId: Long) {
+    fun fetchWallet(childId: Long?) {
         viewModelScope.launch {
             isLoading.value = true
             try {
-                val response = apiService.getWalletByChildId(childId)
+                val response = apiService.getWalletByChildId(childId?.toLong())
                 _walletState.value = response
                 errorMessage.value = null
             } catch (e: Exception) {

@@ -2,6 +2,7 @@ package com.example.androidtemplate.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
@@ -13,10 +14,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -48,7 +51,6 @@ fun SelectKidScreen(viewModel: NBKidsViewModel, navController: NavController) {
         color = Color(0xFF2B5D84)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-
             Image(
                 painter = painterResource(id = R.drawable.kidpage),
                 contentDescription = null,
@@ -62,16 +64,17 @@ fun SelectKidScreen(viewModel: NBKidsViewModel, navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(100.dp))
 
                     Text(
                         "LOGIN AS",
                         color = Color.White,
                         fontSize = 30.sp,
+                        fontWeight = FontWeight.Black,
                         style = MaterialTheme.typography.headlineSmall
                     )
 
-                    Spacer(modifier = Modifier.height(100.dp))
+                    Spacer(modifier = Modifier.height(80.dp))
 
                     LazyRow(
                         state = listState,
@@ -100,34 +103,59 @@ fun SelectKidScreen(viewModel: NBKidsViewModel, navController: NavController) {
 
                     Spacer(modifier = Modifier.height(100.dp))
 
-                    Button(
-                        onClick = {
-                            val selectedChild = children.getOrNull(selectedIndex)
-                            println("Logging in as $selectedChild")
-                            if (selectedChild != null) {
-                                viewModel.selectedChild = selectedChild  // ✅ Save selected child
-                                println("Selected child: $selectedChild")
-                                navController.navigate(Screen.ChildDashboardScreen.route)  // ✅ Go to next screen
-                            }
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                        contentPadding = PaddingValues(),
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .height(50.dp)
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxSize()
+                                .size(width = 300.dp, height = 50.dp)
+                                .clip(RoundedCornerShape(50))
                                 .background(
-                                    Brush.horizontalGradient(
+                                    brush = Brush.horizontalGradient(
                                         listOf(Color(0xFF8E2DE2), Color(0xFFF27121))
-                                    ),
-                                    shape = RoundedCornerShape(50)
-                                ),
+                                    )
+                                )
+                                .clickable {
+                                    val selectedChild = children.getOrNull(selectedIndex)
+                                    println("Logging in as $selectedChild")
+                                    if (selectedChild != null) {
+                                        viewModel.selectedChild =
+                                            selectedChild
+                                        println("Selected child: $selectedChild")
+                                        navController.navigate(Screen.ChildDashboardScreen.route)  // ✅ Go to next screen
+                                    }
+                                },
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Login", color = Color.White, fontSize = 18.sp)
+                            Text(
+                                "LOGIN",
+                                color = Color.White,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(width = 300.dp, height = 50.dp)
+                                .clip(RoundedCornerShape(50))
+                                .background(
+                                    Brush.horizontalGradient(
+//                                        listOf(Color(0xFF1E3C72), Color(0xFF2A6DA9))
+                                          listOf(Color(0xFFABABAB), Color(0xFFD2D2D2))
+
+                                    )
+                                )
+                                .clickable { navController.popBackStack() },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "RETURN",
+                                color = Color(0xFF707070),
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Medium
+                            )
                         }
                     }
                 }

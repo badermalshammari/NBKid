@@ -1,6 +1,5 @@
 package com.example.androidtemplate.ui.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,11 +7,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -45,6 +43,7 @@ fun ParentCardsScreen(
     val context = LocalContext.current
     val parentId = mainViewModel.user?.parentId
 
+    var showCardDialog by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf("Wallet") }
     val cards by cardViewModel.cards.collectAsState()
     val displayZuzu by cardViewModel.displayZuzu.collectAsState()
@@ -53,8 +52,12 @@ fun ParentCardsScreen(
 
     val isRefreshing = cardViewModel.isLoading
 
+    val parentCards = cards.filter { it.isParentCard }
+    val kidCards = cards.filter { !it.isParentCard }
+
     LaunchedEffect(parentId) {
         parentId?.let { cardViewModel.fetchCards(it) }
+
     }
 
     LaunchedEffect(selectedCard) {
@@ -63,9 +66,6 @@ fun ParentCardsScreen(
             walletViewModel.fetchWallet(card.childId)
         }
     }
-
-    val parentCards = cards.filter { it.isParentCard }
-    val kidCards = cards.filter { !it.isParentCard }
 
     Scaffold(
         topBar = {
@@ -79,8 +79,14 @@ fun ParentCardsScreen(
             )
         },
         bottomBar = {
-            ParentBottomNavBar(selected = selectedTab) {
-                selectedTab = it
+            ParentBottomNavBar(selected = "Person"){ item ->
+                selectedTab = item
+                when (item) {
+                    "Person" -> navController.navigate(Screen.ParentCardsScreen.route)
+                    "Switch" -> navController.navigate(Screen.SelectKidScreen.route)
+                    "Settings" -> navController.navigate(Screen.CardSettingsScreen.route)
+                }
+
             }
         }
     ) { padding ->
@@ -221,24 +227,59 @@ fun ParentCardsScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        ActionButtonItem(icon = Icons.AutoMirrored.Filled.Send, label = "Transfer", onClick = {navController.navigate(
-                            Screen.TransferScreen.route)})
+                        if(selectedCard?.isActive == true) {
+                            ActionButtonItem(
+                                icon = Icons.Default.Send,
+                                label = "Transfer",
+                                onClick = {
+                                    navController.navigate(
+                                        Screen.TransferScreen.route
+                                    )
+                                })
+                        }
                         ActionButtonItem(
-                            icon = Icons.Default.Description,
-                            label = "Kids",
+                            icon = Icons.Default.IosShare,
+                            label = "Share",
                             onClick = {
-                                selectedCard?.cardId?.let {
-                                    navController.navigate("enter_card_screen/$it")
+                             selectedCard?.let { card ->
+                            val shareText = """
+                            Name: ${card.cardHolderName}
+                            Account Number: ${card.accountNumber}
+                            Card Number: **** **** **** ${card.cardNumber.takeLast(4)}
+                            Expiry: ${card.expiryMonth}/${card.expiryYear}
+                            Balance: ${card.balance} KD
+                            Status: ${if (card.isActive) "Active" else "Disabled"}""".trimIndent()
+
+                                    val intent = android.content.Intent().apply {
+                                        action = android.content.Intent.ACTION_SEND
+                                        putExtra(android.content.Intent.EXTRA_TEXT, shareText)
+                                        type = "text/plain"
+                                    }
+                                    val chooser = android.content.Intent.createChooser(intent, "Share Card Info")
+                                    context.startActivity(chooser)
                                 }
                             }
                         )
+                        if (selectedCard?.isParentCard == false && selectedCard?.isActive == true) {                            ActionButtonItem(
+                                icon = Icons.Default.Description,
+                                label = "Control",
+                                onClick = {
+                                    selectedCard?.cardId?.let {
+                                        navController.navigate("enter_card_screen/$it")
+                                    }
+                                }
+                            )
+
+                        }
                     }
                 }
 
                 item {
                     SettingsToggle(
                         isChecked = displayZuzu,
-                        onToggle = { cardViewModel.toggleZuzuAccounts(it) }
+                        onToggle = {
+                            cardViewModel.toggleZuzuAccounts(it)
+                        }
                     )
                 }
             }
