@@ -211,57 +211,64 @@ fun AddTaskScreen(
                 }
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    GradientSendButton {
-                        Log.d("TASK_DEBUG", "Send button clicked")
-                        val gemsInt = gems.toIntOrNull() ?: 0
-                        val parentId = nbKidsViewModel.user?.parentId
-                        val childId = card?.childId
+                GradientSendButton {
+                    Log.d("TASK_DEBUG", "Send button clicked")
 
-                        Log.d(
-                            "TASK_DEBUG",
-                            "Validation: parentId=$parentId, childId=$childId, task='$task', gems=$gemsInt"
+                    val gemsInt: Int? = gems.toIntOrNull() // ✅ Nullable
+
+                    val parentId = nbKidsViewModel.user?.parentId
+                    val childId = card?.childId
+
+                    Log.d(
+                        "TASK_DEBUG",
+                        "Validation: parentId=$parentId, childId=$childId, task='$task', gems=$gemsInt"
+                    )
+
+                    if (task.isBlank()) {
+                        Toast.makeText(context, "Please enter a task title", Toast.LENGTH_SHORT).show()
+                        return@GradientSendButton
+                    }
+
+                    if (parentId != null && childId != null) {
+                        val request = CreateTaskRequest(
+                            parentId = parentId,
+                            childId = childId,
+                            title = task,
+                            description = description,
+                            type = if (selectedTaskType == "Video") TaskType.VIDEO else TaskType.TASK,
+                            gems = gemsInt, // ✅ pass null if empty
+                            educationalContentId = selectedVideo?.id
                         )
 
-                        if (parentId != null && childId != null && task.isNotBlank() && gemsInt > 0) {
-                            val request = CreateTaskRequest(
-                                parentId = parentId,
-                                childId = childId,
-                                title = task,
-                                description = description,
-                                type = if (selectedTaskType == "Video") TaskType.VIDEO else TaskType.TASK,
-                                gems = gemsInt,
-                                educationalContentId = selectedVideo?.id
-                            )
+                        Log.d("TASK_DEBUG", "Sending request: $request")
 
-                            Log.d("TASK_DEBUG", "Sending request: $request")
-
-                            taskViewModel.createTask(
-                                request,
-                                onSuccess = {
-                                    Toast.makeText(
-                                        context,
-                                        "Task created successfully",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    navController.popBackStack()
-                                },
-                                onError = {
-                                    Log.e("TASK_DEBUG", "Error creating task: $it")
-                                    Toast.makeText(
-                                        context,
-                                        "Failed to create task: $it",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            )
-                        } else {
-                            Toast.makeText(
-                                context,
-                                "Please fill in all required fields",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                        taskViewModel.createTask(
+                            request,
+                            onSuccess = {
+                                Toast.makeText(
+                                    context,
+                                    "Task created successfully",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                navController.popBackStack()
+                            },
+                            onError = {
+                                Log.e("TASK_DEBUG", "Error creating task: $it")
+                                Toast.makeText(
+                                    context,
+                                    "Failed to create task: $it",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        )
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Please fill in all required fields",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
+                }
 
                     Spacer(modifier = Modifier.height(32.dp))
                 }
