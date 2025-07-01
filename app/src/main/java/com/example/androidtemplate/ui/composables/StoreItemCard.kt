@@ -1,15 +1,14 @@
 package com.example.androidtemplate.ui.composables
 
-import androidx.compose.material3.Card
-import androidx.compose.runtime.Composable
-import com.example.androidtemplate.data.dtos.ChildStoreItemDto
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.androidtemplate.R
 import com.example.androidtemplate.data.dtos.Child
-import com.example.androidtemplate.ui.theme.JekoFontFamily
+import com.example.androidtemplate.data.dtos.ChildStoreItemDto
 import com.example.androidtemplate.viewmodels.WalletViewModel
 
 @Composable
@@ -34,6 +33,8 @@ fun StoreItemCard(
     child: Child?
 ) {
     val context = LocalContext.current
+    var showConfirmDialog by remember { mutableStateOf(false) }
+
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp),
@@ -46,7 +47,8 @@ fun StoreItemCard(
             modifier = Modifier
                 .padding(12.dp)
                 .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             // صورة المنتج
             Image(
@@ -63,26 +65,16 @@ fun StoreItemCard(
             Text(
                 text = item.globalItem.name,
                 fontWeight = FontWeight.Bold,
-                fontSize = 12.sp,
-                fontFamily = JekoFontFamily,
-                color = Color.Black
+                fontSize = 18.sp,
+                color = Color.Black,
             )
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            // زر الطلب + السعر
+            // زر الطلب
             Button(
                 onClick = {
-                    if (child?.childId != null) {
-                        walletViewModel.orderItem(
-                            childId = child.childId,
-                            itemId = item.id,
-                            onSuccess = {
-                                Toast.makeText(context, "Order Completed !", Toast.LENGTH_SHORT).show()
-                            },
-                            onError = { msg -> Toast.makeText(context, msg, Toast.LENGTH_LONG).show() }
-                        )
-                    }
+                    showConfirmDialog = true
                 },
                 shape = RoundedCornerShape(25),
                 enabled = canAfford,
@@ -113,12 +105,44 @@ fun StoreItemCard(
                     Text(
                         text = "${item.globalItem.costInGems}",
                         color = Color.White,
-                        fontFamily = JekoFontFamily,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp
+                        fontSize = 20.sp
                     )
                 }
             }
         }
+    }
+
+    // Dialog التأكيد
+    if (showConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = { showConfirmDialog = false },
+            title = { Text("Are you sure?") },
+            text = { Text("Do you want to place this order?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showConfirmDialog = false
+                    if (child?.childId != null) {
+                        walletViewModel.orderItem(
+                            childId = child.childId,
+                            itemId = item.id,
+                            onSuccess = {
+                                Toast.makeText(context, "Order Completed!", Toast.LENGTH_SHORT).show()
+                            },
+                            onError = { msg ->
+                                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                            }
+                        )
+                    }
+                }) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirmDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }

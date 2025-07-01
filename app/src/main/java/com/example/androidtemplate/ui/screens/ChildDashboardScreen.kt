@@ -172,8 +172,6 @@ fun ChildDashboardScreen(
 
                                             Text(
                                                 text = "Take me there",
-                                                fontFamily = JekoFontFamily,
-
                                                 )
                                         }
                                     }
