@@ -69,7 +69,13 @@ class TaskViewModel(context: Context) : ViewModel() {
                 if (response.isSuccessful) {
                     onSuccess()
                 } else {
-                    onError("Error ${response.code()}: ${response.message()}")
+                    val errorBody = response.errorBody()?.string()
+                    val errorMessage = when {
+                        response.code() == 403 -> errorBody ?: "Access denied"
+                        response.code() == 400 -> errorBody ?: "Bad request"
+                        else -> "Error ${response.code()}: ${response.message()}"
+                    }
+                    onError(errorMessage)
                 }
             } catch (e: Exception) {
                 onError(e.localizedMessage ?: "Unknown error")

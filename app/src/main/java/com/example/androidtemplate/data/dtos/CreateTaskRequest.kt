@@ -10,6 +10,6 @@ data class CreateTaskRequest(
     val title: String,
     val description: String,
     val type: TaskType,
-    val gems: Int,
+    val gems: Int? = null,
     val educationalContentId: Long? = null
 )
