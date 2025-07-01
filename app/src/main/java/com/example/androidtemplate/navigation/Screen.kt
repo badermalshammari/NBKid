@@ -8,6 +8,9 @@ sealed class Screen(val route: String){
     object SignupFailureScreen : Screen("signupfailurescreen")
     object PolicyScreen : Screen("policy")
     object SelectKidScreen: Screen("selectkid")
+    object ZainahsignupSuccess : Screen("zainahsignupSuccess")
+    object ZainsignupSuccess : Screen("zainsignupSuccess")
+
 
     // User Screens
     object Home : Screen("home")

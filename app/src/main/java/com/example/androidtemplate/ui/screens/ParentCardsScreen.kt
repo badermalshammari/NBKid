@@ -1,5 +1,6 @@
 package com.example.androidtemplate.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -80,6 +82,13 @@ fun ParentCardsScreen(
                 navigationIcon = {
                     IconButton(onClick = { Logout(mainViewModel, navController) }) {
                         Icon(Icons.Default.Logout, contentDescription = null)
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
+                    }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
                 }
             )
@@ -187,17 +196,32 @@ fun ParentCardsScreen(
                                 }
                             }
                             item {
-                                Box(
-                                    modifier = Modifier
-                                        .width(300.dp)
-                                        .height(200.dp)
-                                        .fillMaxHeight()
-                                        .padding(end = 12.dp)
-                                        .clickable {
-                                            navController.navigate(Screen.CreateNewChildAccount.route)
-                                        }
-                                ) {
-                                    AddnewCreditCardComposable(false)
+                                if (kidCards.isNullOrEmpty()) {
+                                    Box(
+                                        modifier = Modifier
+                                            .width(300.dp)
+                                            .height(200.dp)
+                                            .fillMaxHeight()
+                                            .padding(start = 12.dp)
+                                            .clickable {
+                                                navController.navigate(Screen.CreateNewChildAccount.route)
+                                            }
+                                    ) {
+                                        AddnewCreditCardComposable(false)
+                                    }
+                                }else{
+                                    Box(
+                                        modifier = Modifier
+                                            .width(300.dp)
+                                            .height(200.dp)
+                                            .fillMaxHeight()
+                                            .padding(end = 12.dp)
+                                            .clickable {
+                                                navController.navigate(Screen.CreateNewChildAccount.route)
+                                            }
+                                    ) {
+                                        AddnewCreditCardComposable(false)
+                                    }
                                 }
                             }
                         }

@@ -66,7 +66,8 @@ fun CreateNewParentAccountScreen() {
                     .fillMaxSize()
                     .padding(24.dp)
                     .padding(padding), // Apply scaffold inner padding
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
                 // Remove the original "Create New Account" text if you added it in TopAppBar
 

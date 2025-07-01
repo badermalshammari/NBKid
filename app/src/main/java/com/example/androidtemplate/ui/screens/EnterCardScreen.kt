@@ -1,5 +1,6 @@
 package com.example.androidtemplate.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,7 @@ fun EnterCardScreen(
     walletViewModel: WalletViewModel,
     navController: NavController
 ) {
+    val context = LocalContext.current
     val cards by cardViewModel.cards.collectAsState()
     val card = cards.find { it.cardId == cardId }
     val wallet by walletViewModel.walletState.collectAsState()
@@ -71,6 +74,13 @@ fun EnterCardScreen(
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
+                actions = {
+                    IconButton(onClick = {
+                        Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
+                    }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                    }
+                }
             )
         }
     ) { innerPadding ->

@@ -94,7 +94,12 @@ fun AppNavigation(
                 navController = navController
             )
         }
-
+        composable(ZainsignupSuccess.route) {
+            ZainSignupSuccessScreen(navController = navController)
+        }
+        composable(ZainahsignupSuccess.route) {
+            ZainahSignupSuccessScreen(navController = navController)
+        }
         composable(
             route = "LeaderboardParent/{cardId}",
             arguments = listOf(navArgument("cardId") { type = NavType.LongType })

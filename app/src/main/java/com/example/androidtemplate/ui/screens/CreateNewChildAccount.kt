@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,17 +21,22 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.data.dtos.CreateChildRequest
 import com.example.androidtemplate.navigation.Screen
+import com.example.androidtemplate.ui.composables.FloatUp
 import com.example.androidtemplate.ui.composables.GenderCard
 import com.example.androidtemplate.ui.composables.LoadingIndicator
+import com.example.androidtemplate.ui.composables.ParentBottomNavBar
+import com.example.androidtemplate.utils.Logout
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateNewChildAccount(
     mainViewModel: NBKidsViewModel,
@@ -80,143 +89,170 @@ fun CreateNewChildAccount(
         return
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Color.White
-    ) {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text("Create New Account", fontWeight = FontWeight.Black) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
+                    }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                    }
+                }
+            )
+        },
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .background(color = Color.White),
+            verticalArrangement = Arrangement.Center
+
         ) {
-            Text("Create New Account", style = MaterialTheme.typography.headlineSmall)
-
-            Spacer(Modifier.height(24.dp))
-
-            OutlinedTextField(
-                value = name.value,
-                onValueChange = { name.value = it },
-                label = { Text("Kid Name") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(50.dp),
-                colors = textFieldColors()
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            OutlinedTextField(
-                value = civilId.value,
-                onValueChange = { civilId.value = it },
-                label = { Text("Civil ID") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(50.dp),
-                colors = textFieldColors()
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            OutlinedTextField(
-                value = birthday.value,
-                onValueChange = {birthday.value = it},
-                label = { Text("Birthday (YYYY-MM-DD)") },
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { datePickerDialog.show() },
-                shape = RoundedCornerShape(50.dp),
-                colors = textFieldColors()
-            )
+                    .fillMaxSize()
+                    .padding(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
 
-            Spacer(Modifier.height(24.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                GenderCard(
-                    name = "Zainah",
-                    imageRes = R.drawable.zainah,
-                    selected = gender.value == "ZAINAH",
-                    onClick = { gender.value = "ZAINAH" }
+                Spacer(Modifier.height(50.dp))
+
+                OutlinedTextField(
+                    value = name.value,
+                    onValueChange = { name.value = it },
+                    label = { Text("Kid Name") },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(50.dp),
+                    colors = textFieldColors()
                 )
-                GenderCard(
-                    name = "Zain",
-                    imageRes = R.drawable.zain,
-                    selected = gender.value == "ZAIN",
-                    onClick = { gender.value = "ZAIN" }
+
+                Spacer(Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = civilId.value,
+                    onValueChange = { civilId.value = it },
+                    label = { Text("Civil ID") },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(50.dp),
+                    colors = textFieldColors()
                 )
-            }
 
-            Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(12.dp))
 
-            Text("Card Design", style = MaterialTheme.typography.headlineSmall)
+                OutlinedTextField(
+                    value = birthday.value,
+                    onValueChange = { birthday.value = it },
+                    label = { Text("Birthday (YYYY-MM-DD)") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { datePickerDialog.show() },
+                    shape = RoundedCornerShape(50.dp),
+                    colors = textFieldColors()
+                )
 
-            Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(24.dp))
 
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                itemsIndexed(cardImages) { index, resId ->
-                    Image(
-                        painter = painterResource(id = resId),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(width = 300.dp, height = 180.dp)
-                            .clickable { selectedCard.value = cardDesigns[index] }
-                            .border(
-                                width = if (selectedCard.value == cardDesigns[index]) 4.dp else 0.dp,
-                                color = Color(0xFF3875A7),
-                                shape = RoundedCornerShape(20.dp)
-                            )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    GenderCard(
+                        name = "Zainah",
+                        imageRes = R.drawable.zainah,
+                        selected = gender.value == "ZAINAH",
+                        onClick = { gender.value = "ZAINAH" }
+                    )
+                    GenderCard(
+                        name = "Zain",
+                        imageRes = R.drawable.zain,
+                        selected = gender.value == "ZAIN",
+                        onClick = { gender.value = "ZAIN" }
                     )
                 }
-            }
 
-            Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(32.dp))
 
-            Box(
-                modifier = Modifier
-                    .height(40.dp)
-                    .width(200.dp)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(Color(0xFFC778DD), Color(0xFFFC6096))
+                Text("Card Design", style = MaterialTheme.typography.headlineSmall)
+
+                Spacer(Modifier.height(12.dp))
+
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    itemsIndexed(cardImages) { index, resId ->
+                        Image(
+                            painter = painterResource(id = resId),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(width = 300.dp, height = 180.dp)
+                                .clickable { selectedCard.value = cardDesigns[index] }
+                                .border(
+                                    width = if (selectedCard.value == cardDesigns[index]) 4.dp else 0.dp,
+                                    color = Color(0xFF3875A7),
+                                    shape = RoundedCornerShape(20.dp)
+                                )
                         )
-                    )
-                    .clickable {
-                        if (name.value.isBlank() || civilId.value.isBlank() || birthday.value.isBlank()) {
-                            showError.value = "Please fill all fields"
-                            return@clickable
-                        }
+                    }
+                }
 
-                        val request = CreateChildRequest(
-                            name = name.value.trim(),
-                            civilId = civilId.value.trim(),
-                            birthday = birthday.value.trim(),
-                            gender = gender.value
+                Spacer(Modifier.height(24.dp))
+
+                Box(
+                    modifier = Modifier
+                        .height(40.dp)
+                        .width(200.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(Color(0xFF8E44AD), Color(0xFFE74C3C))
+                            )
                         )
-
-                        cardViewModel.createChild(
-                            request = request,
-                            onSuccess = {
-                                navController.navigate(route = Screen.SignupSuccess.route)
-                            },
-                            onError = {
-                                showError.value = it
+                        .clickable {
+                            if (name.value.isBlank() || civilId.value.isBlank() || birthday.value.isBlank()) {
+                                showError.value = "Please fill all fields"
+                                return@clickable
                             }
-                        )
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Add My Card",
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium
-                )
+
+                            val request = CreateChildRequest(
+                                name = name.value.trim(),
+                                civilId = civilId.value.trim(),
+                                birthday = birthday.value.trim(),
+                                gender = gender.value,
+                                cardDesign = selectedCard.value,
+                            )
+
+                            cardViewModel.createChild(
+                                request = request,
+                                onSuccess = {
+                                    if(request.gender == "ZAIN"){
+                                    navController.navigate(route = Screen.ZainsignupSuccess.route)
+                                }else if (request.gender == "ZAINAH"){
+                                            navController.navigate(route = Screen.ZainahsignupSuccess.route)
+                                        }
+                                },
+                                onError = {
+                                    showError.value = it
+                                }
+                            )
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Add My Card",
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
         }
     }
 }
-
 @Composable
 private fun textFieldColors() = OutlinedTextFieldDefaults.colors(
     focusedBorderColor = Color(0xFF3875A7),
