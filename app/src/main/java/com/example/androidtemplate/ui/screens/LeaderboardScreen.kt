@@ -161,7 +161,7 @@ fun LeaderboardScreen(
                         item {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
+                                horizontalArrangement = Arrangement.spacedBy(30.dp),
                                 verticalAlignment = Alignment.Bottom
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -184,7 +184,7 @@ fun LeaderboardScreen(
                                     Image(
                                         painter = painterResource(id = R.drawable.leaderboard_2nd),
                                         contentDescription = "2nd",
-                                        modifier = Modifier.size(200.dp)
+                                        modifier = Modifier.size(150.dp)
                                     )
                                 }
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {

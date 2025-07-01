@@ -19,6 +19,7 @@ import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.Header
 import com.example.androidtemplate.ui.composables.OrderItemCard
+import com.example.androidtemplate.ui.composables.TypingText
 import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
@@ -106,7 +107,13 @@ fun OrdersScreen(
                     }
 
                     orders.isEmpty() -> {
-                        Text("No orders found.")
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            TypingText("No orders found.", color = Color(0xFF9E458B))
+                        }
                     }
 
                     else -> {
