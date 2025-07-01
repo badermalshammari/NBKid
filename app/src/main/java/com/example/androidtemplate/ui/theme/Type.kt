@@ -10,9 +10,18 @@ import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
 
-val RalewayFont = FontFamily(
-    Font(R.font.raleway_variable) // اسم الملف داخل مجلد font
+
+val safirFont = FontFamily(
+    Font(R.font.safirscript) // بدون الامتداد
 )
+
+val JekoFontFamily = FontFamily(
+    Font(R.font.jeko_light, weight = FontWeight.Light),
+    Font(R.font.jeko_regular, weight = FontWeight.Normal),
+    Font(R.font.jeko_medium, weight = FontWeight.Medium),
+    Font(R.font.jeko_bold, weight = FontWeight.Bold)
+)
+
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.example.androidtemplate.R
 import com.example.androidtemplate.data.dtos.KidTaskDto
 import com.example.androidtemplate.ui.composables.YouTubeWebView
+import com.example.androidtemplate.ui.theme.JekoFontFamily
 
 fun convertToEmbedUrl(youtubeUrl: String): String {
     return when {
@@ -63,6 +64,7 @@ fun TaskDetail(
                 "In Progress",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
+                fontFamily = JekoFontFamily,
                 modifier = Modifier
                     .clip(RoundedCornerShape(20.dp))
                     .background(Color(0xFF1A3D6D))
@@ -72,6 +74,7 @@ fun TaskDetail(
                 "Done",
                 color = Color.Gray,
                 fontWeight = FontWeight.Bold,
+                fontFamily = JekoFontFamily,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
             )
         }
@@ -80,7 +83,8 @@ fun TaskDetail(
             IconButton(onClick = onBackClick) {
                 Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFFFF9800))
             }
-            Text("To Do Tasks", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text("To Do Tasks", fontSize = 22.sp, fontWeight = FontWeight.Bold, fontFamily = JekoFontFamily,
+            )
         }
 
 
@@ -99,8 +103,10 @@ fun TaskDetail(
                     text = task.title,
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0D1A2B)
-                )
+                    color = Color(0xFF0D1A2B),
+                    fontFamily = JekoFontFamily,
+
+                    )
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -108,8 +114,10 @@ fun TaskDetail(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Normal,
                     lineHeight = 28.sp,
-                    color = Color(0xFF1B2C48)
-                )
+                    color = Color(0xFF1B2C48),
+                    fontFamily = JekoFontFamily,
+
+                    )
 
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -120,7 +128,9 @@ fun TaskDetail(
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("${task.points ?: 0}", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Text("${task.points ?: 0}", fontSize = 24.sp, fontWeight = FontWeight.Bold,
+                            fontFamily = JekoFontFamily,
+                        )
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Image(
@@ -129,7 +139,9 @@ fun TaskDetail(
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("${task.gems}", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Text("${task.gems}", fontSize = 24.sp, fontWeight = FontWeight.Bold,
+                            fontFamily = JekoFontFamily,
+                        )
                     }
                 }
             }

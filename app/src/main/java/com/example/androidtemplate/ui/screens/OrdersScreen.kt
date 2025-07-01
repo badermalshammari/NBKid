@@ -1,6 +1,7 @@
 package com.example.androidtemplate.ui.screens
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,9 +10,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
+import com.example.androidtemplate.ui.composables.Header
 import com.example.androidtemplate.ui.composables.OrderItemCard
 import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
@@ -25,7 +31,7 @@ fun OrdersScreen(
     navController: NavController,
     nbkidsViewModel: NBKidsViewModel,
 ) {
-    val walletState by viewModel.walletState.collectAsState()
+    val wallet by viewModel.walletState.collectAsState()
     val child = nbkidsViewModel.selectedChild
 
     var selectedTab by remember { mutableStateOf("Orders") }
@@ -63,6 +69,7 @@ fun OrdersScreen(
             )
         }
     ) { paddingValues ->
+
         SwipeRefresh(
             state = swipeRefreshState,
             onRefresh = {
@@ -72,10 +79,8 @@ fun OrdersScreen(
             },
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
-        ) {
-            if (walletState == null) {
+                .padding(paddingValues)) {
+            if (wallet == null) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -105,18 +110,21 @@ fun OrdersScreen(
                     }
 
                     else -> {
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            item {
-                                Text(
-                                    text = "Your Orders",
-                                    style = MaterialTheme.typography.titleLarge,
-                                    modifier = Modifier.padding(bottom = 8.dp)
-                                )
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            if (child != null) {
+                                Header(child = child, wallet = wallet)
+                                Spacer(modifier = Modifier.height(16.dp))
                             }
-                            items(orders) { order ->
-                                OrderItemCard(order)
+
+
+                            LazyColumn(
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                items(orders) { order ->
+                                    OrderItemCard(order)
+                                }
                             }
                         }
                     }

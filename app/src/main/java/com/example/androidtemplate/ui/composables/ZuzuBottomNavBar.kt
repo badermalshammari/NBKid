@@ -48,7 +48,6 @@ fun ZuzuBottomNavBar(selected: String, onItemSelected: (String) -> Unit, navCont
         Icons.Default.CardGiftcard,
         Icons.Default.ViewList
     )
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -100,24 +99,25 @@ fun ZuzuBottomNavBar(selected: String, onItemSelected: (String) -> Unit, navCont
                     }
                 }
             }
-        }
 
-        // الزر العائم في النص
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .offset(y = (-20).dp)
-                .background(Color.White, CircleShape)
-                .size(50.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(com.example.androidtemplate.R.drawable.nbkidz_logo),
-                modifier = Modifier.size(40.dp).clickable(){
-                    navController.navigate(Screen.ChildDashboardScreen.route)
-                },
-                contentDescription = "Logo"
-            )
-        }
+            // الزر العائم في النص
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .offset(y = (-10).dp)
+                    .background(Color.White, CircleShape)
+                    .size(50.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(com.example.androidtemplate.R.drawable.nbkidz_logo),
+                    modifier = Modifier.size(40.dp).clickable() {
+                        navController.navigate(Screen.ChildDashboardScreen.route)
+                    },
+                    contentDescription = "Logo"
+                )
+            }
+
     }
+}
 }

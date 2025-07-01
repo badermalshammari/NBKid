@@ -17,27 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun SendButton(onClick: () -> Unit) {
 
-    Box(
-        modifier = Modifier
-            .size(width = 300.dp, height = 50.dp)
-        .background(
-                Brush.horizontalGradient(
-                    listOf(Color(0xFF8E2DE2), Color(0xFFF27121))
-                ),
-                shape = RoundedCornerShape(50)
-            )
-            .clickable(){onClick},
-        contentAlignment = Alignment.Center
-    )  {
-        Text(
-            text = "Send",
-            color = Color.White,
-            style = MaterialTheme.typography.bodyMedium
-        )
-    }
+
 }

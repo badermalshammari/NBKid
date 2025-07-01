@@ -1,5 +1,6 @@
 package com.example.androidtemplate.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,10 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.FancyTaskCard
 import com.example.androidtemplate.ui.composables.Header
@@ -72,30 +75,33 @@ fun TaskScreen(
 
         }
     ) { innerPadding ->
-        val toDoTasks = tasks.filter { it.status != "FINISHED" }
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally){
+            if (child != null) {
+                Header(child = child, wallet = wallet)
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+
+            val toDoTasks = tasks.filter { it.status != "FINISHED" }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    start = 24.dp,
-                    end = 24.dp,
-                    bottom = innerPadding.calculateBottomPadding()
-                ),
+                .padding(innerPadding)
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(bottom = 100.dp)
+            contentPadding = PaddingValues(bottom = 100.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
-                Header(child = child, wallet = wallet)
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text("To Do Tasks", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-            }
 
             when {
                 tasksLoading -> {
                     item {
-                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
                             CircularProgressIndicator()
                         }
                     }
@@ -131,6 +137,7 @@ fun TaskScreen(
                     }
                 }
             }
+        }
         }
     }
 }

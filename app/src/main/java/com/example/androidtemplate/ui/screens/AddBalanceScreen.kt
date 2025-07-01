@@ -3,6 +3,7 @@ package com.example.androidtemplate.ui.screens
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -11,13 +12,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.ui.composables.BalanceInfoComposable
+import com.example.androidtemplate.ui.composables.CreditCardComposable
+import com.example.androidtemplate.ui.composables.FloatUp
 import com.example.androidtemplate.ui.composables.SendButton
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
@@ -34,7 +40,7 @@ fun AddBalanceScreen(
     var amount by remember { mutableStateOf("") }
 
     // Fetch wallet when screen loads
-    LaunchedEffect(Unit) {
+    LaunchedEffect(childId) {
         walletViewModel.fetchWallet(childId)
     }
 
@@ -49,33 +55,52 @@ fun AddBalanceScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Add Gems") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+            CenterAlignedTopAppBar(
+                title = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = selectedCard?.cardHolderName ?: "No Name", fontWeight = FontWeight.Bold)
+                        Text("(${selectedCard?.accountNumber})", style = MaterialTheme.typography.labelSmall)
                     }
                 },
-                modifier = Modifier.background(Color.White)
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                }
             )
-        },
-        content = { padding ->
+        }
+    ) { innerPadding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1.6f)
+                    .align(Alignment.CenterHorizontally)
+                    .shadow(10.dp, shape = RoundedCornerShape(20.dp))
+            ) {
+                CreditCardComposable(selectedCard)
+            }
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding)
                     .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
-
-                Image(
-                    painter = gemIcon,
-                    contentDescription = "Gem Icon",
-                    modifier = Modifier.size(100.dp)
-                )
-
+                FloatUp {
+                    Image(
+                        painter = gemIcon,
+                        contentDescription = "Gem Icon",
+                        modifier = Modifier.size(100.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.height(32.dp))
 
                 BalanceInfoComposable(
@@ -104,26 +129,53 @@ fun AddBalanceScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
+                Box(
+                    modifier = Modifier
+                        .size(width = 300.dp, height = 50.dp)
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(Color(0xFF8E2DE2), Color(0xFFF27121))
+                            ),
+                            shape = RoundedCornerShape(50)
+                        )
+                        .clickable() {
+                            val enteredAmount = amount.toDoubleOrNull()
+                            if (enteredAmount == null || enteredAmount <= 0.0) {
+                                Toast.makeText(context, "Enter a valid amount", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
 
-                SendButton(onClick = {
-                    val enteredAmount = amount.toDoubleOrNull()
-                    if (enteredAmount == null || enteredAmount <= 0.0) {
-                        Toast.makeText(context, "Enter a valid amount", Toast.LENGTH_SHORT).show()
-                        return@SendButton
-                    }
+                            val gems = (enteredAmount?.times(1000))?.toInt()
 
-                    val gems = (enteredAmount * 1000).toInt()
-
-                    walletViewModel.addGemsToChild(childId, gems) { success ->
-                        if (success) {
-                            Toast.makeText(context, "Gems added successfully!", Toast.LENGTH_SHORT).show()
-                            navController.popBackStack()
-                        } else {
-                            Toast.makeText(context, "Insufficient balance or error occurred", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                })
+                            walletViewModel.addGemsToChild(
+                                childId,
+                                gems?.toInt() as Int
+                            ) { success ->
+                                if (success) {
+                                    Toast.makeText(
+                                        context,
+                                        "Gems added successfully!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    navController.popBackStack()
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Insufficient balance or error occurred",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Send",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
-    )
+    }
 }

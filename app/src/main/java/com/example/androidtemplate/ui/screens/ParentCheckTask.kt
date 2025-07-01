@@ -4,15 +4,19 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.androidtemplate.ui.composables.CreditCardComposable
 import com.example.androidtemplate.ui.composables.FancyTaskCard
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
@@ -30,7 +34,8 @@ fun ParentCheckTaskScreen(
     val selectedCard by cardViewModel.selectedCard.collectAsState()
     val childId = selectedCard?.childId
 
-    var selectedFilter by remember { mutableStateOf("INCOMPLETE") }
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    val tabTitles = listOf("Incomplete", "Completed")
 
     val tasks by remember { derivedStateOf { taskViewModel.tasks } }
     val isLoading = taskViewModel.isLoading
@@ -40,19 +45,23 @@ fun ParentCheckTaskScreen(
         if (childId != null) {
             taskViewModel.fetchTasks(childId)
             walletViewModel.fetchWallet(childId)
-
         }
     }
 
-    val filteredTasks = when (selectedFilter) {
-        "COMPLETED" -> tasks.filter { it.status == "FINISHED" }
+    val filteredTasks = when (selectedTabIndex) {
+        1 -> tasks.filter { it.status == "FINISHED" }
         else -> tasks.filter { it.status != "FINISHED" }
     }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Child Tasks", style = MaterialTheme.typography.titleLarge) },
+                title = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = selectedCard?.cardHolderName ?: "No Name", fontWeight = FontWeight.Bold)
+                        Text("(${selectedCard?.accountNumber})", style = MaterialTheme.typography.labelSmall)
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -62,32 +71,29 @@ fun ParentCheckTaskScreen(
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier
+            Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Row(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                    .aspectRatio(1.6f)
+                    .align(Alignment.CenterHorizontally)
+                    .shadow(10.dp, shape = RoundedCornerShape(20.dp))
             ) {
-                Button(
-                    onClick = { selectedFilter = "INCOMPLETE" },
-                    modifier = Modifier,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (selectedFilter == "INCOMPLETE") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+                CreditCardComposable(selectedCard)
+            }
+
+            TabRow(selectedTabIndex = selectedTabIndex) {
+                tabTitles.forEachIndexed { index, title ->
+                    Tab(
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index },
+                        text = { Text(title) }
                     )
-                ) {
-                    Text("Incomplete Tasks")
-                }
-                Button(
-                    onClick = { selectedFilter = "COMPLETED" },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (selectedFilter == "COMPLETED") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
-                    )
-                ) {
-                    Text("Completed Tasks")
                 }
             }
 
@@ -115,7 +121,7 @@ fun ParentCheckTaskScreen(
                                 points = task.points ?: 0,
                                 gems = task.gems,
                                 onClick = {
-                                    if (selectedFilter == "INCOMPLETE") {
+                                    if (selectedTabIndex == 0) {
                                         val childIdValue = selectedCard?.childId ?: return@FancyTaskCard
                                         taskViewModel.completeTask(
                                             childId = childIdValue,

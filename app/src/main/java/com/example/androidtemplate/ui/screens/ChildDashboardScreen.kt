@@ -1,5 +1,7 @@
 package com.example.androidtemplate.ui.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -13,15 +15,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
+import com.example.androidtemplate.ui.composables.FloatUp
 import com.example.androidtemplate.ui.composables.Header
+import com.example.androidtemplate.ui.composables.MovingBackground
 import com.example.androidtemplate.ui.composables.StoreItemCard
 import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
+import com.example.androidtemplate.ui.theme.JekoFontFamily
+import com.example.androidtemplate.ui.theme.safirFont
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
@@ -65,17 +72,20 @@ fun ChildDashboardScreen(
 
     Scaffold(
         bottomBar = {
-            ZuzuBottomNavBar(
-                navController = navController, selected = selectedTab,
-                onItemSelected = { item ->
-                selectedTab = item
-                when (item) {
-                    "Orders" -> navController.navigate(Screen.OrdersScreen.route)
-                    "Tasks" -> navController.navigate(Screen.TaskScreen.route)
-                    "Store" -> navController.navigate(Screen.StoreScreen.route)
-                    "Leaderboard" -> navController.navigate(Screen.LeaderboardScreen.route)
-                }
-            })
+            FloatUp {
+
+                ZuzuBottomNavBar(
+                    navController = navController, selected = selectedTab,
+                    onItemSelected = { item ->
+                        selectedTab = item
+                        when (item) {
+                            "Orders" -> navController.navigate(Screen.OrdersScreen.route)
+                            "Tasks" -> navController.navigate(Screen.TaskScreen.route)
+                            "Store" -> navController.navigate(Screen.StoreScreen.route)
+                            "Leaderboard" -> navController.navigate(Screen.LeaderboardScreen.route)
+                        }
+                    })
+            }
         }
     ) { innerPadding ->
 
@@ -93,98 +103,114 @@ fun ChildDashboardScreen(
                 }
                 isRefreshing = false
             },
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 24.dp)
-            ) {
+            modifier = Modifier.fillMaxSize()) {
 
-                item(span = { GridItemSpan(2) }) {
-                    Column (horizontalAlignment = Alignment.CenterHorizontally){
-                        Header(child = child, wallet = wallet)
-                        Spacer(modifier = Modifier.height(16.dp))
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-                        val toDoCount = tasks.count { it.status != "FINISHED" }
+            Header(child = child, wallet = wallet)
+            Spacer(modifier = Modifier.height(16.dp))
 
-                        when {
-                            tasksLoading -> Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center
-                            ) { CircularProgressIndicator() }
+            Box(modifier = Modifier.fillMaxSize().padding((innerPadding))) {
 
-                            tasksError != null -> Text("Error loading tasks: $tasksError", color = Color.Red)
-                            else -> {
-                                Text(
-                                    text = "TODO TASKS",
-                                    fontSize = 30.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1C1C1C)
+
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp)
+                ) {
+
+                    item(span = { GridItemSpan(2) }) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            val toDoCount = tasks.count { it.status != "FINISHED" }
+
+                            when {
+                                tasksLoading -> Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) { CircularProgressIndicator() }
+
+                                tasksError != null -> Text(
+                                    "Error loading tasks: $tasksError",
+                                    color = Color.Red
                                 )
-                                Spacer(Modifier.height(20.dp))
-                                Card(
-                                    shape = RoundedCornerShape(16.dp),
-                                    elevation = CardDefaults.cardElevation(6.dp),
-                                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(6.dp)
-                                        .clickable { navController.navigate(Screen.TaskScreen.route) },
-                                ) {
-                                    Column(modifier = Modifier.padding(16.dp)) {
-                                        Text(text = "You have $toDoCount task${if (toDoCount == 1) "" else "s"} to do!"
-                                            ,fontSize = 25.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            color = Color(0xFF0D1A2B))
 
-                                        Spacer(modifier = Modifier.height(4.dp))
+                                else -> {
+                                    Text(
+                                        text = "To-do tasks",
+                                        fontFamily = safirFont,
+                                        fontSize = 30.sp,
+                                        color = Color(0xFF9F98AB)
+                                    )
+                                    Spacer(Modifier.height(20.dp))
+                                    Card(
+                                        shape = RoundedCornerShape(16.dp),
+                                        elevation = CardDefaults.cardElevation(6.dp),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = Color(
+                                                0xFFF9F9F9
+                                            )
+                                        ),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(6.dp)
+                                            .clickable { navController.navigate(Screen.TaskScreen.route) },
+                                    ) {
+                                        Column(modifier = Modifier.padding(16.dp)) {
+                                            Text(
+                                                text = "You have $toDoCount task${if (toDoCount == 1) "" else "s"} to do!",
+                                                fontSize = 25.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = Color(0xFF0D1A2B),
 
-                                        Text(
-                                            text = "Take me there"
-                                        )
+                                            )
+
+                                            Spacer(modifier = Modifier.height(4.dp))
+
+                                            Text(
+                                                text = "Take me there",
+                                                fontFamily = JekoFontFamily,
+
+                                                )
+                                        }
                                     }
                                 }
                             }
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            Text(
+                                text = "Daily Picks",
+                                fontFamily = safirFont,
+                                fontSize = 30.sp,
+                                color = Color(0xFF9F98AB)
+                            )
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+                    }
+                    items(visibleItems.shuffled().take(4)) { item ->
+
+                        val imageResId = remember(item.globalItem.photo) {
+                            val resId = context.resources.getIdentifier(
+                                item.globalItem.photo,
+                                "drawable",
+                                context.packageName
+                            )
+                            if (resId == 0) R.drawable.nbkidz_logo_white else resId
                         }
 
-                        Spacer(modifier = Modifier.height(24.dp))
-
-                        Text(
-                            text = "DAILY PICKS",
-                            fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1C1C1C)
+                        StoreItemCard(
+                            item = item,
+                            imageResId = imageResId,
+                            canAfford = (wallet?.gems ?: 0) >= item.globalItem.costInGems,
+                            walletViewModel = walletViewModel,
+                            child = child
                         )
-                        Spacer(modifier = Modifier.height(24.dp))
                     }
-                }
-                items(visibleItems.shuffled().take(4)) { item ->
-
-                    val imageResId = remember(item.globalItem.photo) {
-                        val resId = context.resources.getIdentifier(
-                            item.globalItem.photo,
-                            "drawable",
-                            context.packageName
-                        )
-                        if (resId == 0) R.drawable.nbkidz_logo_white else resId
                     }
-
-                    StoreItemCard(
-                        item = item,
-                        imageResId = imageResId,
-                        canAfford = (wallet?.gems ?: 0) >= item.globalItem.costInGems,
-                        onOrderClick = {
-                            child.childId?.let { id ->
-                                // nbkidsViewModel.orderItem(id, item.globalItem.id)
-                            }
-                        }
-                    )
                 }
             }
         }

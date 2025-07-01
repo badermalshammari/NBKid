@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +28,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.example.androidtemplate.data.dtos.BankCardDto
 import com.example.androidtemplate.data.requests.TransferRequest
+import com.example.androidtemplate.ui.composables.WalletInfoCard
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TransferViewModel
@@ -49,6 +48,7 @@ fun TransferScreen(
     val context = LocalContext.current
 
     var selectedCard by remember { mutableStateOf<BankCardDto?>(null) }
+    var selectedToCard by remember { mutableStateOf<BankCardDto?>(null) }
     var toAccount by remember { mutableStateOf("") }
     var useManualEntry by remember { mutableStateOf(false) }
     var amount by remember { mutableStateOf("") }
@@ -70,8 +70,12 @@ fun TransferScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Transfer") },
+            CenterAlignedTopAppBar(
+                title = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = "Transfer", fontWeight = FontWeight.Bold)
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -114,22 +118,13 @@ fun TransferScreen(
                 }
             }
 
-            selectedCard?.let {
-                Spacer(modifier = Modifier.height(8.dp))
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
-                    shape = RoundedCornerShape(25.dp)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Available Balance", style = MaterialTheme.typography.labelSmall)
-                        val formatted = DecimalFormat("#,##0.000").format(it.balance)
-                        Text(
-                            text = "KD $formatted",
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-                        )
-                    }
-                }
+            selectedCard?.let { card ->
+                Spacer(modifier = Modifier.height(12.dp))
+                WalletInfoCard(
+                    accountName = card.cardHolderName ?: "No Name",
+                    accountNumber = card.accountNumber,
+                    accountBalance = card.balance.toInt()
+                )
             }
 
             Spacer(Modifier.height(20.dp))
@@ -193,11 +188,21 @@ fun TransferScreen(
                         DropdownMenuItem(
                             text = { Text("•••• ${card.accountNumber.toString().takeLast(4)} — ${card.cardHolderName}") },
                             onClick = {
+                                selectedToCard = card
                                 toAccount = card.accountNumber.toString()
                                 expandedTo = false
                             }
                         )
                     }
+                }
+
+                selectedToCard?.let { card ->
+                    Spacer(modifier = Modifier.height(12.dp))
+                    WalletInfoCard(
+                        accountName = card.cardHolderName ?: "No Name",
+                        accountNumber = card.accountNumber,
+                        accountBalance = card.balance.toInt()
+                    )
                 }
             }
 
@@ -222,7 +227,8 @@ fun TransferScreen(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black
                 ),
-                shape = RoundedCornerShape(50.dp),            )
+                shape = RoundedCornerShape(50.dp),
+            )
 
             Spacer(Modifier.height(12.dp))
 
@@ -243,7 +249,8 @@ fun TransferScreen(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black
                 ),
-                shape = RoundedCornerShape(50.dp),            )
+                shape = RoundedCornerShape(50.dp),
+            )
 
             Spacer(Modifier.height(24.dp))
 
@@ -261,12 +268,12 @@ fun TransferScreen(
                     .fillMaxWidth()
                     .height(52.dp)
                     .clip(RoundedCornerShape(30.dp)),
-
-                colors = ButtonDefaults.buttonColors(disabledContainerColor = Color(0xFFB0B0B0), containerColor = Color(
-                    0xFF32658F
-                )
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color(0xFFB0B0B0),
+                    containerColor = Color(0xFF32658F)
                 ),
-                enabled = isFormValid && !isLoading) {
+                enabled = isFormValid && !isLoading
+            ) {
                 if (isLoading) {
                     CircularProgressIndicator(
                         color = Color.White,

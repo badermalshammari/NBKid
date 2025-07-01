@@ -168,7 +168,7 @@ fun EnterCardScreen(
                                 }
                             )
                             ButtonItemPreview(
-                                icon = Icons.Default.List,
+                                icon = Icons.Default.PlaylistAdd,
                                 title = "Add Task",
                                 color = Color(0xFFEF5350),
                                 onClick = { navController.navigate("add_task_screen/${card.cardId}") }
@@ -182,10 +182,10 @@ fun EnterCardScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.weight(1f)
                         ) {
-                            ButtonItemPreview(Icons.Default.CardGiftcard, "Gifts", Color(0xFF66BB6A),
+                            ButtonItemPreview(Icons.Default.CardGiftcard, "Store", Color(0xFF66BB6A),
                                 onClick = { navController.navigate("gifts_screen/${cardId}")}
                             )
-                            ButtonItemPreview(Icons.Default.Settings, "Check Tasks", Color(0xFFFF7043),
+                            ButtonItemPreview(Icons.Default.PlaylistAddCheck, "Check Tasks", Color(0xFFFF7043),
                                 onClick = { navController.navigate(Screen.ParentCheckTask.route)})
 
                         ButtonItemPreview(Icons.Default.Star, "Leaderboard", Color(0xFFFFCA28),
