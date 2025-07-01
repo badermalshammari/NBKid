@@ -119,7 +119,7 @@ fun AppNavigation(
             if (task != null) {
                 TaskDetail(
                     task = task,
-                    onBackClick = { navController.popBackStack() }
+                    navController
                 )
             } else {
                 Text("No task selected", color = Color.Red)
