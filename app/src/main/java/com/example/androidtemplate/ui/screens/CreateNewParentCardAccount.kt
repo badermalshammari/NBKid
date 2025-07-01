@@ -41,7 +41,9 @@ fun CreateNewParentAccount(
     navController: NavController
 ) {
     val context = LocalContext.current
-    val accountType = rememberSaveable { mutableStateOf("") }
+    val accountType = listOf("Saving", "Salary", "Home")
+    var selectedAccountType by rememberSaveable { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
     val selectedCard = rememberSaveable { mutableStateOf("parentcard_1") }
 
     val cardDesigns = listOf("parentcard_1", "parentcard_2", "parentcard_3", "parentcard_4")
@@ -105,14 +107,41 @@ fun CreateNewParentAccount(
 
                 Spacer(Modifier.height(24.dp))
 
-                OutlinedTextField(
-                    value = accountType.value,
-                    onValueChange = { accountType.value = it },
-                    label = { Text("Account Type") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(50.dp),
-                    colors = textFieldColors()
-                )
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextField(
+                        value = selectedAccountType,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Account Type") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                        },
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(50.dp),
+                        colors = textFieldColors()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        accountType.forEach { type ->
+                            DropdownMenuItem(
+                                text = { Text(type) },
+                                onClick = {
+                                    selectedAccountType = type
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
 
                 Spacer(Modifier.height(12.dp))
 
@@ -151,7 +180,7 @@ fun CreateNewParentAccount(
                             )
                         )
                         .clickable {
-                            if (accountType.value.isBlank()) {
+                            if (selectedAccountType.isBlank()) {
                                 showError.value = "Please fill all fields"
                                 return@clickable
                             }
