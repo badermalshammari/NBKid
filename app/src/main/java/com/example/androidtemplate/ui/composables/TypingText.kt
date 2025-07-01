@@ -40,6 +40,6 @@ fun TypingText(text: String,
         style = MaterialTheme.typography.bodyLarge.copy(
             textDirection = TextDirection.Ltr
         ),
-        textAlign = TextAlign.Start
+        textAlign = TextAlign.Center
     )
 }

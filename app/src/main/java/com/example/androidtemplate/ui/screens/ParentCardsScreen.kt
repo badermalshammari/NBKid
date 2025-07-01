@@ -51,7 +51,6 @@ fun ParentCardsScreen(
     val context = LocalContext.current
     val parentId = mainViewModel.user?.parentId
 
-    var showCardDialog by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf("Wallet") }
     val cards by cardViewModel.cards.collectAsState()
     val displayZuzu by cardViewModel.displayZuzu.collectAsState()
@@ -151,17 +150,32 @@ fun ParentCardsScreen(
                             }
                         }
                         item {
-                            Box(
-                                modifier = Modifier
-                                    .width(300.dp)
-                                    .height(200.dp)
-                                    .fillMaxHeight()
-                                    .padding(end = 12.dp)
-                                    .clickable {
-                                    navController.navigate(Screen.CreateNewParentAccount.route)
-                                    }
-                            ) {
-                                AddnewCreditCardComposable(true)
+                            if (parentCards.isNullOrEmpty()) {
+                                Box(
+                                    modifier = Modifier
+                                        .width(300.dp)
+                                        .height(200.dp)
+                                        .fillMaxHeight()
+                                        .padding(start = 12.dp)
+                                        .clickable {
+                                            navController.navigate(Screen.CreateNewParentAccount.route)
+                                        }
+                                ) {
+                                    AddnewCreditCardComposable(true)
+                                }
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .width(300.dp)
+                                        .height(200.dp)
+                                        .fillMaxHeight()
+                                        .padding(end = 12.dp)
+                                        .clickable {
+                                            navController.navigate(Screen.CreateNewParentAccount.route)
+                                        }
+                                ) {
+                                    AddnewCreditCardComposable(true)
+                                }
                             }
                         }
                     }

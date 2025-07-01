@@ -92,7 +92,6 @@ fun StoreScreen(
             },
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally){
                 if (child != null) {
@@ -107,6 +106,7 @@ fun StoreScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(innerPadding)
                     .padding(horizontal = 24.dp)
             ) {
 

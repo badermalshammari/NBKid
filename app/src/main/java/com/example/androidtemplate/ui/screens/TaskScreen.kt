@@ -19,6 +19,7 @@ import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.FancyTaskCard
 import com.example.androidtemplate.ui.composables.Header
+import com.example.androidtemplate.ui.composables.TypingText
 import com.example.androidtemplate.ui.composables.ZuzuBottomNavBar
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
 import com.example.androidtemplate.viewmodels.TaskViewModel
@@ -115,8 +116,14 @@ fun TaskScreen(
 
                 tasks.isEmpty() -> {
                     item {
-                        Text("No tasks assigned.", color = Color.Gray)
-                    }
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Spacer(modifier = Modifier.height(40.dp))
+                            TypingText("No Tasks assigned.", color = Color(0xFF848484), fontWeight = FontWeight.Normal, fontSize = 20.sp)
+                        }                    }
                 }
 
                 else -> {

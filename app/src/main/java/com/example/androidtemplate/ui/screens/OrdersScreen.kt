@@ -79,9 +79,8 @@ fun OrdersScreen(
                 }
             },
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)) {
-            if (wallet == null) {
+                .fillMaxSize()){
+                    if (wallet == null) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -107,12 +106,23 @@ fun OrdersScreen(
                     }
 
                     orders.isEmpty() -> {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            TypingText("No orders found.", color = Color(0xFF9E458B))
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            if (child != null) {
+                                Header(child = child, wallet = wallet)
+                                Spacer(modifier = Modifier.height(16.dp))
+                            }
+                            Column(
+                                modifier = Modifier.fillMaxSize().padding(paddingValues),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                TypingText(
+                                    "No orders found.",
+                                    color = Color(0xFF848484),
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 20.sp
+                                )
+                            }
                         }
                     }
 
