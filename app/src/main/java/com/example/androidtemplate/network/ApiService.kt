@@ -77,7 +77,7 @@ interface ApiService {
     @POST("store/items/order")
     suspend fun orderItem(
         @Query("childId") childId: Long,
-        @Query("itemId") itemId: Long
+        @Query("childStoreItemId") childStoreItemId: Long
     ): OrderedItemDto
 
     @POST("tasks/complete")
