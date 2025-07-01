@@ -310,17 +310,17 @@ fun LeaderboardScreen(
                                     )
                                 }
                             }
-
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            Divider(
-                                color = Color.LightGray,
-                                thickness = 1.dp,
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
-
                         }
 
+
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Divider(
+                            color = Color.LightGray,
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
                     }
                     itemsIndexed(leaderboard) { index, entry ->
                         LeaderboardItem((index + 1), entry)

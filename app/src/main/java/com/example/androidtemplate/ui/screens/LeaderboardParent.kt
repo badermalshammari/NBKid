@@ -131,15 +131,130 @@ fun LeaderboardParent(
                         }
                     }
                     else -> {
-                        val podium = leaderboard.take(3)
-                        item {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.Bottom,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                // 2nd
-                                if (podium.size >= 2) {
+                        if (leaderboard.size == 1) {
+                            val podium = leaderboard.take(1)
+                            // 1st with crown
+                            item {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.Bottom
+                                ) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Box(contentAlignment = Alignment.TopCenter) {
+                                            Image(
+                                                painter = painterResource(
+                                                    id = getAvatarDrawable(
+                                                        podium[0].avatar
+                                                    )
+                                                ),
+                                                contentDescription = podium[0].name,
+                                                modifier = Modifier.size(90.dp).clip(CircleShape)
+                                            )
+                                            Image(
+                                                painter = painterResource(id = R.drawable.crown),
+                                                contentDescription = "Crown",
+                                                modifier = Modifier.size(30.dp).offset(y = (-12).dp)
+                                            )
+                                        }
+                                        Text(podium[0].name, fontWeight = FontWeight.SemiBold)
+                                        Surface(
+                                            color = Color(0xFFCECECE),
+                                            shape = MaterialTheme.shapes.medium,
+                                        ) {
+                                            Text(
+                                                "${podium[0].points}",
+                                                fontWeight = FontWeight.Black,
+                                                modifier = Modifier.padding(6.dp),
+                                            )
+                                        }
+                                        Image(
+                                            painter = painterResource(id = R.drawable.leaderboard_1st),
+                                            contentDescription = "1st",
+                                            modifier = Modifier.size(250.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        if (leaderboard.size == 2) {
+                            val podium = leaderboard.take(2)
+                            // 1st with crown
+                            item {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(30.dp),
+                                    verticalAlignment = Alignment.Bottom
+                                ) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Image(
+                                            painter = painterResource(id = getAvatarDrawable(podium[1].avatar)),
+                                            contentDescription = podium[1].name,
+                                            modifier = Modifier.size(80.dp).clip(CircleShape)
+                                        )
+                                        Text(podium[1].name, fontWeight = FontWeight.SemiBold)
+                                        Surface(
+                                            color = Color(0xFFCECECE),
+                                            shape = MaterialTheme.shapes.medium
+                                        ) {
+                                            Text(
+                                                "${podium[1].points}",
+                                                fontWeight = FontWeight.Black,
+                                                modifier = Modifier.padding(6.dp)
+                                            )
+                                        }
+                                        Image(
+                                            painter = painterResource(id = R.drawable.leaderboard_2nd),
+                                            contentDescription = "2nd",
+                                            modifier = Modifier.size(150.dp)
+                                        )
+                                    }
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Box(contentAlignment = Alignment.TopCenter) {
+                                            Image(
+                                                painter = painterResource(
+                                                    id = getAvatarDrawable(
+                                                        podium[0].avatar
+                                                    )
+                                                ),
+                                                contentDescription = podium[0].name,
+                                                modifier = Modifier.size(90.dp).clip(CircleShape)
+                                            )
+                                            Image(
+                                                painter = painterResource(id = R.drawable.crown),
+                                                contentDescription = "Crown",
+                                                modifier = Modifier.size(30.dp).offset(y = (-12).dp)
+                                            )
+                                        }
+                                        Text(podium[0].name, fontWeight = FontWeight.SemiBold)
+                                        Surface(
+                                            color = Color(0xFFCECECE),
+                                            shape = MaterialTheme.shapes.medium
+                                        ) {
+                                            Text(
+                                                "${podium[0].points}",
+                                                fontWeight = FontWeight.Black,
+                                                modifier = Modifier.padding(6.dp)
+                                            )
+                                        }
+                                        Image(
+                                            painter = painterResource(id = R.drawable.leaderboard_1st),
+                                            contentDescription = "1st",
+                                            modifier = Modifier.size(200.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        if (leaderboard.size >= 3) {
+                            val podium = leaderboard.take(3)
+                            item {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.Bottom,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    // 2nd
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Image(
                                             painter = painterResource(id = getAvatarDrawable(podium[1].avatar)),
@@ -163,14 +278,16 @@ fun LeaderboardParent(
                                             modifier = Modifier.size(120.dp)
                                         )
                                     }
-                                }
 
-                                // 1st with crown
-                                if (podium.isNotEmpty()) {
+                                    // 1st with crown
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Box(contentAlignment = Alignment.TopCenter) {
                                             Image(
-                                                painter = painterResource(id = getAvatarDrawable(podium[0].avatar)),
+                                                painter = painterResource(
+                                                    id = getAvatarDrawable(
+                                                        podium[0].avatar
+                                                    )
+                                                ),
                                                 contentDescription = podium[0].name,
                                                 modifier = Modifier.size(90.dp).clip(CircleShape)
                                             )
@@ -197,10 +314,8 @@ fun LeaderboardParent(
                                             modifier = Modifier.size(120.dp)
                                         )
                                     }
-                                }
 
-                                // 3rd
-                                if (podium.size >= 3) {
+                                    // 3rd
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Image(
                                             painter = painterResource(id = getAvatarDrawable(podium[2].avatar)),
@@ -226,7 +341,8 @@ fun LeaderboardParent(
                                     }
                                 }
                             }
-
+                        }
+                        item {
                             Spacer(modifier = Modifier.height(24.dp))
 
                             Divider(
@@ -236,11 +352,14 @@ fun LeaderboardParent(
                             )
                         }
 
+
+
                         itemsIndexed(leaderboard) { index, entry ->
                             LeaderboardItem(index + 1, entry)
                         }
                     }
                 }
+
             }
         }
     }
