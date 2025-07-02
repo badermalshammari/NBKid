@@ -14,12 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -115,7 +117,7 @@ fun TaskTypeOption(
 }
 
 @Composable
-fun LabeledInput(label: String, value: String, onValueChange: (String) -> Unit) {
+fun LabeledInput(label: String, value: String, keyboardOptions: KeyboardOptions = KeyboardOptions.Default, onValueChange: (String) -> Unit) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -133,7 +135,8 @@ fun LabeledInput(label: String, value: String, onValueChange: (String) -> Unit) 
             focusedTextColor = Color.Black,
             unfocusedTextColor = Color.Black
         ),
-        shape = RoundedCornerShape(50.dp)
+        shape = RoundedCornerShape(50.dp),
+        keyboardOptions = keyboardOptions
     )
 }
 

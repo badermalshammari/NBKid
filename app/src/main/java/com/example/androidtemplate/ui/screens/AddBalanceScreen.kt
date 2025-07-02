@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
@@ -26,7 +28,6 @@ import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.BalanceInfoComposable
 import com.example.androidtemplate.ui.composables.CreditCardComposable
 import com.example.androidtemplate.ui.composables.FloatUp
-import com.example.androidtemplate.ui.composables.SendButton
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.WalletViewModel
 
@@ -41,13 +42,16 @@ fun AddBalanceScreen(
     val context = LocalContext.current
     var amount by remember { mutableStateOf("") }
 
-    // Fetch wallet when screen loads
-    LaunchedEffect(childId) {
-        walletViewModel.fetchWallet(childId)
-    }
-
     val wallet by walletViewModel.walletState.collectAsState()
     val selectedCard by cardViewModel.selectedCard.collectAsState()
+    val cards by cardViewModel.cards.collectAsState()
+
+    LaunchedEffect(childId, cards) {
+        walletViewModel.fetchWallet(childId)
+        cards.find { it.childId == childId }?.let {
+            cardViewModel.selectCard(it)
+        }
+    }
 
     val availableBalance = selectedCard?.balance?.toPlainString()?.let { " $it" } ?: " 0.000"
     val availableGems = wallet?.gems?.toString() ?: "0"
@@ -73,12 +77,10 @@ fun AddBalanceScreen(
                     IconButton(onClick = {
                         Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
                         navController.navigate(Screen.AddBalanceScreen.route)
-
                     }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
                 }
-
             )
         }
     ) { innerPadding ->
@@ -98,6 +100,7 @@ fun AddBalanceScreen(
             ) {
                 CreditCardComposable(selectedCard)
             }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -106,6 +109,7 @@ fun AddBalanceScreen(
                 verticalArrangement = Arrangement.Top
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
+
                 FloatUp {
                     Image(
                         painter = gemIcon,
@@ -113,6 +117,7 @@ fun AddBalanceScreen(
                         modifier = Modifier.size(100.dp)
                     )
                 }
+
                 Spacer(modifier = Modifier.height(32.dp))
 
                 BalanceInfoComposable(
@@ -136,7 +141,10 @@ fun AddBalanceScreen(
                         unfocusedContainerColor = Color.White,
                         cursorColor = Color.Black
                     ),
-                    shape = RoundedCornerShape(50.dp)
+                    shape = RoundedCornerShape(50.dp),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -150,32 +158,24 @@ fun AddBalanceScreen(
                             ),
                             shape = RoundedCornerShape(50)
                         )
-                        .clickable() {
+                        .clickable {
                             val enteredAmount = amount.toDoubleOrNull()
                             if (enteredAmount == null || enteredAmount <= 0.0) {
-                                Toast.makeText(context, "Enter a valid amount", Toast.LENGTH_SHORT)
-                                    .show()
+                                Toast.makeText(context, "Enter a valid amount", Toast.LENGTH_SHORT).show()
+                                return@clickable
                             }
 
-                            val gems = (enteredAmount?.times(1000))?.toInt()
+                            val gems = (enteredAmount * 1000).toInt()
 
-                            walletViewModel.addGemsToChild(
-                                childId,
-                                gems?.toInt() as Int
-                            ) { success ->
+                            walletViewModel.addGemsToChild(childId, gems) { success ->
                                 if (success) {
-                                    Toast.makeText(
-                                        context,
-                                        "Gems added successfully!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(context, "Gems added successfully!", Toast.LENGTH_SHORT).show()
+                                    selectedCard?.childId?.let {
+                                        cardViewModel.fetchCards(it)
+                                    }
                                     navController.popBackStack()
                                 } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Insufficient balance or error occurred",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(context, "Insufficient balance or error occurred", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         },
