@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,16 +25,26 @@ import com.example.androidtemplate.data.dtos.Child
 import com.example.androidtemplate.data.dtos.ChildStoreItemDto
 import com.example.androidtemplate.viewmodels.WalletViewModel
 
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavController
+import com.example.androidtemplate.navigation.Screen
+import com.example.androidtemplate.viewmodels.NBKidsViewModel
+
 @Composable
 fun StoreItemCard(
     item: ChildStoreItemDto,
     imageResId: Int,
     canAfford: Boolean,
     walletViewModel: WalletViewModel,
-    child: Child?
+    nbKidsViewModel: NBKidsViewModel,
+    child: Child?,
+    navController: NavController
 ) {
     val context = LocalContext.current
     var showConfirmDialog by remember { mutableStateOf(false) }
+    var isInWishlist by remember { mutableStateOf(item.wishList ?: false) }
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -50,18 +61,46 @@ fun StoreItemCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // صورة المنتج
-            Image(
-                painter = painterResource(id = imageResId),
-                contentDescription = item.globalItem.name,
-                modifier = Modifier
-                    .size(60.dp)
-                    .clip(CircleShape)
-            )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Image(
+                    painter = painterResource(id = imageResId),
+                    contentDescription = item.globalItem.name,
+                    modifier = Modifier
+                        .size(60.dp)
+                        .align(Alignment.Center)
+                        .clip(CircleShape)
+                )
+
+                IconButton(
+                    onClick = {
+                        if (child?.childId != null) {
+                            nbKidsViewModel.toggleItemWishlist(
+                                childId = child.childId,
+                                itemId = item.id,
+                                onSuccess = { updatedItem ->
+                                    isInWishlist = updatedItem.wishList == true
+                                    Toast.makeText(context, "Wishlist updated", Toast.LENGTH_SHORT).show()
+                                },
+                                onError = {
+                                    Toast.makeText(context, "Error: $it", Toast.LENGTH_LONG).show()
+                                }
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(24.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isInWishlist) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = "Wishlist",
+                        tint = if (isInWishlist) Color(0xFFA54584) else Color.Gray
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // اسم المنتج
             Text(
                 text = item.globalItem.name,
                 fontWeight = FontWeight.Bold,
@@ -73,9 +112,7 @@ fun StoreItemCard(
 
             // زر الطلب
             Button(
-                onClick = {
-                    showConfirmDialog = true
-                },
+                onClick = { showConfirmDialog = true },
                 shape = RoundedCornerShape(25),
                 enabled = canAfford,
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
@@ -106,14 +143,15 @@ fun StoreItemCard(
                         text = "${item.globalItem.costInGems}",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center
+
                     )
                 }
             }
         }
     }
 
-    // Dialog التأكيد
     if (showConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showConfirmDialog = false },
@@ -127,7 +165,7 @@ fun StoreItemCard(
                             childId = child.childId,
                             itemId = item.id,
                             onSuccess = {
-                                Toast.makeText(context, "Order Completed!", Toast.LENGTH_SHORT).show()
+                                navController.navigate(Screen.OrderSuccess.route)
                             },
                             onError = { msg ->
                                 Toast.makeText(context, msg, Toast.LENGTH_LONG).show()

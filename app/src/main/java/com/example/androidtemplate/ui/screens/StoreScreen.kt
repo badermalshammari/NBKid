@@ -1,21 +1,15 @@
 package com.example.androidtemplate.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.navigation.Screen
@@ -110,7 +104,7 @@ fun StoreScreen(
                     .padding(horizontal = 24.dp)
             ) {
 
-                items(visibleItems) { item ->
+                items(visibleItems.shuffled()) { item ->
                     val imageResId = remember(item.globalItem.photo) {
                         val resId = context.resources.getIdentifier(
                             item.globalItem.photo,
@@ -124,7 +118,9 @@ fun StoreScreen(
                         imageResId = imageResId,
                         canAfford = (wallet?.gems ?: 0) >= item.globalItem.costInGems,
                         walletViewModel = walletViewModel,
-                        child = child
+                        child = child,
+                        nbKidsViewModel = nbkidsViewModel,
+                        navController = navController
                     )
                 }
             }

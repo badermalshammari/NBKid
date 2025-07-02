@@ -51,10 +51,7 @@ class NBKidsViewModel(
 
     private var hasInitialized = false
 
-    init {
-        Log.i(TAG, "Initializing ViewModel and loading stored token")
-        loadStoredToken()
-    }
+
 
     private fun loadStoredToken() {
         val savedToken = TokenManager.getToken(context)
@@ -194,6 +191,23 @@ class NBKidsViewModel(
                 Log.e(TAG, "Failed to fetch account: ${e.message}")
             } finally {
                 isAccountLoaded = true
+            }
+        }
+    }
+    fun toggleItemWishlist(
+        childId: Long,
+        itemId: Long,
+        onSuccess: (ChildStoreItemDto) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val updatedItem = apiService.toggleWishlist(childId, itemId)
+                onSuccess(updatedItem)
+                fetchStoreItems(childId)
+            } catch (e: Exception) {
+                Log.e("ParentStoreItemCard", "Error toggling item wishlist: ${e.message}")
+                onError(e.message ?: "Something went wrong")
             }
         }
     }

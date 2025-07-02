@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.CreditCardComposable
 import com.example.androidtemplate.ui.composables.FancyTaskCard
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
@@ -71,6 +72,8 @@ fun ParentCheckTaskScreen(
                 actions = {
                     IconButton(onClick = {
                         Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screen.ParentCheckTask.route)
+
                     }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }

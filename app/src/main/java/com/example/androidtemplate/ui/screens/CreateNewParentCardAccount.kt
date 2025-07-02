@@ -82,6 +82,8 @@ fun CreateNewParentAccount(
                 actions = {
                     IconButton(onClick = {
                         Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screen.CreateNewParentAccount.route)
+
                     }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }

@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
+import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.BalanceInfoComposable
 import com.example.androidtemplate.ui.composables.CreditCardComposable
 import com.example.androidtemplate.ui.composables.FloatUp
@@ -71,6 +72,8 @@ fun AddBalanceScreen(
                 actions = {
                     IconButton(onClick = {
                         Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screen.AddBalanceScreen.route)
+
                     }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
