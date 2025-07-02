@@ -30,48 +30,48 @@ import com.example.androidtemplate.ui.composables.LoadingIndicator
 fun ZainahSignupSuccessScreen(navController: NavController) {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(0xFFFFFFFF)
+        color = Color.White
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Transparent),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            FloatUp {
-                Image(
-                    painter = painterResource(id = R.drawable.zainah_signup),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Box(
+            Image(
+                painter = painterResource(id = R.drawable.zainah_signup),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize().padding(bottom = 30.dp),
+                contentScale = ContentScale.Crop
+            )
+            Column(
                 modifier = Modifier
-                    .padding(bottom = 32.dp)
-                    .size(width = 300.dp, height = 50.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(
-                        Brush.horizontalGradient(
-                            listOf(Color(0xFF8E2DE2), Color(0xFFF27121))
-                        )
-                    )
-                    .clickable {
-                        navController.navigate(Screen.ParentCardsScreen.route)
-                    },
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .padding(bottom = 32.dp),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    "Go back",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Box(
+                    modifier = Modifier
+                        .size(width = 300.dp, height = 50.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(Color(0xFF8E2DE2), Color(0xFFF27121))
+                            )
+                        )
+                        .clickable {
+                            navController.navigate(Screen.ParentCardsScreen.route)
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "Go back",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }
 }
+

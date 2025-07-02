@@ -28,49 +28,49 @@ import com.example.androidtemplate.ui.composables.LoadingIndicator
 
 @Composable
 fun OrderSuccessScreen(navController: NavController) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Color(0xFFFFFFFF)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Transparent),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color.White
         ) {
-            FloatUp {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.order_done),
                     contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize())
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Box(
-                modifier = Modifier
-                    .padding(bottom = 32.dp)
-                    .size(width = 300.dp, height = 50.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(
-                        Brush.horizontalGradient(
-                            listOf(Color(0xFF8E2DE2), Color(0xFFF27121))
-                        )
-                    )
-                    .clickable {
-                        navController.navigate(Screen.ChildDashboardScreen.route)
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    "Go back",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    modifier = Modifier.fillMaxSize().padding(bottom = 30.dp),
+                    contentScale = ContentScale.Crop
                 )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 32.dp),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(width = 300.dp, height = 50.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(
+                                Brush.horizontalGradient(
+                                    listOf(Color(0xFF8E2DE2), Color(0xFFF27121))
+                                )
+                            )
+                            .clickable {
+                                navController.navigate(Screen.ChildDashboardScreen.route)
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            "Go back",
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
         }
     }
-}
