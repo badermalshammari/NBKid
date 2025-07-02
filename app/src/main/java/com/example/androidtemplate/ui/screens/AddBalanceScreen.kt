@@ -49,7 +49,7 @@ fun AddBalanceScreen(
     val wallet by walletViewModel.walletState.collectAsState()
     val selectedCard by cardViewModel.selectedCard.collectAsState()
 
-    val availableBalance = selectedCard?.balance?.toPlainString()?.let { "KD $it" } ?: "KD 0.000"
+    val availableBalance = selectedCard?.balance?.toPlainString()?.let { " $it" } ?: " 0.000"
     val availableGems = wallet?.gems?.toString() ?: "0"
     val points = wallet?.pointsBalance?.toString() ?: "0"
 

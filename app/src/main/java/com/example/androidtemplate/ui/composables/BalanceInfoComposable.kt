@@ -27,7 +27,7 @@ fun BalanceInfoComposable(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text("Available Balance", fontSize = 12.sp, color = Color.Gray)
-            Text(availableBalance, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(availableBalance + " KD", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text("Available Gems", fontSize = 12.sp, color = Color.Gray)
