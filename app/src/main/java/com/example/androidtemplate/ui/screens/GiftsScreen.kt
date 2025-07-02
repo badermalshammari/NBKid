@@ -102,7 +102,6 @@ fun GiftsScreen(
                     IconButton(onClick = {
                         Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
                         navController.navigate(Screen.GiftsScreen.route)
-
                     }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
@@ -110,57 +109,57 @@ fun GiftsScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            Modifier
+        SwipeRefresh(
+            state = swipeRefreshState,
+            onRefresh = {
+                child?.childId?.let {
+                    walletViewModel.fetchOrders(it)
+                }
+            },
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Box(
+            LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1.6f)
-                    .align(Alignment.CenterHorizontally)
-                    .shadow(10.dp, shape = RoundedCornerShape(20.dp))
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                CreditCardComposable(card)
-            }
-            Spacer(modifier = Modifier.height(3.dp))
-            BalanceInfoComposable(
-                availableBalance = card.balance.toString(),
-                availableGems = wallet?.gems.toString(),
-                points = wallet?.pointsBalance.toString()
-            )
-            Spacer(modifier = Modifier.height(3.dp))
-            TabRow(selectedTabIndex = selectedTabIndex) {
-                tabTitles.forEachIndexed { index, title ->
-                    Tab(
-                        selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index },
-                        text = { Text(title, fontWeight = FontWeight.Bold) }
+                item {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .aspectRatio(1.6f)
+                            .shadow(10.dp, shape = RoundedCornerShape(20.dp))
+                    ) {
+                        CreditCardComposable(card)
+                    }
+                    }
+
+                item {
+                    BalanceInfoComposable(
+                        availableBalance = card.balance.toString(),
+                        availableGems = wallet?.gems.toString(),
+                        points = wallet?.pointsBalance.toString()
                     )
                 }
-            }
-            SwipeRefresh(
-                state = swipeRefreshState,
-                onRefresh = {
-                    child?.childId?.let {
-                        walletViewModel.fetchOrders(it)
+
+                item {
+                    TabRow(selectedTabIndex = selectedTabIndex) {
+                        tabTitles.forEachIndexed { index, title ->
+                            Tab(
+                                selected = selectedTabIndex == index,
+                                onClick = { selectedTabIndex = index },
+                                text = { Text(title, fontWeight = FontWeight.Bold) }
+                            )
+                        }
                     }
-                },
-                modifier = Modifier.fillMaxSize()
-            ) {
+                }
+
                 when (selectedTabIndex) {
                     0 -> {
-
-                        Column(
-                            Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-
+                        item {
                             OutlinedTextField(
                                 value = searchQuery,
                                 onValueChange = { searchQuery = it },
@@ -180,7 +179,9 @@ fun GiftsScreen(
                                     unfocusedTextColor = Color.Black
                                 ),
                             )
+                        }
 
+                        item {
                             Row(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 modifier = Modifier.fillMaxWidth()
@@ -197,36 +198,71 @@ fun GiftsScreen(
                                     options = ItemsTypes.values().map { it.name },
                                     selected = selectedType?.name ?: "ALL",
                                     onSelectedChange = { typeStr ->
-                                        selectedType =
-                                            if (typeStr == "ALL") null else ItemsTypes.valueOf(
-                                                typeStr
-                                            )
+                                        selectedType = if (typeStr == "ALL") null else ItemsTypes.valueOf(typeStr)
                                     }
                                 )
                             }
+                        }
 
+                        item {
                             Divider()
+                        }
 
-                            val filteredItems = storeItems.filter { item ->
-                                val matchesQuery =
-                                    item.globalItem.name.contains(searchQuery, ignoreCase = true)
-                                val matchesFilter = when (filterHidden) {
-                                    "Visible Only" -> item.isHidden == false
-                                    "Hidden Only" -> item.isHidden == true
-                                    else -> true
-                                }
-                                val matchesType =
-                                    selectedType?.let { it.name == item.globalItem.type } ?: true
-                                matchesQuery && matchesFilter && matchesType
+                        val filteredItems = storeItems.filter { item ->
+                            val matchesQuery = item.globalItem.name.contains(searchQuery, ignoreCase = true)
+                            val matchesFilter = when (filterHidden) {
+                                "Visible Only" -> item.isHidden == false
+                                "Hidden Only" -> item.isHidden == true
+                                else -> true
                             }
+                            val matchesType = selectedType?.let { it.name == item.globalItem.type } ?: true
+                            matchesQuery && matchesFilter && matchesType
+                        }
 
+                        item {
+                            LazyVerticalGrid(
+                                    columns = GridCells.Fixed(2),
+                                    modifier = Modifier
+                                        .height(600.dp)
+                                        .fillMaxWidth()) {
+                                    items(filteredItems) { item ->
+                                        val imageResId = remember(item.globalItem.photo) {
+                                            val resId = context.resources.getIdentifier(
+                                                item.globalItem.photo,
+                                                "drawable",
+                                                context.packageName
+                                            )
+                                            if (resId == 0) R.drawable.nbkidz_logo_white else resId
+                                        }
+
+                                        ParentStoreItemCard(
+                                            item = item,
+                                            imageResId = imageResId,
+                                            onToggleHidden = {
+                                                nbkidsViewModel.toggleItemHidden(childId, it.id)
+                                            }
+                                        )
+                                    }
+                            }
+                        }
+                    }
+
+                    1 -> {
+                        items(orders) { order ->
+                            OrderItemCard(order)
+                        }
+                    }
+
+                    2 -> {
+                        val wishlistItems = storeItems.filter { it.wishList == true }
+                        item {
                             LazyVerticalGrid(
                                 columns = GridCells.Fixed(2),
-                                verticalArrangement = Arrangement.spacedBy(12.dp),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                modifier = Modifier.fillMaxSize()
-                            ) {
-                                items(filteredItems) { item ->
+                                modifier = Modifier
+                                    .height(600.dp)
+                                    .fillMaxWidth()) {
+
+                                items(wishlistItems) { item ->
                                     val imageResId = remember(item.globalItem.photo) {
                                         val resId = context.resources.getIdentifier(
                                             item.globalItem.photo,
@@ -247,55 +283,11 @@ fun GiftsScreen(
                             }
                         }
                     }
-
-                    1 -> {
-
-                                LazyColumn(
-                                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    items(orders) { order ->
-                                        OrderItemCard(order)
-                                    }
-                                }
-                            }
-                    2 -> {
-                        val wishlistItems = storeItems.filter { it.wishList == true }
-
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            items(wishlistItems) { item ->
-                                val imageResId = remember(item.globalItem.photo) {
-                                    val resId = context.resources.getIdentifier(
-                                        item.globalItem.photo,
-                                        "drawable",
-                                        context.packageName
-                                    )
-                                    if (resId == 0) R.drawable.nbkidz_logo_white else resId
-                                }
-
-                                ParentStoreItemCard(
-                                    item = item,
-                                    imageResId = imageResId,
-                                    onToggleHidden = {
-                                        nbkidsViewModel.toggleItemHidden(childId, it.id)
-                                    }
-                                )
-                            }
-                        }
-                    }
-                        }
-                    }
                 }
             }
-
+        }
     }
-
-
+}
 @Composable
 fun DropdownMenuBox(label: String, options: List<String>, selected: String, onSelectedChange: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
