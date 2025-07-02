@@ -62,7 +62,7 @@ fun OrderSuccessScreen(navController: NavController) {
                         )
                     )
                     .clickable {
-                        navController.navigate(Screen.ParentCardsScreen.route)
+                        navController.navigate(Screen.ChildDashboardScreen.route)
                     },
                 contentAlignment = Alignment.Center
             ) {
