@@ -45,8 +45,7 @@ fun ZainSignupSuccessScreen(navController: NavController) {
                     contentDescription = null,
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
+                        .fillMaxSize()
                 )
             }
 

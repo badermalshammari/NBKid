@@ -77,7 +77,7 @@ fun TaskDetail(
                 painter = painterResource(id = R.drawable.nbkidzrevert_bgpng),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize().size(30.dp)
+                modifier = Modifier.fillMaxSize()
             )
             Column(
                 modifier = Modifier

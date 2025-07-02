@@ -101,7 +101,7 @@ fun CreateNewChildAccount(
                 actions = {
                     IconButton(onClick = {
                         Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
-                        navController.navigate(Screen.CreateNewChildAccount.route)
+                          navController.navigate(Screen.CreateNewChildAccount.route)
 
                     }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")

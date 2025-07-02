@@ -44,8 +44,7 @@ fun ZainahSignupSuccessScreen(navController: NavController) {
                     painter = painterResource(id = R.drawable.zainah_signup),
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
+                        .fillMaxSize()
                 )
             }
 

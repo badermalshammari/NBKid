@@ -44,9 +44,7 @@ fun OrderSuccessScreen(navController: NavController) {
                     painter = painterResource(id = R.drawable.order_done),
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                )
+                        .fillMaxSize())
             }
 
             Spacer(modifier = Modifier.height(16.dp))
