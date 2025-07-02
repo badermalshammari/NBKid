@@ -91,6 +91,14 @@ fun ChildDashboardScreen(
 
         val visibleItems = storeItems.filter { !it.isHidden }
         val swipeState = rememberSwipeRefreshState(isRefreshing)
+        val wishlistItems = visibleItems.filter { it.wishList == true }
+        val nonWishlistItems = visibleItems.filter { it.wishList != true }
+        val selectedWishlistItem = wishlistItems.randomOrNull()
+        val randomNonWishlistItems = nonWishlistItems.shuffled().take(if (selectedWishlistItem != null) 3 else 4)
+        val finalItems = if (selectedWishlistItem != null)
+            (listOf(selectedWishlistItem) + randomNonWishlistItems).shuffled()
+        else
+            randomNonWishlistItems
 
         SwipeRefresh(
             state = swipeState,
@@ -189,7 +197,7 @@ fun ChildDashboardScreen(
                             Spacer(modifier = Modifier.height(24.dp))
                         }
                     }
-                    items(visibleItems.shuffled().take(4)) { item ->
+                    items(finalItems) { item ->
 
                         val imageResId = remember(item.globalItem.photo) {
                             val resId = context.resources.getIdentifier(
@@ -205,7 +213,9 @@ fun ChildDashboardScreen(
                             imageResId = imageResId,
                             canAfford = (wallet?.gems ?: 0) >= item.globalItem.costInGems,
                             walletViewModel = walletViewModel,
-                            child = child
+                            child = child,
+                            nbKidsViewModel = nbkidsViewModel,
+                            navController = navController
                         )
                     }
                     }

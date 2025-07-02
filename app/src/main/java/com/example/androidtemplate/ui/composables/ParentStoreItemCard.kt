@@ -1,5 +1,6 @@
 package com.example.androidtemplate.ui.composables
 
+import android.graphics.Paint
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import com.example.androidtemplate.data.dtos.ChildStoreItemDto
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.androidtemplate.R
@@ -73,9 +75,29 @@ fun ParentStoreItemCard(
                 Text(
                     text = item.globalItem.name,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 12.sp,
-                    color = Color.Black
+                    fontSize = 17.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.gems),
+                        contentDescription = "gems",
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Text(
+                        text = "${item.globalItem.costInGems}",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                }
 
 
             }

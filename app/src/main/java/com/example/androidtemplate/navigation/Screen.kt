@@ -10,6 +10,8 @@ sealed class Screen(val route: String){
     object SelectKidScreen: Screen("selectkid")
     object ZainahsignupSuccess : Screen("zainahsignupSuccess")
     object ZainsignupSuccess : Screen("zainsignupSuccess")
+    object OrderSuccess : Screen("orderSuccess")
+
 
 
     // User Screens

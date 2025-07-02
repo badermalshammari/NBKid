@@ -29,6 +29,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.example.androidtemplate.data.dtos.BankCardDto
 import com.example.androidtemplate.data.requests.TransferRequest
+import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.WalletInfoCard
 import com.example.androidtemplate.viewmodels.CardScreenViewModel
 import com.example.androidtemplate.viewmodels.NBKidsViewModel
@@ -85,6 +86,7 @@ fun TransferScreen(
                 actions = {
                     IconButton(onClick = {
                         Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screen.TransferScreen.route)
                     }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }

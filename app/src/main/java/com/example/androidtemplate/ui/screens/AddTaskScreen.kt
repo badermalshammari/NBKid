@@ -25,6 +25,7 @@ import com.example.androidtemplate.R
 import com.example.androidtemplate.data.dtos.VideoOption
 import com.example.androidtemplate.data.dtos.CreateTaskRequest
 import com.example.androidtemplate.data.dtos.TaskType
+import com.example.androidtemplate.navigation.Screen
 import com.example.androidtemplate.ui.composables.BalanceTaskInfoComposable
 import com.example.androidtemplate.ui.composables.GradientSendButton
 import com.example.androidtemplate.ui.composables.LabeledInput
@@ -96,8 +97,11 @@ fun AddTaskScreen(
                 actions = {
                     IconButton(onClick = {
                         Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screen.TaskScreen.route)
+
                     }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+
                     }
                 }
             )

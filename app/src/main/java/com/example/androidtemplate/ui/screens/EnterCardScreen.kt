@@ -77,6 +77,8 @@ fun EnterCardScreen(
                 actions = {
                     IconButton(onClick = {
                         Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screen.EnterCardScreen.route)
+
                     }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }

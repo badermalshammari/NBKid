@@ -52,6 +52,9 @@ fun AppNavigation(
         composable(PolicyScreen.route) {
             PolicyScreen(navController = navController)
         }
+        composable(OrderSuccess.route) {
+            OrderSuccessScreen(navController = navController)
+        }
 
         composable(SelectKidScreen.route) {
             SelectKidScreen(viewModel = nbkidsViewModel, navController = navController)

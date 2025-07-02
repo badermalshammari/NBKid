@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.androidtemplate.R
 import com.example.androidtemplate.data.dtos.ItemsTypes
+import com.example.androidtemplate.navigation.Screen
+import com.example.androidtemplate.ui.composables.BalanceInfoComposable
 import com.example.androidtemplate.ui.composables.CreditCardComposable
 import com.example.androidtemplate.ui.composables.Header
 import com.example.androidtemplate.ui.composables.OrderItemCard
@@ -73,7 +75,7 @@ fun GiftsScreen(
     var selectedType by remember { mutableStateOf<ItemsTypes?>(null) }
 
     var selectedTabIndex by remember { mutableStateOf(0) }
-    val tabTitles = listOf("Store", "Ordered Items")
+    val tabTitles = listOf("Store", "Ordered Items", "Wishlist")
 
     if (card == null) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -99,6 +101,8 @@ fun GiftsScreen(
                 actions = {
                     IconButton(onClick = {
                         Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screen.GiftsScreen.route)
+
                     }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
@@ -122,7 +126,13 @@ fun GiftsScreen(
             ) {
                 CreditCardComposable(card)
             }
-
+            Spacer(modifier = Modifier.height(3.dp))
+            BalanceInfoComposable(
+                availableBalance = card.balance.toString(),
+                availableGems = wallet?.gems.toString(),
+                points = wallet?.pointsBalance.toString()
+            )
+            Spacer(modifier = Modifier.height(3.dp))
             TabRow(selectedTabIndex = selectedTabIndex) {
                 tabTitles.forEachIndexed { index, title ->
                     Tab(
@@ -249,6 +259,35 @@ fun GiftsScreen(
                                     }
                                 }
                             }
+                    2 -> {
+                        val wishlistItems = storeItems.filter { it.wishList == true }
+
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            items(wishlistItems) { item ->
+                                val imageResId = remember(item.globalItem.photo) {
+                                    val resId = context.resources.getIdentifier(
+                                        item.globalItem.photo,
+                                        "drawable",
+                                        context.packageName
+                                    )
+                                    if (resId == 0) R.drawable.nbkidz_logo_white else resId
+                                }
+
+                                ParentStoreItemCard(
+                                    item = item,
+                                    imageResId = imageResId,
+                                    onToggleHidden = {
+                                        nbkidsViewModel.toggleItemHidden(childId, it.id)
+                                    }
+                                )
+                            }
+                        }
+                    }
                         }
                     }
                 }

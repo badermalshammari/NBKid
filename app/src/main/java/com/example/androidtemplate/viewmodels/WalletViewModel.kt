@@ -83,6 +83,7 @@ class WalletViewModel(context: Context) : ViewModel() {
             }
         }
 
+
         fun addGemsToChild(childId: Long, gems: Int, onResult: (Boolean) -> Unit) {
             viewModelScope.launch {
                 try {
