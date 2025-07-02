@@ -38,7 +38,7 @@ fun LeaderboardItem(rank: Int, entry: LeaderboardEntryDto) {
                     Modifier.border(
                         width = 5.dp,
                         color = borderColor,
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(30.dp)
                     )
                 } else Modifier
             ),
