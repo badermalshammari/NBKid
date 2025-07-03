@@ -55,11 +55,6 @@ fun ParentBottomNavBar(selected: String, onItemSelected: (String) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .height(70.dp)
-                .shadow(
-                    elevation = 10.dp,
-                    shape = RoundedCornerShape(40.dp),
-                    clip = false
-                )
                 .background(
                     brush = Brush.horizontalGradient(
                         listOf(Color(0xFF3875A7), Color(0xFF264B6D))
