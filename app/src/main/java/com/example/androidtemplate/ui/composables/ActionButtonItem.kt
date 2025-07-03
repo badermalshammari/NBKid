@@ -14,6 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,8 +34,10 @@ fun ActionButtonItem(
     icon: ImageVector,
     label: String,
     onClick: () -> Unit,
-    backgroundColor: Color =Color(0xFFFFFFFF)
+    backgroundColor: Color = Color(0xFFFFFFFF)
 ) {
+    val image_zuzu = painterResource(id = R.drawable.zuzu_logo_blue)
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -51,11 +55,10 @@ fun ActionButtonItem(
         ) {
             if (label == "Control") {
                 Image(
-                    painter = painterResource(id = R.drawable.zuzu_logo_blue),
+                    painter = image_zuzu,
                     contentDescription = label,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(40.dp)
+                    modifier = Modifier.size(40.dp)
                 )
             } else {
                 Icon(
@@ -67,7 +70,6 @@ fun ActionButtonItem(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-
         Text(label, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = backgroundColor)
     }
 }

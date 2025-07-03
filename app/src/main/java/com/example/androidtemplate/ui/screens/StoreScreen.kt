@@ -99,7 +99,8 @@ fun StoreScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .height(600.dp)
                     .padding(innerPadding)
                     .padding(horizontal = 24.dp)
             ) {

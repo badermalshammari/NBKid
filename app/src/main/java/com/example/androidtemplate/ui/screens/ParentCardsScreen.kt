@@ -1,5 +1,6 @@
 package com.example.androidtemplate.ui.screens
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -58,6 +59,9 @@ fun ParentCardsScreen(
     val selectedCard by cardViewModel.selectedCard.collectAsState()
 
     val isRefreshing = cardViewModel.isLoading
+
+    val image_gem = painterResource(id = R.drawable.gems)
+    val image_points =painterResource(id = R.drawable.points)
 
     val parentCards = cards.filter { it.isParentCard }
     val kidCards = cards.filter { !it.isParentCard }
@@ -118,15 +122,15 @@ fun ParentCardsScreen(
                 LazyColumn(
                 modifier = Modifier
                     .padding(padding)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+                    .fillMaxWidth()
+                    .height(700.dp),
+                    ) {
                 item {
                     Text("Personal Cards", color = Color.Gray, modifier = Modifier.padding(16.dp)
                     )
                     LazyRow(
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .width(600.dp)
                             .height(230.dp)
                             .background(color = Color(0x2232658F)),
                         verticalAlignment = Alignment.CenterVertically,
@@ -279,7 +283,7 @@ fun ParentCardsScreen(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Image(
-                                            painter = painterResource(id = R.drawable.points),
+                                            painter = image_points,
                                             contentDescription = "points",
                                             modifier = Modifier.size(40.dp)
                                         )
@@ -294,7 +298,7 @@ fun ParentCardsScreen(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Image(
-                                            painter = painterResource(id = R.drawable.gems),
+                                            painter = image_gem,
                                             contentDescription = "gems",
                                             modifier = Modifier.size(40.dp)
                                         )
@@ -363,17 +367,19 @@ fun ParentCardsScreen(
                             Balance: ${card.balance} KD
                             Status: ${if (card.isActive) "Active" else "Disabled"}""".trimIndent()
 
-                                    val intent = android.content.Intent().apply {
-                                        action = android.content.Intent.ACTION_SEND
-                                        putExtra(android.content.Intent.EXTRA_TEXT, shareText)
+                                    val intent = Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        putExtra(Intent.EXTRA_TEXT, shareText)
                                         type = "text/plain"
                                     }
-                                    val chooser = android.content.Intent.createChooser(intent, "Share Card Info")
+                                    val chooser = Intent.createChooser(intent, "Share Card Info")
                                     context.startActivity(chooser)
                                 }
                             }
                         )
-                        if (selectedCard?.isParentCard == false && selectedCard?.isActive == true) {                            ActionButtonItem(
+                        if (selectedCard?.isParentCard == false && selectedCard?.isActive == true) {
+
+                            ActionButtonItem(
                                 icon = Icons.Default.Description,
                                 backgroundColor = Color.Black,
                                 label = "Control",
