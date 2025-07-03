@@ -170,9 +170,6 @@ fun AddBalanceScreen(
                             walletViewModel.addGemsToChild(childId, gems) { success ->
                                 if (success) {
                                     Toast.makeText(context, "Gems added successfully!", Toast.LENGTH_SHORT).show()
-                                    selectedCard?.childId?.let {
-                                        cardViewModel.fetchCards(it)
-                                    }
                                     navController.popBackStack()
                                 } else {
                                     Toast.makeText(context, "Insufficient balance or error occurred", Toast.LENGTH_SHORT).show()
