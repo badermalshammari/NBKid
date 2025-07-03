@@ -165,6 +165,7 @@ fun AddBalanceScreen(
                                 return@clickable
                             }
 
+
                             val gems = (enteredAmount * 1000).toInt()
 
                             walletViewModel.addGemsToChild(childId, gems) { success ->
