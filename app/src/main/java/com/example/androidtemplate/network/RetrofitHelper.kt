@@ -7,8 +7,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitHelper {
-    private const val port = "8080"
+    private const val port = "8081"
     private const val baseUrl = "http://10.0.2.2:$port/api/"
+
+//    private const val baseUrl = "http://172.20.10.4:$port/api/"
+
 
     fun getInstance(context: Context): Retrofit {
         val okHttpClient = OkHttpClient.Builder()

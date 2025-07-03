@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
@@ -57,7 +55,6 @@ fun CardSettingsScreen(
         }
     }
 
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -94,100 +91,148 @@ fun CardSettingsScreen(
             state = rememberSwipeRefreshState(isRefreshing),
             onRefresh = { parentId?.let { cardViewModel.fetchCards(it) } }
         ) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .padding(padding)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .height(600.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("All Cards", color = Color.Gray)
-                Spacer(modifier = Modifier.height(20.dp))
+                item {
+                    Text("All Cards", color = Color.Gray)
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    val options = listOf("All", "Active", "Disabled")
-                    options.forEach { option ->
-                        Button(
-                            onClick = { /* update filter */ },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.LightGray
-                            ),
-                            shape = RoundedCornerShape(50.dp),
-                            modifier = Modifier
-                                .padding(horizontal = 4.dp)
-                                .height(40.dp)
-                        ) {
-                            Text(option, color = Color.White)
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(listOf(1, 2, 3)) { card ->
-                        Box(
-                            modifier = Modifier
-                                .width(300.dp)
-                                .fillMaxHeight()
-                        ) {
-                            Text("Card $card")
-                        }
-                    }
-                }
-
-                Divider(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    color = Color.Gray,
-                    thickness = 1.dp
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        "Card Holder",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp,
-                        color = Color.Black
-                    )
-                    Text(
-                        "(123456789)",
-                        color = Color.Gray,
-                        fontSize = 15.sp
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Button(
-                        onClick = { /* toggle */ },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Enable Card")
+                        val options = listOf("All", "Active", "Disabled")
+                        options.forEach { option ->
+                            Button(
+                                onClick = { filterStatus = option },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (filterStatus == option) Color(0xFF36709E) else Color.LightGray
+                                ),
+                                shape = RoundedCornerShape(50.dp),
+                                modifier = Modifier
+                                    .padding(horizontal = 4.dp)
+                                    .height(40.dp)
+                            ) {
+                                Text(option, color = Color.White)
+                            }
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        onClick = { /* refresh */ }
+                    val filteredCards = cards.filter {
+                        when (filterStatus) {
+                            "Active" -> it.isActive
+                            "Disabled" -> !it.isActive
+                            else -> true
+                        }
+                    }
+
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth().height(200.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text("Refresh")
+                        items(filteredCards) { card ->
+                            Box(
+                                modifier = Modifier
+                                    .width(300.dp)
+                                    .fillMaxHeight()
+                                    .clickable { cardViewModel.selectCard(card) }
+                            ) {
+                                CreditCardComposable(card)
+                            }
+                        }
+                    }
+                }
+
+                item {
+                    Divider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = Color.Gray,
+                        thickness = 1.dp
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                selectedCard?.cardHolderName?.uppercase() ?: "No Card Selected",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 30.sp,
+                                color = Color.Black
+                            )
+                            Text(
+                                "(${selectedCard?.accountNumber ?: "N/A"})",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray,
+                                fontSize = 15.sp
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(
+                            onClick = {
+                                selectedCard?.let { card ->
+                                    isCardActive?.let {
+                                        cardViewModel.toggleCardActivation(
+                                            card.cardId,
+                                            !it,
+                                            onSuccess = {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Card status updated",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            },
+                                            onError = {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Failed to update: ${it.localizedMessage}",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        )
+                                    }
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (isCardActive == true) Color(0xFFBE1010) else Color(
+                                    0xFF4CAF50
+                                )
+                            ),
+                            shape = RoundedCornerShape(50.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
+                        ) {
+                            Text(if (isCardActive == true) "Disable Card" else "Enable Card")
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp),
+                            shape = RoundedCornerShape(50.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF376F9D)
+                            ),
+                            onClick = {
+                                navController.navigate(Screen.CardSettingsScreen.route)
+                            },
+                        ) {
+                            Text("Refresh")
+                        }
                     }
                 }
             }
-
         }
     }
 }
